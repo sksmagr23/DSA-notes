@@ -69,6 +69,45 @@ class Solution {
 };
 ```
 
+## Reverse a Linked List(Interative)
+```cpp
+Node* reverseLinkedList(Node* head) {
+    Node* prev = nullptr;
+    Node* curr = head;
+    Node* next = nullptr;
+    
+    while (curr != nullptr) {
+        next = curr->next;  // Store the next node
+        curr->next = prev;  // Reverse the link
+        
+        // Move pointers one position ahead
+        prev = curr;
+        curr = next;
+    }
+    
+    // prev is the new head of the reversed list
+    return prev;
+}
+```
+
+### Delete a node without head pointer
+```cpp
+void deleteNodeWithoutHead(Node* nodeToDelete) {
+    // Cannot delete the last node with this approach
+    if (nodeToDelete == nullptr || nodeToDelete->next == nullptr) return;
+    
+    // Copy the data from the next node
+    Node* nextNode = nodeToDelete->next;
+    nodeToDelete->data = nextNode->data;
+    
+    // Skip the next node
+    nodeToDelete->next = nextNode->next;
+    
+    // Delete the next node
+    delete nextNode;
+}
+```
+
 ## Doubly linked list
 ```cpp
 class Node {
@@ -147,6 +186,35 @@ bool detectCycle(Node* head) {
 }
 ```
 
+## Starting point of Loop
+```cpp
+Node* findStartOfLoop(Node* head) {
+    Node* slow = head;
+    Node* fast = head;
+    bool loopExists = false;
+    
+    while (fast != nullptr && fast->next != nullptr) {
+        slow = slow->next;
+        fast = fast->next->next;
+        if (slow == fast) {
+            loopExists = true;
+            break;
+        }
+    }
+    // If no loop exists, return nullptr
+    if (!loopExists) return nullptr;
+    
+    // Move slow to head and keep fast at meeting point
+    slow = head;
+    while (slow != fast) {
+        slow = slow->next;
+        fast = fast->next;
+    }
+    // The point where they meet is the start of the loop
+    return slow;
+}
+```
+
 ## Loop length in Ll
 ```cpp
 int lengthOfLoop(Node* head) {
@@ -172,4 +240,37 @@ int lengthOfLoop(Node* head) {
     }
     return 0; 
 }
+```
+
+## Circular Linked list
+```cpp
+class CircularNode {
+public:
+    int data;
+    CircularNode* next;
+    
+    CircularNode(int data1) {
+        data = data1;
+        next = this;  // Points to itself initially
+    }
+};
+
+// Circular linked list from an array
+CircularNode* createCircularLL(vector<int>& arr) {
+    if (arr.empty()) return nullptr;
+    
+    CircularNode* head = new CircularNode(arr[0]);
+    CircularNode* tail = head;
+    
+    for (int i = 1; i < arr.size(); i++) {
+        CircularNode* newNode = new CircularNode(arr[i]);
+        tail->next = newNode;
+        tail = newNode;
+    }
+    // Make the list circular by linking last node to the first
+    tail->next = head;
+    
+    return head;
+}
+
 ```
