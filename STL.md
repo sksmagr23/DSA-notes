@@ -536,58 +536,83 @@ void algorithms() {
 ```cpp
 void strings() {
     string s = "hello world";
-    string s2("hello");                  // Constructor
-    string s3 = s2;                      // Copy
-    string s4 = move(s3);                // Move
-    string s5(10, 'a');                  // 10 copies of 'a'
-    string s6 = s.substr(0, 5);          // Substring
-    
-    s.push_back('!');                    // Add char at end
-    s.pop_back();                        // Remove last char
-    s.append(" there");                  // Append string
-    s.append(3, '!');                    // Append multiple copies
-    s += " and more";                    // Another way to append
-    
-    s.insert(6, "beautiful ");           // Insert at position
-    s.erase(6, 10);                      // Erase characters
-    s.replace(0, 5, "hi");               // Replace substring
-    
-    cout << s.length() << endl;          // Length of string
-    cout << s.size() << endl;            // Same as length
-    cout << s.empty() << endl;           // Check if empty
-    s.clear();                           // Clear string
-    
-    cout << s.find("lo") << endl;        // Find substring
-    cout << s.rfind("lo") << endl;       // Find substring from right
-    cout << s.find_first_of("aeiou") << endl; // Find first of these chars
-    cout << s.find_last_of("aeiou") << endl;  // Find last of these chars
-    cout << s.find_first_not_of("aeiou") << endl; // First char not in set
-    
-    cout << s.compare("hello") << endl;  // Compare strings
-    
-    // String to number
-    string num = "123";
-    int n = stoi(num);                   // String to int
-    long ln = stol(num);                 // String to long
-    float f = stof("3.14");              // String to float
-    double d = stod("3.14159");          // String to double
-    
-    // Number to string
-    string str = to_string(123);         // Int to string
-    string str2 = to_string(3.14159);    // Double to string
-    
-    // C-style strings
-    const char* cstr = s.c_str();        // Get C string
-    char buffer[20];
-    strcpy(buffer, s.c_str());           // Copy to buffer
-    
-    // String stream
-    stringstream ss;
-    ss << "Value: " << 42 << " and PI: " << 3.14159;
-    string result = ss.str();
-    
-    int x;
-    ss >> x;                             // Extract value from stream
+        string s2("hello");                  // Constructor
+        string s3 = s2;                      // Copy
+        string s4 = move(s3);                // Move
+        string s5(10, 'a');                  // 10 copies of 'a'
+        string s6 = s.substr(0, 5);          // Substring
+        
+        s.push_back('!');                    // Add char at end
+        s.pop_back();                        // Remove last char
+        s.append(" there");                  // Append string
+        s.append(3, '!');                    // Append multiple copies
+        s += " and more";                    // Another way to append
+        
+        s.insert(6, "beautiful ");           // Insert at position
+        s.erase(6, 10);                      // Erase characters
+        s.replace(0, 5, "hi");               // Replace substring
+        
+        cout << s.length() << endl;          // Length of string
+        cout << s.size() << endl;            // Same as length
+        cout << s.empty() << endl;           // Check if empty
+        s.clear();                           // Clear string
+        
+        cout << s.find("lo") << endl;        // Find substring
+        cout << s.rfind("lo") << endl;       // Find substring from right
+        cout << s.find_first_of("aeiou") << endl; // Find first of these chars
+        cout << s.find_last_of("aeiou") << endl;  // Find last of these chars
+        cout << s.find_first_not_of("aeiou") << endl; // First char not in set
+        
+        cout << s.compare("hello") << endl;  // Compare strings
+        
+        // String to number
+        string num = "123";
+        int n = stoi(num);                   // String to int
+        long ln = stol(num);                 // String to long
+        float f = stof("3.14");              // String to float
+        double d = stod("3.14159");          // String to double
+        
+        // Number to string
+        string str = to_string(123);         // Int to string
+        string str2 = to_string(3.14159);    // Double to string
+        
+        // C-style strings
+        const char* cstr = s.c_str();        // Get C string
+        char buffer[20];
+        strcpy(buffer, s.c_str());           // Copy to buffer
+        
+        // String stream
+        stringstream ss;
+        ss << "Value: " << 42 << " and PI: " << 3.14159;  // Write to stream
+        string result = ss.str();            // Get string from stream
+        cout << result << endl;              // Outputs: "Value: 42 and PI: 3.14159"
+        
+        // Parsing with stringstream
+        stringstream parser("123 3.14 Hello");
+        int i;
+        double d2;
+        string word;
+        parser >> i >> d2 >> word;           // Extract values
+        cout << i << " " << d2 << " " << word << endl;  // Outputs: "123 3.14 Hello"
+        
+        // Using stringstream for type conversion
+        stringstream converter;
+        converter << 42;                     // Insert int
+        string str_val = converter.str();    // "42"
+        
+        converter.str("");                   // Clear the stream
+        converter.clear();                   // Reset error flags
+        
+        converter << "3.14159";              // Insert string
+        double pi;
+        converter >> pi;                     // Extract as double
+        cout << "PI: " << pi << endl;        // Outputs: "PI: 3.14159"
+        
+        // String concatenation
+        stringstream concat;
+        concat << "Combining " << "multiple " << "strings " << "efficiently";
+        string combined = concat.str();      // More efficient than + for many strings
+        cout << combined << endl;            // Outputs: "Combining multiple strings efficiently"
 }
 ```
 
