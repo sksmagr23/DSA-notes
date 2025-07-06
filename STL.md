@@ -370,11 +370,49 @@ void priority_queues() {
     
     cout << min_pq.top() << endl;    // Get min element (1)
     
+    // Custom comparator for pairs (sort by second element)
+    auto pair_comp = [](const pair<int,int>& a, const pair<int,int>& b) {
+        return a.second > b.second;  // Min heap for second element
+    };
+    priority_queue<pair<int,int>, vector<pair<int,int>>, decltype(pair_comp)> custom_pq(pair_comp);
+    
     custom_pq.push({1, 5});
     custom_pq.push({2, 3});
     custom_pq.push({3, 4});
     
     cout << custom_pq.top().first << endl;  // 2, because it has lowest second value
+    
+    // Priority queue with different underlying containers
+    priority_queue<int, deque<int>> pq_deque;      // Using deque
+    priority_queue<int, list<int>> pq_list;        // Using list (slower)
+    
+    
+    // Priority queue operations
+    priority_queue<int> operations_pq;
+    
+    // Insert elements
+    operations_pq.push(10);
+    operations_pq.push(5);
+    operations_pq.push(15);
+    operations_pq.push(3);
+    
+    // Access top element
+    cout << "Top element: " << operations_pq.top() << endl;  // 15
+    
+    // Remove top element
+    operations_pq.pop();
+    cout << "After pop, top element: " << operations_pq.top() << endl;  // 10
+    
+    // Check size and emptiness
+    cout << "Size: " << operations_pq.size() << endl;
+    cout << "Is empty: " << operations_pq.empty() << endl;
+    
+    // Iterate through all elements (destructive)
+    cout << "All elements (in descending order): ";
+    while (!operations_pq.empty()) {
+        cout << operations_pq.top() << " ";
+        operations_pq.pop();
+    }
 }
 ```
 
