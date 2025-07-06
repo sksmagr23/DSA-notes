@@ -565,10 +565,25 @@ void strings() {
         
         cout << s.compare("hello") << endl;  // Compare strings
         
+        // Character classification
+        char ch = 'A';
+        cout << isalnum(ch) << endl;         // Check if alphanumeric (a-z, A-Z, 0-9)
+        cout << isdigit(ch) << endl;         // Check if digit (0-9)
+        cout << isalpha(ch) << endl;         // Check if alphabetic (a-z, A-Z)
+        cout << islower(ch) << endl;         // Check if lowercase
+        cout << isupper(ch) << endl;         // Check if uppercase
+        cout << isspace(ch) << endl;         // Check if whitespace
+        cout << ispunct(ch) << endl;         // Check if punctuation
+        
+        // Character conversion
+        cout << tolower(ch) << endl;         // Convert to lowercase
+        cout << toupper(ch) << endl;         // Convert to uppercase
+        
         // String to number
         string num = "123";
         int n = stoi(num);                   // String to int
         long ln = stol(num);                 // String to long
+        long long lln = stoll(num);          // String to long long
         float f = stof("3.14");              // String to float
         double d = stod("3.14159");          // String to double
         
@@ -662,6 +677,10 @@ void utility_components() {
     bits.flip();                                  // Flip all bits
     cout << bits.to_string() << endl;             // To string
     cout << bits.to_ulong() << endl;              // To unsigned long
+
+     // Lambda expressions (C++11)
+    auto lambda = [](int x) { return x * x; };
+    cout << lambda(5) << endl;         // 25
 }
 ```
 

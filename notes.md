@@ -10,6 +10,8 @@
 - Arrays
 - Binary Search
 - Linked List
+- Stacks and Queues
+- Two pointers and Sliding window
 
 # General DSA Flowchart
 ![Flowchart](https://leetcode.com/explore/interview/card/cheatsheets/720/resources/Figures/DSA/Chapter_11/flowchart.png)
