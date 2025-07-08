@@ -30,3 +30,22 @@ int kthSmallest(vector<int>& nums, int k) {
         return pq.top();
     }
 ```
+
+### K most frequent elements in an array (Leetcode 347)
+```cpp
+vector<int> topKFrequent(vector<int>& nums, int k) {
+       unordered_map<int, int> mpp;
+       for (int num : nums) mpp[num]++;
+       priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+       for (auto& [num, count] : mpp) {
+           pq.push({count, num});
+           if (pq.size() > k) pq.pop();
+       }
+       vector<int> res;
+       while (!pq.empty()) {
+           res.push_back(pq.top().second);
+           pq.pop();
+       }
+       return res;
+    }
+```

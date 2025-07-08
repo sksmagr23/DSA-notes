@@ -4,8 +4,8 @@
 
 ### Sequence Containers
 
+> ### Vectors
 ```cpp
-// VECTORS
 void vectors() {
     vector<int> v;
     v.push_back(1);                    // Insert at end
@@ -39,8 +39,9 @@ void vectors() {
     vector<int> a = {1, 2}, b = {3, 4};
     a.swap(b);                         // a is now {3, 4}, b is {1, 2}
 }
-
-// ARRAY
+```
+> ### Arrays
+```cpp
 void arrays() {
     array<int, 5> arr = {1, 2, 3, 4, 5};  // Fixed size array
     
@@ -59,8 +60,9 @@ void arrays() {
     array<int, 5> arr2 = {6, 7, 8, 9, 10};
     arr.swap(arr2);
 }
-
-// DEQUE (Double-ended Queue)
+```
+> ### Deque (Double-ended Queue)
+```cpp
 void deques() {
     deque<int> dq;
     dq.push_back(1);                   // Insert at back
@@ -84,8 +86,9 @@ void deques() {
     dq.clear();                        // Clear deque
     dq.resize(10);                     // Resize
 }
-
-// LIST (Doubly Linked List)
+```
+> ### List (Doubly Linked List)
+```cpp
 void lists() {
     list<int> lst;
     lst.push_back(1);                  // Insert at back
@@ -117,8 +120,9 @@ void lists() {
     lst.clear();                       // Clear list
     cout << lst.empty() << endl;       // Check if empty
 }
-
-// FORWARD_LIST (Singly Linked List)
+```
+> ### Forward_list (Singly Linked List)
+```cpp
 void forward_lists() {
     forward_list<int> fl = {1, 2, 3};
     fl.push_front(0);                  // Insert at front
@@ -147,8 +151,8 @@ void forward_lists() {
 
 ### Associative Containers
 
+> ### Sets
 ```cpp
-// SETS
 void sets() {
     set<int> s;                      // Ordered unique elements
     s.insert(1);                     // Insert element
@@ -184,8 +188,9 @@ void sets() {
     
     cout << ms.count(1) << endl;    // Count occurrences
 }
-
-// MAPS
+```
+> ### Maps
+```cpp
 void maps() {
     map<int, string> mp;             // Ordered key-value pairs
     mp.insert({1, "one"});           // Insert pair
@@ -237,8 +242,8 @@ void maps() {
 
 ### Unordered Containers
 
+> ### Unordered_set (Hash Set)
 ```cpp
-// UNORDERED_SET (Hash Set)
 void unordered_sets() {
     unordered_set<int> us;          // Hash-based unique elements
     us.insert(1);                   // Insert element
@@ -268,8 +273,9 @@ void unordered_sets() {
     ums.insert(1);                  // Contains two 1's
     
 }
-
-// UNORDERED_MAP (Hash Map)
+```
+> ### Unordered_map (Hash Map)
+```cpp
 void unordered_maps() {
     unordered_map<string, int> um;   // Hash-based key-value pairs
     um.insert({"apple", 5});
@@ -310,8 +316,8 @@ void unordered_maps() {
 
 ### Container Adaptors
 
+> ### Stack (LIFO)
 ```cpp
-// STACK (LIFO)
 void stacks() {
     stack<int> st;
     st.push(1);                      // Add element
@@ -329,8 +335,9 @@ void stacks() {
     // Stack with list as underlying container
     stack<int, list<int>> st_list;
 }
-
-// QUEUE (FIFO)
+```
+> ### Queue (FIFO)
+```cpp
 void queues() {
     queue<int> q;
     q.push(1);                       // Add element
@@ -346,8 +353,9 @@ void queues() {
     // Queue with list as underlying container
     queue<int, list<int>> q_list;
 }
-
-// PRIORITY_QUEUE
+```
+> ### Priority_queue
+```cpp
 void priority_queues() {
     // Max heap (default)
     priority_queue<int> pq;
