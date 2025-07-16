@@ -5,6 +5,7 @@
 ### Sequence Containers
 
 > ### Vectors
+
 ```cpp
 void vectors() {
     vector<int> v;
@@ -40,7 +41,9 @@ void vectors() {
     a.swap(b);                         // a is now {3, 4}, b is {1, 2}
 }
 ```
+
 > ### Arrays
+
 ```cpp
 void arrays() {
     array<int, 5> arr = {1, 2, 3, 4, 5};  // Fixed size array
@@ -61,7 +64,9 @@ void arrays() {
     arr.swap(arr2);
 }
 ```
+
 > ### Deque (Double-ended Queue)
+
 ```cpp
 void deques() {
     deque<int> dq;
@@ -87,7 +92,9 @@ void deques() {
     dq.resize(10);                     // Resize
 }
 ```
+
 > ### List (Doubly Linked List)
+
 ```cpp
 void lists() {
     list<int> lst;
@@ -121,7 +128,9 @@ void lists() {
     cout << lst.empty() << endl;       // Check if empty
 }
 ```
+
 > ### Forward_list (Singly Linked List)
+
 ```cpp
 void forward_lists() {
     forward_list<int> fl = {1, 2, 3};
@@ -152,6 +161,7 @@ void forward_lists() {
 ### Associative Containers
 
 > ### Sets
+
 ```cpp
 void sets() {
     set<int> s;                      // Ordered unique elements
@@ -189,7 +199,9 @@ void sets() {
     cout << ms.count(1) << endl;    // Count occurrences
 }
 ```
+
 > ### Maps
+
 ```cpp
 void maps() {
     map<int, string> mp;             // Ordered key-value pairs
@@ -243,6 +255,7 @@ void maps() {
 ### Unordered Containers
 
 > ### Unordered_set (Hash Set)
+
 ```cpp
 void unordered_sets() {
     unordered_set<int> us;          // Hash-based unique elements
@@ -274,7 +287,9 @@ void unordered_sets() {
     
 }
 ```
+
 > ### Unordered_map (Hash Map)
+
 ```cpp
 void unordered_maps() {
     unordered_map<string, int> um;   // Hash-based key-value pairs
@@ -317,6 +332,7 @@ void unordered_maps() {
 ### Container Adaptors
 
 > ### Stack (LIFO)
+
 ```cpp
 void stacks() {
     stack<int> st;
@@ -336,7 +352,9 @@ void stacks() {
     stack<int, list<int>> st_list;
 }
 ```
+
 > ### Queue (FIFO)
+
 ```cpp
 void queues() {
     queue<int> q;
@@ -354,7 +372,9 @@ void queues() {
     queue<int, list<int>> q_list;
 }
 ```
+
 > ### Priority_queue
+
 ```cpp
 void priority_queues() {
     // Max heap (default)
@@ -729,4 +749,3 @@ void utility_components() {
     cout << lambda(5) << endl;         // 25
 }
 ```
-

@@ -1,4 +1,39 @@
+# Heaps and Priority Queues
+
+## Introduction to Priority Queues using Binary Heaps
+
+A Priority Queue is an abstract data type where each element has a "priority" assigned to it. Elements with higher priority are served before elements with lower priority.
+
+In C++, `priority_queue` is implemented using binary heap data structure. By default, it creates a max heap (highest priority element at the top).
+
+### Key Operations and Complexity
+
+- **push**: Insert an element - O(log n)
+- **pop**: Remove the highest priority element - O(log n)
+- **top**: Access the highest priority element - O(1)
+- **size**: Get number of elements - O(1)
+- **empty**: Check if empty - O(1)
+
+### Basic Usage in C++
+
+```cpp
+// Max Heap (default)
+priority_queue<int> maxHeap;
+
+// Min Heap
+priority_queue<int, vector<int>, greater<int>> minHeap;
+
+// Custom comparator
+struct CompareHeight {
+    bool operator()(const Person& p1, const Person& p2) {
+        return p1.height > p2.height;  // Min heap based on height
+    }
+};
+priority_queue<Person, vector<Person>, CompareHeight> pq;
+```
+
 ### Kth largest element in array (using max heap)
+
 ```cpp
 int findKthLargest(vector<int>& nums, int k) {
         priority_queue<int> pq;
@@ -14,7 +49,8 @@ int findKthLargest(vector<int>& nums, int k) {
     }
 ```
 
-### Kth smallest element in array (using min heap)    
+### Kth smallest element in array (using min heap)
+
 ```cpp
 int kthSmallest(vector<int>& nums, int k) {
         priority_queue<int, vector<int>, greater<int>> pq ;
@@ -32,6 +68,7 @@ int kthSmallest(vector<int>& nums, int k) {
 ```
 
 ### K most frequent elements in an array (Leetcode 347)
+
 ```cpp
 vector<int> topKFrequent(vector<int>& nums, int k) {
        unordered_map<int, int> mpp;
