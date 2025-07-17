@@ -59,9 +59,10 @@ int main() {
 
 ### Traversing Binary tree from given root to array
 
-#### 1. Inorder Traversal (O(N))
+### 1. Inorder Traversal (O(N))
 
 > Recursive
+
 ```cpp
 struct Node {
     int val;
@@ -85,33 +86,34 @@ vector<int> inorderTraversal(Node* root) {
 ```
 
 > Iterative using Stack
+
 ```cpp
 vector<int> inorderTraversal(TreeNode* root) {
-        stack<TreeNode*> st;
+    stack<TreeNode*> st;
 
-        TreeNode* node = root;
-        vector<int> inorder;
+    TreeNode* node = root;
+    vector<int> inorder;
 
-        while (true) {
-            if (node != NULL) {
-                st.push(node);
-                node = node->left;
-            } else {
-                if (st.empty() == true)
-                    break;
-                node = st.top();
-                st.pop();
-                inorder.push_back(node->val);
-                node = node->right;
-            }
+    while (true) {
+        if (node != NULL) {
+            st.push(node);
+            node = node->left;
+        } else {
+            if (st.empty() == true) break;
+            node = st.top();
+            st.pop();
+            inorder.push_back(node->val);
+            node = node->right;
         }
-        return inorder;
+    }
+    return inorder;
 };
 ```
 
-#### 2. Preorder (O(N))
+### 2. Preorder (O(N))
 
 > Recursive
+
 ```cpp
 void preorder(Node* node, vector<int>& arr){
     if (node == nullptr) return;
@@ -127,6 +129,7 @@ vector<int> preorderTraversal(Node* root) {
 ```
 
 > Iterative using stack
+
 ```cpp
 vector<int> preorderTraversal(TreeNode* root) {
     vector<int> preorder;
@@ -149,7 +152,9 @@ vector<int> preorderTraversal(TreeNode* root) {
 }
 ```
 
-#### 3. Postorder (O(N))
+### 3. Postorder (O(N))
+
+> Recursive
 
 ```cpp
 void postorder(Node* node, vector<int>& arr){
@@ -165,7 +170,35 @@ vector<int> postorderTraversal(Node* root) {
 }
 ```
 
-#### 4. Level order traversal (returns an array with levels array in order) eg: [ [3],[9,20],[15,7,9,12] ]
+> Iterative using 2 stacks
+
+```cpp
+vector<int> postOrder(Node* root) {
+    vector<int> postorder;
+
+    if (root == NULL) return postorder;
+    
+    stack<Node*> st1, st2;
+    st1.push(root);
+
+    while(!st1.empty()){
+        root = st1.top();
+        st1.pop();
+        st2.push(root);
+
+        if (root->left != NULL) st1.push(root->left);
+        if (root->right != NULL) st1.push(root->right);
+    }
+
+    while(!st2.empty()){
+        postorder.push_back(st2.top()->data);
+        st2.pop();
+    }
+    return postorder;
+}
+```
+
+### 4. Level order traversal (returns an array with levels array in order) eg: [ [3],[9,20],[15,7,9,12] ]
 
 ```cpp
 vector<vector<int>> levelOrder(Node* root) {
@@ -186,5 +219,149 @@ vector<vector<int>> levelOrder(Node* root) {
         ans.push_back(level);
     }
     return ans;
+}
+```
+
+### Preorder Inorder PostOrder Traversals in one traversal
+
+```cpp
+vector<vector<int>> preInPostTraversal(Node* root) {
+    vector<int> pre, in, post;
+
+    if (root == NULL) return {} ;
+
+    // Stack to maintain nodes and their traversal state
+    stack<pair<Node*, int>> st;
+    // Start with the root node and state 1 (preorder)
+    st.push({root, 1});
+
+    while (!st.empty()) {
+        auto it = st.top();
+        st.pop();
+
+        // this is part of preorder
+        if (it.second == 1) {
+            pre.push_back(it.first->data);
+            // Move to state 2 (inorder) for this node
+            it.second = 2;
+            // Push the updated state back onto the stack
+            st.push(it); 
+
+            if (it.first->left != NULL) st.push({it.first->left, 1});
+        }
+
+        // this is a part of inorder
+        else if (it.second == 2) {
+            in.push_back(it.first->data);
+            // Move to state 3 (postorder) for this node
+            it.second = 3;
+            // Push the updated state back onto the stack
+            st.push(it); 
+
+            if (it.first->right != NULL) st.push({it.first->right, 1});
+        }
+
+        // this is part of postorder
+        else {
+            post.push_back(it.first->data);
+        }
+    }
+
+    vector<vector<int>> result;
+    result.push_back(pre);
+    result.push_back(in);
+    result.push_back(post);
+    return result;
+}
+```
+
+### MaxDepth/height of Binary tree O(N)
+
+- we can use BFS(level order) but recursion suits as it can give ~ O(H)
+
+```cpp
+int maxDepth(TreeNode* root) {
+    if (root == nullptr) return 0;
+
+    int lh = maxDepth(root->left);
+    int rh = maxDepth(root->right);
+
+    return 1 + max(lh, rh);
+    }
+```
+
+### Check for a Balanced Binary tree O(N)
+
+```cpp
+bool isBalanced(TreeNode* root) {
+    return dfsHeight(root) != -1 ;
+}
+int dfsHeight(TreeNode* root){
+    if (root == nullptr) return 0;
+
+    int lh = dfsHeight(root->left);
+    if (lh == -1) return -1;
+    int rh = dfsHeight(root->right);
+    if (rh == -1) return -1;
+
+    if (abs(lh - rh) > 1) return -1;
+
+    return 1 + max(lh, rh);
+}
+```
+
+### Diameter of Binary Tree O(N)
+
+- The Diameter of a Binary Tree is the longest distance between any two nodes of that tree. This path may or may not pass through the root.
+
+```cpp
+int diameterOfBinaryTree(TreeNode* root) {
+    int diameter = 0;
+    height(root, diameter);
+    return diameter;
+}
+int height(TreeNode* root, int& diameter){
+    if (root == nullptr) return 0;
+    int lh = height(root->left, diameter);
+    int rh = height(root->right, diameter);
+
+    diameter = max(diameter, lh + rh);
+
+    return 1 + max(lh, rh);
+}
+```
+
+### Maximum sum along any path within the tree O(N)
+
+- A path in a binary tree is defined as a sequence of nodes where each pair of adjacent nodes is connected by an edge. Nodes can only appear once in the sequence, and the path is not required to start from the root.
+
+```cpp
+int maxPathSum(TreeNode* root) {
+    int maxsum = INT_MIN;
+    findmaxsum(root, maxsum);
+    return maxsum;
+}
+int findmaxsum(TreeNode* root, int& maxsum){
+    if (root == nullptr) return 0;
+    int leftsum = max(0, findmaxsum(root->left, maxsum));
+    int rightsum = max(0, findmaxsum(root->right, maxsum));
+
+    maxsum = max(maxsum, leftsum + rightsum + root->val);
+
+    return root->val + max(leftsum, rightsum);
+}
+```
+
+### Check whether two trees are identical
+
+```cpp
+bool isIdenticalTree(TreeNode* p, TreeNode* q) {
+    if (p == nullptr && q == nullptr)
+        return true;
+    if (p == nullptr || q == nullptr)
+        return false;
+
+    return (p->val == q->val) && isIdenticalTree(p->left, q->left) &&
+           isIdenticalTree(p->right, q->right);
 }
 ```
