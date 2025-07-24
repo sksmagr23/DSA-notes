@@ -1,7 +1,5 @@
 # DSA Notes
 
-Welcome to my Data Structures and Algorithms notes.
-
 ## Topics
 
 - [Algorithms](Algorithms/algo.md)
