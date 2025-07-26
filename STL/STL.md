@@ -628,7 +628,18 @@ void strings() {
         cout << s.find_first_of("aeiou") << endl; // Find first of these chars
         cout << s.find_last_of("aeiou") << endl;  // Find last of these chars
         cout << s.find_first_not_of("aeiou") << endl; // First char not in set
-        
+
+        // size_t: unsigned integer type used for sizes and indices
+        size_t pos = s.find("world");        // Returns position or string::npos if not found
+        if (pos != string::npos) {
+            cout << "Found at position: " << pos << endl;
+        } else {
+            cout << "Not found" << endl;
+        }
+
+        // string::npos: constant representing 'not found' (usually largest possible size_t value)
+        cout << "npos value: " << string::npos << endl;
+
         cout << s.compare("hello") << endl;  // Compare strings
         
         // Character classification
