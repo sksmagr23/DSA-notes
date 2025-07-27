@@ -10,3 +10,5 @@ output.txt
 *.DS_Store
 *.idea/
 *.env
+cses.cpp
+cses

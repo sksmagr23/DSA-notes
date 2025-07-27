@@ -523,8 +523,9 @@ void algorithms() {
     auto new_end = remove_if(v.begin(), v.end(), [](int x){ return x < 5; }); // Remove elements satisfying condition
     v.erase(new_end, v.end());                               // Erase the "removed" elements
     
-    unique(v.begin(), v.end());                              // Remove consecutive duplicates
-    
+    auto it = unique(v.begin(), v.end());                    // Remove consecutive duplicates
+    v.erase(it, v.end());                               // Erase the "unused" tail elements
+
     reverse(v.begin(), v.end());                             // Reverse range
     rotate(v.begin(), v.begin() + 2, v.end());               // Rotate elements
     
@@ -545,6 +546,10 @@ void algorithms() {
     auto lb = lower_bound(v.begin(), v.end(), 3);            // First element >= value
     auto ub = upper_bound(v.begin(), v.end(), 3);            // First element > value
     auto eq_range = equal_range(v.begin(), v.end(), 3);      // Pair of lower_bound and upper_bound
+
+    // Check if a range is sorted
+    bool sorted = is_sorted(v.begin(), v.end());             // Returns true if sorted in ascending order
+    bool sorted_custom = is_sorted(v.begin(), v.end(), greater<int>()); // Returns true if sorted in descending order
     
     // Numeric operations
     int mini = *min_element(v.begin(), v.end());             // Find minimum element

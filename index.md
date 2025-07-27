@@ -1,4 +1,3 @@
-# DSA Notes - CPP
 
 ## Topics
 
