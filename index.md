@@ -15,4 +15,5 @@
   - [Binary Search Trees](Trees/BST.md)
 - [Graphs](graphs/graphs.md)
 - [Dynamic Programming](DP/intro.md)
+- [Trie](Trie/trie.md)
 - [Algorithms](Algorithms/algo.md)

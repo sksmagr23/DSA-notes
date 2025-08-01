@@ -306,3 +306,33 @@ public:
     }
 };
 ```
+
+### Reversing String word by word without trailing spaces using stack
+
+```cpp
+string Solution::solve(string A) {
+    string res;
+    int n = A.size();
+    stack<string> st;
+    for (int i = 0; i < n;i++){
+        while(A[i] == ' ') i++;
+        if (i >= n) break;
+        int j = i+1;
+        while(A[j] != ' ') j++;
+        res = A.substr(i, j-i);
+        st.push(res);
+        i = j; 
+    }
+    string ans;
+    while (!st.empty()){
+        if (st.size() != 1){
+            ans = ans + st.top() + ' ';
+        } else {
+            ans = ans + st.top();
+        }
+        st.pop();
+    }
+    return ans;
+}
+
+```
