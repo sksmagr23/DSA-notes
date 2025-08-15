@@ -1,4 +1,25 @@
+#### Remove duplicates from sorted array and return no of distinct elements O(N)
+
+```cpp
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+        if (nums.empty()) return 0;
+
+        int count = 0;
+        for (int i = 1; i < nums.size(); i++) {
+            if (nums[i] != nums[count]) {
+                count++;
+                nums[count] = nums[i];
+            }
+        }
+        return count + 1;
+    }
+};
+```
+
 #### Array rotation by k places right
+
 ```cpp 
 class Solution {
 public:
@@ -22,6 +43,7 @@ public:
 ```
 
 #### Array rotation by k places left
+
 ```cpp
 class Solution {
 public:
@@ -46,10 +68,12 @@ public:
 ```
 
 #### XOR props
+
 - XOR of two same numbers is always 0 i.e. a ^ a = 0. ←Property 1.
 - XOR of a number with 0 will result in the number itself i.e. 0 ^ a = a.  ←Property 2
 
 #### Kadane's Algorithm (Maximum Subarray Sum)
+
 ```cpp
 class Solution {
 public:
@@ -72,6 +96,7 @@ public:
 ```
 
 #### Sliding Window Technique (Fixed Size)
+
 ```cpp
 class Solution {
 public:
@@ -98,6 +123,7 @@ public:
 ```
 
 #### Sliding Window Technique (Variable Size)
+
 ```cpp
 class Solution {
 public:
@@ -123,6 +149,7 @@ public:
 ```
 
 #### Two Pointer Technique (Array Partition)
+
 ```cpp
 class Solution {
 public:
@@ -148,6 +175,7 @@ public:
 ```
 
 #### Prefix Sum Array
+
 ```cpp
 class Solution {
 public:
@@ -171,6 +199,7 @@ public:
 ```
 
 #### Boyer-Moore Voting Algorithm (Majority Element)
+
 ```cpp
 class Solution {
 public:
@@ -192,6 +221,7 @@ public:
 ```
 
 #### Two Sum (Optimal Solution)
+
 ```cpp
 class Solution {
 public:
@@ -211,6 +241,7 @@ public:
 ```
 
 #### Three Sum (Optimal Solution)
+
 ```cpp
 class Solution {
 public:
@@ -246,4 +277,24 @@ public:
     return ans;
 }
 };
+```
+
+#### Merge Overlapping Intervals
+
+```cpp
+vector<vector<int>> merge(vector<vector<int>>& intervals) {
+    sort(intervals.begin(), intervals.end());
+
+    vector<vector<int>> ans;
+
+    for (int i = 0; i < intervals.size(); i++) {
+        // if the current interval does not lie in the last interval
+        if (ans.empty() || intervals[i][0] > ans.back()[1]) {
+            ans.push_back(intervals[i]);
+        } else { // if the current interval overlaps with last interval
+            ans.back()[1] = max(ans.back()[1], intervals[i][1]);
+        }
+    }
+    return ans;
+}
 ```

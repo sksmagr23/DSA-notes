@@ -21,11 +21,11 @@ Dynamic Programming (DP) is a technique for solving problems by **breaking them 
 - Solve from base cases up to the main problem.
 - Eliminate recursion and stack overhead.
 
-> ⚠️ **Note:** Base case doesn't always mean smallest input — it depends on the recursion logic.
+> **Note:** Base case doesn't always mean smallest input — it depends on the recursion logic.
 
 ---
 
-## 📌 Problem Example: Fibonacci Numbers
+## Fibonacci Numbers
 ```
 0, 1, 1, 2, 3, 5, 8, 13, 21, ...
 ```
@@ -36,9 +36,9 @@ Dynamic Programming (DP) is a technique for solving problems by **breaking them 
 
 ---
 
-## 🧩 Part 1: Memoization (Top-Down DP)
+## 1: Memoization (Top-Down DP)
 
-### ✅ Steps:
+#### Steps:
 
 1. Create a `dp[]` array initialized with `-1`
 2. On each function call:
@@ -61,20 +61,21 @@ int main() {
 }
 ```
 
-### ✅ Output:
+#### Output:
+
 ```
 5
 ```
 
-### ⏱ Time Complexity: `O(N)`
+#### Time Complexity: `O(N)`
 
-### 💾 Space Complexity: `O(N)`
+#### Space Complexity: `O(N)`
 
 ---
 
-## 🧩 Part 2: Tabulation (Bottom-Up DP)
+## 2: Tabulation (Bottom-Up DP)
 
-### ✅ Steps:
+#### Steps:
 
 1. Create a `dp[]` array of size `n+1`.
 2. Initialize base cases:  
@@ -99,20 +100,20 @@ int main() {
 }
 ```
 
-### ✅ Output:
+#### Output:
 ```
 5
 ```
 
-### ⏱ Time Complexity: `O(N)`
+#### Time Complexity: `O(N)`
 
-### 💾 Space Complexity: `O(N)`
+#### Space Complexity: `O(N)`
 
 ---
 
-## 🧩 Part 3: Space Optimization
+## 3: Space Optimization
 
-### 🔄 Observation:
+#### Observation:
 
 We only need the last **two** values at any point (`dp[i-1]`, `dp[i-2]`).
 
@@ -135,13 +136,113 @@ int main() {
 }
 ```
 
-### ✅ Output:
+#### Output:
 ```
 5
 ```
 
-### ⏱ Time Complexity: `O(N)`
+#### Time Complexity: `O(N)`
 
-### 💾 Space Complexity: `O(1)`
+#### Space Complexity: `O(1)`
 
 ---
+
+## 1D DP;
+
+### Frog Jump Min cost (1 or 2 step and energy diff)
+
+```cpp
+class Solution {
+  public:
+    int minCost(vector<int>& height) {
+        int n = height.size();
+        vector<int> dp(n+1, -1);
+        return mincostdp(n-1, height, dp);
+    }
+    int mincostdp(int i, vector<int> &height, vector<int> &dp){
+        if (i == 0) return 0;
+        if (dp[i] != -1) return dp[i];
+        int jtwo = INT_MAX;
+        int jone = mincostdp(i-1, height, dp) + abs(height[i]-height[i-1]);
+        if (i > 1) jtwo = mincostdp(i-2, height, dp) + abs(height[i]-height[i-2]);
+        dp[i] = min(jone, jtwo);
+        return dp[i];
+    }
+};
+```
+
+### Maximum sum of non-adjacent elements
+
+```cpp
+class Solution {
+public:
+    int maxsum(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> dp(n, -1);
+        return adjdp(n-1, nums, dp);
+    }
+    int adjdp(int i, vector<int> &nums, vector<int> &dp){
+        if (i == 0) return nums[0];
+        if (i < 0) return 0;
+        if (dp[i] != -1) return dp[i];
+        int pick = nums[i] + adjdp(i-2, nums, dp);
+        int notpick = 0 + adjdp(i-1, nums, dp);
+        return dp[i] = max(pick, notpick);
+    }
+};
+```
+
+## 2D DP
+
+### Ninja Training(striver)
+
+```cpp
+class Solution {
+public:
+    int ninjaTraining(vector<vector<int>>& points) {
+        int n = points.size();
+        vector<vector<int>> dp(n, vector<int>(4,-1)); // 4 choices to pick
+        return f(n-1, 3, points, dp);
+    }
+    int f(int day, int last, vector<vector<int>>& points, vector<vector<int>>& dp){
+        if (dp[day][last] != -1) return dp[day][last];
+        if (day == 0){
+            int maxi = 0;
+            for (int i = 0; i <= 2; i++) {
+                if (i != last) maxi = max(maxi, points[0][i]);
+            }
+            return dp[day][last] = maxi;   
+        }
+        int maxi = 0;
+        for (int i = 0; i <=2; i++){
+            if (i != last){
+                int activity = points[day][i] + f(day-1, i, points, dp);
+                maxi = max(maxi, activity);
+            }
+        }
+        return dp[day][last] = maxi;
+    }
+};
+```
+
+### Unique paths in Grids(from top-left to bottom-right)
+
+```cpp
+class Solution {
+public:
+    // top-down memoziation
+    int uniquePaths(int m, int n) {
+        vector<vector<int>> dp(m, vector<int>(n, -1));
+        // initially at bottom-right
+        return gridpaths(m-1, n-1, dp);
+    }
+    int gridpaths(int i, int j, vector<vector<int>> &dp){
+        if (i == 0 && j == 0) return 1;
+        if (i < 0 || j < 0) return 0; // out of bounds
+        if (dp[i][j] != -1) return dp[i][j];
+        int up = gridpaths(i-1, j, dp);
+        int left = gridpaths(i, j-1, dp);
+        return dp[i][j] = up + left;
+    }
+};
+```
