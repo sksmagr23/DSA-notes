@@ -246,3 +246,64 @@ public:
     }
 };
 ```
+
+### Minimum cost path in grid from top-left to bottom-right (only down and right directions move)
+
+```cpp
+class Solution {
+public:
+    int minPathSum(vector<vector<int>>& grid) {
+        int m = grid.size();
+        int n = grid[0].size();
+        vector<vector<int>> dp(m, vector<int>(n, -1));
+        return mindp(m-1, n-1, grid, dp);
+    }
+    int mindp(int i, int j, vector<vector<int>>& grid, vector<vector<int>> &dp){
+        if (i == 0 && j == 0) return grid[0][0];
+        if (i < 0 || j < 0) return 1e9; // out of bounds
+        if (dp[i][j] != -1) return dp[i][j];
+        int upsum = grid[i][j] + mindp(i-1, j, grid, dp);
+        int leftsum = grid[i][j] + mindp(i, j-1, grid, dp);
+        return dp[i][j] = min(upsum, leftsum);
+    }
+};
+```
+
+## 3D DP - Alice and friends (striver)
+
+```cpp
+int maxdp(int i, int j1, int j2, int n, int m, vector<vector<int>> &grid, vector<vector<vector<int>>> &dp) {
+
+    if (j1 < 0 || j1 > m-1 || j2 < 0 || j2 > m-1) return -1e9;
+
+    // Base case: If we are at the last row, return the chocolate at the positions (j1, j2)
+    if (i == n - 1) {
+        if (j1 == j2) return grid[i][j1];
+        else return grid[i][j1] + grid[i][j2];
+    }
+
+    if (dp[i][j1][j2] != -1) return dp[i][j1][j2];
+
+    int maxi = INT_MIN;
+    
+    // Try all possible moves (up, left, right) for both positions (j1, j2)
+    for (int d1 = -1; d1 <= 1; d1++) {
+        for (int d2 = -1; d2 <= 1; d2++) {
+            int ans;
+            if (j1 == j2) ans = grid[i][j1] + maxdp(i + 1, j1 + d1, j2 + d2, n, m, grid, dp);
+            else ans = grid[i][j1] + grid[i][j2] + maxdp(i + 1, j1 + d1, j2 + d2, n, m, grid, dp);
+
+            maxi = max(maxi, ans);
+        }
+    }
+    
+    return dp[i][j1][j2] = maxi;
+}
+
+int maximumChocolates(int n, int m, vector<vector<int>> &grid) {
+    // Create a 3D DP array to store computed results
+    vector<vector<vector<int>>> dp(n, vector<vector<int>>(m, vector<int>(m, -1)));
+
+    return maxdp(0, 0, m - 1, n, m, grid, dp);
+}
+```
