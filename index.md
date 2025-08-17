@@ -14,6 +14,8 @@
 - [Trees](Trees/binary_trees.md)
   - [Binary Search Trees](Trees/BST.md)
 - [Graphs](graphs/graphs.md)
-- [Dynamic Programming](DP/intro.md)
+- Dynamic Programming
+  - [1D DP](DP/1D.md)
+  - [2D/3D DP](DP/2-3D.md)
 - [Trie](Trie/trie.md)
 - [Algorithms](Algorithms/algo.md)
