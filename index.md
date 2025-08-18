@@ -1,7 +1,7 @@
 
 ## Topics
 
-- [STL](STL/STL.md)
+- [STL (Standard Template Library)](STL/STL.md)
 - [Arrays](arrays/arrays.md)
 - [Sorting Algorithms](sorts/sorts.md)
 - [Binary Search](binary_search/binary_search.md)
@@ -17,5 +17,6 @@
 - Dynamic Programming
   - [1D DP](DP/1D.md)
   - [2D/3D DP](DP/2-3D.md)
+  - [DP on Subsequences](DP/subsequence.md)
 - [Trie](Trie/trie.md)
 - [Algorithms](Algorithms/algo.md)

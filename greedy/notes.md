@@ -12,3 +12,4 @@ Greedy Algorithms are approached to solve problems by making the current best ch
 ### Limitations
 
 - Not all problems can be solved using greedy algorithms. For some problems, dynamic programming or other approaches are required to guarantee an optimal solution.
+- Greedy approach can not be applied if there is no uniformity in the problem structure or if future consequences of current choices are significant.
