@@ -136,7 +136,7 @@ class Solution {
 
 ### Count Partitions with given sum difference d
 
-- S1 + S2 = D   – (i) , S1 >= S2     – (ii)
+- S1 - S2 = D   – (i) , S1 >= S2     – (ii)
 
 - If we calculate the total sum of elements of the array (say totSum), we can say that, S1 = totSum - S2  – (iii)
 
@@ -199,6 +199,82 @@ class Solution {
         int notpick = 0 + f(i-1, w, val, wt, dp);
         int pick = INT_MIN;
         if (wt[i] <= w) pick = val[i] + f(i-1, w-wt[i], val, wt, dp);
+        
+        return dp[i][w] = max(pick, notpick);
+    }
+};
+```
+
+### Minimum coins to get target (infinite supply of each domination)
+
+- When the case of infinite supply/multiple use, in picking of that index, we reduce the target, but not go to the next index.(idx-1), we stay at idx to further check if we can take
+
+```cpp
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        int n = coins.size();
+        vector<vector<int>> dp(n, vector<int>(amount+1, -1));
+        return (f(n-1, amount, coins, dp) == 1e9 ? -1 : f(n-1, amount, coins, dp));
+    }
+    int f(int i, int T, vector<int>& coins, vector<vector<int>>& dp){
+        if (i == 0){
+            if (T % coins[i] == 0) return T/coins[i];
+            else return 1e9;
+        }
+        if (dp[i][T] != -1) return dp[i][T];
+        int notpick = 0 + f(i-1, T, coins, dp);
+        int pick = 1e9;
+        if (coins[i] <= T) pick = 1 + f(i, T-coins[i], coins, dp);
+        return dp[i][T] = min(pick, notpick);
+    }
+};
+```
+
+### Total No of denominations combinations to get target
+
+```cpp
+class Solution {
+public:
+    int change(int amount, vector<int>& coins) {
+        int n = coins.size();
+        vector<vector<int>> dp(n, vector<int>(amount+1, -1));
+        return f(n-1, amount, coins, dp);
+    }
+    int f(int i, int T, vector<int>& coins, vector<vector<int>>& dp){
+        if (i == 0){
+            if (T % coins[i] == 0) return 1;
+            else return 0;
+        }
+        if (dp[i][T] != -1) return dp[i][T];
+        int notpick = f(i-1, T, coins, dp);
+        int pick = 0;
+        if (coins[i] <= T) pick = f(i, T-coins[i], coins, dp);
+        return dp[i][T] = pick + notpick;
+    }
+};
+```
+
+### Unbounded Knapsack (infinite item supply)
+
+```cpp
+class Solution {
+  public:
+    int knapSack(vector<int>& val, vector<int>& wt, int capacity) {
+        int n = val.size();
+        vector<vector<int>> dp(n, vector<int>(capacity+1, -1));
+        return f(n-1, capacity, val, wt, dp);
+    }
+    int f(int i, int w, vector<int> &val, vector<int> &wt, vector<vector<int>> &dp){
+        if (i == 0){
+            if (wt[i] <= w) return (w/wt[i])*val[i];
+            else return 0;
+        }
+        if (dp[i][w] != -1) return dp[i][w];
+        
+        int notpick = 0 + f(i-1, w, val, wt, dp);
+        int pick = INT_MIN;
+        if (wt[i] <= w) pick = val[i] + f(i, w-wt[i], val, wt, dp);
         
         return dp[i][w] = max(pick, notpick);
     }
