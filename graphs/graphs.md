@@ -111,49 +111,6 @@ int main() {
   vector<pair<int,int>> adjList[n+1];
   ```
 
- ---
-
- ## Connected components in an undirected graph
-
- - A **connected component** is a subgraph where any two vertices are connected by paths, and which is connected to no additional vertices in the main graph, as it is possible that graph is in pieces.
- - To find connected components:
-   1. Perform a traversal from each unvisited node.
-   2. Mark all reachable nodes as part of the same component.
-   3. Repeat until all nodes are visited.
-
-```cpp
-class Solution {
-  public:
-    void traversal(int node, vector<int> adj[], vector<int>& visited, vector<int>& piece) {
-        visited[node] = 1;
-        piece.push_back(node);
-        for (auto nei : adj[node]) {
-            if (!visited[nei]) {
-                traversal(nei, adj, visited, piece);
-            }
-        }
-    }
-    vector<vector<int>> getComponents(int V, vector<vector<int>>& edges) {
-      int m = edges.size();
-      vector<int> adj[V];
-      for (int i = 0; i < m; i++){
-        adj[edges[i][0]].push_back(edges[i][1]);
-        adj[edges[i][1]].push_back(edges[i][0]);
-      }
-      vector<vector<int>> comp;
-      vector<int> visited(V, 0);
-      for (int i = 0; i < V; i++){
-          if (!visited[i]){
-            vector<int> piece;
-            traversal(i, adj, visited, piece);
-            comp.push_back(piece);
-          }
-      }
-      return comp;
-    }
-};
-```
-
 ---
 
 ### Breadth First Search (BFS) Traversal of graph
@@ -212,6 +169,158 @@ class Solution {
         vector<int> ans;
         dfs(0, adj, visited, ans); // starting from 0
         return ans;
+    }
+};
+```
+
+### Connected components array in an undirected graph
+
+ - A **connected component** is a subgraph where any two vertices are connected by paths, and which is connected to no additional vertices in the main graph, as it is possible that graph is in pieces.
+ - To find connected components:
+   1. Perform a traversal from each unvisited node.
+   2. Mark all reachable nodes as part of the same component.
+   3. Repeat until all nodes are visited.
+
+```cpp
+class Solution {
+  public:
+    void dfs(int node, vector<int> adj[], vector<int>& visited, vector<int>& piece) {
+        visited[node] = 1;
+        piece.push_back(node);
+        // neighbours
+        for (auto nei : adj[node]) {
+            if (!visited[nei]) {
+                dfs(nei, adj, visited, piece);
+            }
+        }
+    }
+    vector<vector<int>> getComponents(int V, vector<vector<int>>& edges) {
+      int m = edges.size();
+      vector<int> adj[V];
+      for (int i = 0; i < m; i++){
+        adj[edges[i][0]].push_back(edges[i][1]);
+        adj[edges[i][1]].push_back(edges[i][0]);
+      }
+      vector<vector<int>> comp;
+      vector<int> visited(V, 0);
+      for (int i = 0; i < V; i++){
+          if (!visited[i]){
+            vector<int> piece;
+            dfs(i, adj, visited, piece);
+            comp.push_back(piece);
+          }
+      }
+      return comp;
+    }
+};
+```
+
+### Count Provinces (Striver) - similar to connected components
+
+```cpp
+class Solution {
+   public:
+      void dfs(int node, vector<vector<int>>& adjLs, vector<int>& vis) {
+            vis[node] = 1; 
+            for(auto it: adjLs[node]) {
+                    if(!vis[it]) {
+                        dfs(it, adjLs, vis); 
+                    }
+                }
+      }
+      int numProvinces(vector<vector<int>> adj, int V) {
+            vector<vector<int>> adjLs(V);
+            // to change adjacency matrix to list as given 0/1 matrix
+            for(int i = 0; i < V; i++) {
+                for(int j = 0; j < V; j++) {
+                    // self nodes are not considered
+                    if(adj[i][j] == 1 && i != j) {
+                        adjLs[i].push_back(j); 
+                        adjLs[j].push_back(i); 
+                    }
+                }
+            }
+            vector<int> vis(V, 0); 
+            int cnt = 0; 
+            for(int i = 0; i < V; i++) {
+                // if the node is not visited
+                if(!vis[i]) {
+                    // counter to count the number of provinces 
+                    cnt++;
+                    dfs(i, adjLs, vis); 
+                }
+            }
+            return cnt; 
+      }
+};
+```
+
+### Count Islands (Striver) using dfs
+
+```cpp
+class Solution {
+  public:
+    void dfs(int i, int j, vector<vector<char>>& grid, vector<vector<int>>& vis){
+        vis[i][j] = 1;
+        int n = grid.size();
+        int m = grid[0].size();
+        for (int di = -1 ; di <= 1; di++){
+            for (int dj = -1; dj <= 1; dj++){
+                int r = i+di;
+                int c = j+dj;
+                if (r >= 0 && r < n && c >= 0 && c < m && !vis[r][c] && grid[r][c] == 'L'){
+                    vis[r][c] = 1;
+                    dfs(r, c, grid, vis);
+                }
+            }
+        }
+    }
+    int countIslands(vector<vector<char>>& grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+        vector<vector<int>> vis(n, vector<int>(m, 0)); 
+        int count = 0;
+        for (int i = 0; i < n; i++){
+            for (int j = 0; j < m; j++){
+                if (grid[i][j] == 'L' && !vis[i][j]){
+                    count++;
+                    dfs(i, j, grid, vis);
+                }
+            }
+        }
+        return count;
+    }
+};
+```
+
+### Flood Fill (striver)
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
+        int n = image.size();
+        int m = image[0].size();
+        int org = image[sr][sc];
+        if (org == color) return image;
+        vector<vector<int>> vis(n, vector<int>(m, 0));
+        vector<vector<int>> dummy = image;
+        dfs(sr, sc, color, image, vis, dummy, org);
+        return dummy;
+    }
+    void dfs(int i, int j, int color, vector<vector<int>>& image, vector<vector<int>>& vis, vector<vector<int>>& dummy, int org){
+        vis[i][j] = 1;
+        dummy[i][j] = color;
+        int n = image.size();
+        int m = image[0].size();
+        vector<pair<int, int>> comb = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+        for (int k = 0; k < 4; k++){
+            int r = i + comb[k].first;
+            int c = j + comb[k].second;
+            if (r >= 0 && r < n && c >= 0 && c < m && vis[r][c] == 0 && image[r][c] == org) {
+                dfs(r, c, color, image, vis, dummy, org);
+            }
+        }
     }
 };
 ```
