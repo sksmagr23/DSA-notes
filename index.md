@@ -13,7 +13,8 @@
 - [Stack & Queue](stack_queue/notes.md)
 - [Trees](Trees/binary_trees.md)
   - [Binary Search Trees](Trees/BST.md)
-- [Graphs](graphs/graphs.md)
+- Graphs
+  - [Basics](graphs/graphs.md)
 - Dynamic Programming
   - [1D DP](DP/1D.md)
   - [2D/3D DP](DP/2-3D.md)
