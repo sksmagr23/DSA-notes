@@ -226,7 +226,7 @@ class Solution {
                     if(!vis[it]) {
                         dfs(it, adjLs, vis); 
                     }
-                }
+            }
       }
       int numProvinces(vector<vector<int>> adj, int V) {
             vector<vector<int>> adjLs(V);
@@ -293,34 +293,80 @@ class Solution {
 };
 ```
 
-### Flood Fill (striver)
+### Flood Fill Algorithm (striver)
 
+{% raw %}
 ```cpp
 class Solution {
 public:
-    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
-        int n = image.size();
-        int m = image[0].size();
-        int org = image[sr][sc];
-        if (org == color) return image;
-        vector<vector<int>> vis(n, vector<int>(m, 0));
-        vector<vector<int>> dummy = image;
-        dfs(sr, sc, color, image, vis, dummy, org);
-        return dummy;
-    }
-    void dfs(int i, int j, int color, vector<vector<int>>& image, vector<vector<int>>& vis, vector<vector<int>>& dummy, int org){
-        vis[i][j] = 1;
-        dummy[i][j] = color;
+    void dfs(int i, int j, int color, vector<vector<int>>& image, vector<vector<int>>& ans, int original){
+        ans[i][j] = color;
         int n = image.size();
         int m = image[0].size();
         vector<pair<int, int>> comb = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
         for (int k = 0; k < 4; k++){
             int r = i + comb[k].first;
             int c = j + comb[k].second;
-            if (r >= 0 && r < n && c >= 0 && c < m && vis[r][c] == 0 && image[r][c] == org) {
-                dfs(r, c, color, image, vis, dummy, org);
+            if (r >= 0 && r < n && c >= 0 && c < m && image[r][c] == original && ans[r][c] != color) {
+                dfs(r, c, color, image, ans, original);
             }
         }
     }
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
+        int original = image[sr][sc];
+        vector<vector<int>> ans = image;
+        dfs(sr, sc, color, image, ans, original);
+        return ans;
+    }
 };
 ```
+{% endraw %}
+
+### Rotten oranges - BFS approach
+
+{% raw %}
+```cpp
+class Solution {
+public:
+    int orangesRotting(vector<vector<int>>& grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+        int total = 0;
+        int rotten = 0;
+        int mins = 0;
+        queue<pair<pair<int, int>, int>> q;
+        vector<vector<int>> vis(n, vector<int>(m, 0));
+
+        for (int i = 0; i < n ; i++){
+            for (int j  = 0; j < m; j++) {
+                if (grid[i][j] != 0) total++;
+                if (grid[i][j] == 2){
+                    rotten++;
+                    vis[i][j] = 2;
+                    q.push({{i, j}, 0});
+                }
+            }
+        }
+        vector<pair<int, int>> comb = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+
+        while (!q.empty()) {
+            int r = q.front().first.first;
+            int c = q.front().first.second;
+            int t = q.front().second;
+            q.pop();
+            mins = max(mins, t);
+            for (int i = 0; i < 4; i++){
+                int nr = r + comb[i].first;
+                int nc = c + comb[i].second;
+                if (nr >= 0 && nr < n && nc >= 0 && nc < m && grid[nr][nc] == 1 && vis[nr][nc] != 2){
+                    vis[nr][nc] = 2;
+                    rotten++;
+                    q.push({{nr, nc}, t+1});
+                }
+            }
+        }
+        return total == rotten ? mins : -1;
+    }
+};
+```
+{% endraw %}
