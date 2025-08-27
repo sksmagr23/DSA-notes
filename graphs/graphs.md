@@ -334,7 +334,7 @@ public:
         int total = 0;
         int rotten = 0;
         int mins = 0;
-        queue<pair<pair<int, int>, int>> q;
+        queue<pair<pair<int, int>, int>> q; // {{i, j}, time it get rotten}
         vector<vector<int>> vis(n, vector<int>(m, 0));
 
         for (int i = 0; i < n ; i++){

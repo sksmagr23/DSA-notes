@@ -19,5 +19,6 @@
   - [1D DP](DP/1D.md)
   - [2D/3D DP](DP/2-3D.md)
   - [DP on Subsequences](DP/subsequence.md)
+  - [DP on Strings](DP/stringsdp.md)
 - [Trie](Trie/trie.md)
 - [Algorithms](Algorithms/algo.md)
