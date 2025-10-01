@@ -370,3 +370,36 @@ public:
 };
 ```
 {% endraw %}
+
+### Cycle Detection in an Undirected Graph (DFS)
+
+```cpp
+class Solution {
+  public:
+    bool dfs(int node, int parent, vector<int> adj[], vector<int>& vis) {
+        vis[node] = 1;
+        for (auto it : adj[node]) {
+            if (!vis[it]) {
+                if (dfs(it, node, adj, vis)) return true;
+            }
+            else if (it != parent) return true; // visited node but not a parent node, then cycle
+        }
+        return false;
+    }
+    bool isCycle(int V, vector<vector<int>>& edges) {
+        int n = edges.size();
+        vector<int> adj[V];
+        for (int i = 0; i < n; i++){
+            adj[edges[i][0]].push_back(edges[i][1]);
+            adj[edges[i][1]].push_back(edges[i][0]);
+        }
+        vector<int> vis(V, 0);
+        for (int i = 0; i < V; i++){
+            if (!vis[i]){
+                if (dfs(i, -1, adj, vis)) return true;
+            }
+        }
+        return false;
+    }
+};
+```
