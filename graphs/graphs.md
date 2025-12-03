@@ -295,6 +295,8 @@ class Solution {
 
 ### Flood Fill Algorithm (striver)
 
+- Problem Statement: An image is represented by a 2-D array of integers, each integer representing the pixel value of the image. Given a coordinate (sr, sc) representing the starting pixel (row and column) of the flood fill, and a pixel value newColor, "flood fill" the image.
+
 {% raw %}
 ```cpp
 class Solution {
@@ -323,6 +325,10 @@ public:
 {% endraw %}
 
 ### Rotten oranges - BFS approach
+
+- Problem Statement: Given an n x m grid, where each cell has the following values :
+2 - represents a rotten orange , 1 - represents a Fresh orange , 0 - represents an Empty Cell .
+Every minute, if a fresh orange is adjacent to a rotten orange in 4-direction ( upward, downwards, right, and left ) it becomes rotten. Return the minimum number of minutes required such that none of the cells has a Fresh Orange. If it's not possible, return -1..
 
 {% raw %}
 ```cpp
@@ -403,3 +409,248 @@ class Solution {
     }
 };
 ```
+
+### Distance of the nearest 1 in the grid for each cell. (BFS)
+
+{% raw %}
+```cpp
+class Solution {
+public:
+    vector<vector<int>> updateMatrix(vector<vector<int>>& mat) {
+        int n = mat.size();
+        int m = mat[0].size();
+        vector<vector<int>> ans(n, vector<int>(m, 0));
+        vector<vector<int>> vis(n, vector<int>(m, 0));
+        queue<pair<pair<int,int>, int>> q; // <coordinates, steps>
+        
+        for (int i = 0; i < n; i++){
+            for (int j = 0; j < m; j++){
+                if (mat[i][j] == 1){
+                    vis[i][j] = 1;
+                    q.push({{i, j}, 0});
+                }
+            }
+        }
+
+        vector<vector<int>> dirs = {{0,1}, {0,-1}, {1,0}, {-1,0}};
+        while (!q.empty()){
+            int r = q.front().first.first;
+            int c = q.front().first.second;
+            int steps = q.front().second;
+            q.pop();
+            ans[r][c] = steps;
+
+            for (auto d : dirs){
+                int nr = r + d[0];
+                int nc = c + d[1];
+                if (nr >= 0 && nr < n && nc >= 0 && nc < m && !vis[nr][nc]){
+                    vis[nr][nc] = 1;
+                    q.push({{nr, nc}, steps+1});
+                }
+            }
+        }
+
+        return ans;
+    }
+};
+```
+{% endraw %}
+
+### Surrounding Regions (DFS)
+
+- Problem Statement: Given a 2D board containing 'X' and 'O', capture all regions that are 4-directionally surrounded by 'X'.
+- A region is captured by flipping all 'O's into 'X's in that surrounded region.
+
+{% raw %}
+```cpp
+class Solution {
+public:
+    void dfs(int i, int j, vector<vector<int>>& vis, vector<vector<char>>& board){
+        vis[i][j] = 1;
+        int n = board.size();
+        int m = board[0].size();
+        vector<int> dr = {0, 0, 1, -1};
+        vector<int> dc = {1, -1, 0, 0};
+        for (int k = 0; k < 4; k++){
+            int nrow = i + dr[k];
+            int ncol = j + dc[k];
+            if (nrow > 0 && nrow < n && ncol > 0 && ncol < m && !vis[nrow][ncol] && board[nrow][ncol] == 'O'){
+                dfs(nrow, ncol, vis, board);
+            }
+        }
+    }
+    void solve(vector<vector<char>>& board) {
+        int n = board.size();
+        int m = board[0].size();
+        vector<vector<int>> vis(n, vector<int>(m, 0));
+
+        for (int j = 0; j < m; j++) { // traverse first and last row
+            if (!vis[0][j] && board[0][j] == 'O') dfs(0, j, vis, board);
+            if (!vis[n - 1][j] && board[n - 1][j] == 'O') dfs(n - 1, j, vis, board);
+        }
+
+        for (int i = 0; i < n; i++) { // traverse first and last column
+            if (!vis[i][0] && board[i][0] == 'O') dfs(i, 0, vis, board);
+            if (!vis[i][m - 1] && board[i][m - 1] == 'O') dfs(i, m - 1, vis, board);
+        }
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                // convert enclosed 'O' to 'X'
+                if (!vis[i][j] && board[i][j] == 'O') board[i][j] = 'X';
+            }
+        }
+    }
+};
+```
+{% endraw %}
+
+### Word Ladder (BFS)
+
+- Given are the two distinct words startWord and targetWord, and a list denoting wordList of unique words of equal lengths. Find the length of the shortest transformation sequence from startWord to targetWord. Only one letter can be changed in each transformation.
+
+{% raw %}
+```cpp
+class Solution {
+public:
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        queue<pair<string, int>> q;
+        q.push({beginWord, 1});
+
+        unordered_set<string> st(wordList.begin(), wordList.end());
+        st.erase(beginWord);
+
+        while (!q.empty()){
+            string word = q.front().first;
+            int steps = q.front().second;
+            q.pop();
+
+            if (word == endWord) return steps;
+
+            for (int i = 0; i < word.size(); i++){
+                char original = word[i];
+                for (char ch = 'a'; ch <= 'z'; ch++){
+                    word[i] = ch;
+                    if (st.find(word) != st.end()){
+                        st.erase(word);
+                        q.push({word, steps+1});
+                    }
+                }
+                word[i] = original;
+            }
+        }
+        return 0;
+    }
+};
+```
+{% endraw %}
+
+### ``Bipartite Graph (BFS)``
+
+- **A Bipartite graph is a graph which can be coloured using 2 colours such that no adjacent nodes have the same colour**.
+-  Any graph with an *odd cycle* length can never be a bipartite graph.
+-  Any linear graph with no cycle or any graph with an *even cycle* length will be a bipartite graph
+
+```cpp
+class Solution {
+public:
+    // 0/1 adjacent colouring
+    bool dfs(int node, int c, vector<int> &color, vector<vector<int>>& adj){
+        color[node] = c;
+        for (auto it : adj[node]){
+            if (color[it] == -1){ // -1 means uncoloured
+                if (dfs(it, !c, color, adj) == false) return false;
+            } else if (color[it] == c){ // if previously coloured and have the same colour
+                return false;
+            }
+        }
+        return true;
+    }
+    bool isBipartite(vector<vector<int>>& adj) 
+        int v = adj.size();
+        vector<int> color(v, -1);
+        for (int i = 0; i < v; i++){
+            if (color[i] == -1) {
+                if (dfs(i, 0, color, adj) == false) return false; // started with 0 colour
+            }
+        }
+        return true;
+    
+};
+```
+
+### Cycle Detection in a Directed Graph (DFS)
+
+```cpp
+class Solution {
+public:
+	bool dfs(int node, vector<vector<int>> &adj, vector<int> &vis, vector<int> &pathVis) {
+		vis[node] = 1;
+		pathVis[node] = 1;
+		for (auto it : adj[node]) {
+			// when the node is not visited
+			if (!vis[it]) {
+				if (dfs(it, adj, vis, pathVis) == true) return true;
+			}
+			// if the node has been previously visited but it has to be visited on the same path
+			else if (pathVis[it]) {
+				return true;
+			}
+		}
+
+		pathVis[node] = 0;
+		return false;
+	}
+	
+	bool isCyclic(int V, vector<vector<int>> adj) {
+		vector<int> vis(V, 0);
+		vector<int> pathVis(V, 0);
+		for (int i = 0; i < V; i++) {
+			if (!vis[i]) {
+				if (dfs(i, adj, vis, pathVis) == true) return true;
+			}
+		}
+		return false;
+	}
+};
+```
+
+## Topological Sort Algorithm (DFS)
+
+- Problem Statement:- Given a **Directed Acyclic Graph (DAG)** with V vertices labeled from 0 to V-1. Find any Topological Sorting of that Graph.
+- *Topological sorting is a linear ordering of vertices in a Directed Acyclic Graph (DAG) such that for every directed edge from a vertex u to a vertex v (u → v), u appears before v in the ordering*.
+
+```cpp
+class Solution {
+public:
+    void dfs(int node, vector<vector<int>> &adj, vector<int> &vis, stack<int> &st) {
+        vis[node] = 1;
+        for (auto it : adj[node]) {
+            if (!vis[it]) {
+                dfs(it, adj, vis, st);
+            }
+        }
+        // After visiting all neighbors, push this node into the stack
+        st.push(node);
+    }
+
+    vector<int> topoSort(int V, vector<vector<int>> &adj) {
+        vector<int> vis(V, 0);
+        stack<int> st;
+
+        for (int i = 0; i < V; i++) {
+            if (!vis[i]) {
+                dfs(i, adj, vis, st);
+            }
+        }
+
+        vector<int> ans;
+        while (!st.empty()) {
+            ans.push_back(st.top());
+            st.pop();
+        }
+        return ans;
+    }
+};
+```
+
