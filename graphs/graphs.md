@@ -847,9 +847,10 @@ class Solution {
 };
 ```
 
-- ```Efficient Approach using Topo Sort with DFS```
+``Efficient Approach using Topo Sort with DFS``
   
   -  Processing the vertices in topological order ensures that by the time you get to a vertex, you've already processed all the vertices that can precede it which reduces the computation time significantly. 
+  
 ```cpp
 class Solution {
   public:
@@ -1046,6 +1047,160 @@ class Solution {
         // Reverse the path to get the correct order from source to destination
         reverse(path.begin(), path.end());
         return path;
+    }
+};
+```
+
+### Shortest Distance in a Binary(0/1) Maze
+
+- Problem Statement: Given an n * m matrix grid where each element can either be 0 or 1. You need to find the shortest distance between a given source cell to a destination cell. The path can only be created out of a cell if its value is 1.
+If the path is not possible between the source cell and the destination cell, then return -1.
+
+- we can directly use queue instead of Priority queue as there is unit distance from cell to cell.
+
+```cpp
+class Solution {
+public:
+    int shortestPath(vector<vector<int>> &grid, pair<int, int> source, pair<int, int> destination) {
+        
+        // Edge Case: if the source is the same as the destination
+        if (source.first == destination.first && source.second == destination.second) return 0;
+
+        int n = grid.size();
+        int m = grid[0].size();
+
+        vector<vector<int>> dist(n, vector<int>(m, 1e9));
+        dist[source.first][source.second] = 0;
+
+        queue<pair<int, pair<int, int>>> q;
+        // Push the source cell into the queue with distance 0
+        q.push({0, {source.first, source.second}});
+
+        // Define the possible directions (up, right, down, left)
+        int dr[] = {-1, 0, 1, 0};
+        int dc[] = {0, 1, 0, -1};
+
+        while (!q.empty()) {
+            auto it = q.front();
+            q.pop();
+            int d = it.first;
+            int r = it.second.first;
+            int c = it.second.second;
+
+            for (int i = 0; i < 4; i++) {
+                int nr = r + dr[i];
+                int nc = c + dc[i];
+
+                if (nr >= 0 && nr < n && nc >= 0 && nc < m && grid[nr][nc] == 1 && d + 1 < dist[nr][nc]) {
+                    dist[nr][nc] = d + 1;
+                    // If destination is reached, return the distance
+                    if (nr == destination.first && nc == destination.second) return d + 1;
+
+                    q.push({d+1, {nr, nc}});
+                }
+            }
+        }
+        // If no path is found from source to destination
+        return -1;
+    }
+};
+```
+
+### Cheapest Flights Within K Stops
+
+- Problem Statement: There are n cities and m edges connected by some number of flights. You are given an array of flights where flights[i] = [ fromi, toi, pricei] indicates that there is a flight from city fromi to city toi with cost price. You have also given three integers src, dst, and k, and return the cheapest price from src to dst with at most k stops. If there is no such route, return -1.
+
+- Our priority first will be stops and since stops increase one by one, no need of priority queue, we can use simple queue with first entry of stops in dijkstra.
+
+```cpp
+class Solution {
+public:
+    int CheapestFLight(int n, vector<vector<int>> &flights, int src, int dst, int K) {
+        vector<vector<pair<int, int>>> adj(n);
+        for (auto it : flights) {
+            adj[it[0]].push_back({it[1], it[2]});
+        }
+
+        // queue that will store pairs of {stops, {node, dist}}
+        queue<pair<int, pair<int, int>>> q;
+        q.push({0, {src, 0}});
+
+        vector<int> dist(n, 1e9);
+        dist[src] = 0;
+
+        while (!q.empty()) {
+            auto i = q.front();
+            q.pop();
+            int stops = i.first;  // Number of stops so far
+            int node = i.second.first;  // Current node
+            int cost = i.second.second;  // Cost to reach the current node
+
+            // If the number of stops exceeds K, continue to the next iteration
+            if (stops > K) continue;
+
+            for (auto it : adj[node]) {
+                int nbr = it.first;
+                int w = it.second;
+
+                if (cost + w < dist[abr] && stops <= K) {
+                    dist[adjNode] = cost + w;
+                    q.push({stops + 1, {nbr, cost + w}});
+                }
+            }
+        }
+
+        if (dist[dst] == 1e9) return -1; // If destination node is unreachable, return -1
+        return dist[dst];
+    }
+};
+```
+
+### Number of Ways to Arrive at Destination from a src
+
+- Problem Statement: You are in a city that consists of n intersections numbered from 0 to n - 1 with bi-directional roads between some intersections. You are given an integer n and a 2D integer array ‘roads’ where roads[i] = [ui, vi, timei] means that there is a road between intersections ui and vi that takes timei minutes to travel. Return the no. of ways you can travel from intersection 0 to intersection n - 1 in the shortest amount of time. Since the answer may be large, return it modulo 109 + 7.
+
+```cpp
+class Solution {
+public:
+    int CheapestFlight(int n, vector<vector<int>> &flights) {
+        vector<vector<pair<int, int>>> adj(n);
+        for (auto it : flights) {
+            adj[it[0]].push_back({it[1], it[2]});
+            adj[it[1]].push_back({it[0], it[2]});
+        }
+
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+        pq.push({0, 0});
+
+        // Initialize the distance array and ways array
+        vector<int> dist(n, INT_MAX), ways(n, 0);
+        dist[0] = 0;
+        ways[0] = 1; // There's 1 way to reach the source (itself)
+
+        int mod = (int)(1e9 + 7);
+
+        while (!pq.empty()) {
+            int d = pq.top().first;
+            int node = pq.top().second;
+            pq.pop();
+
+            for (auto it : adj[node]) {
+                int nbr = it.first;
+                int w = it.second;
+
+                if (d + w < dist[nbr]) {
+                    dist[nbr] = d + w;
+                    pq.push({d + w, nbr});
+                    ways[nbr] = ways[node];// Copy the number of ways to the new node
+                }
+                // If the same shortest path is found, update the number of ways
+                else if (d + w == dist[nbr]) {
+                    // Increment the number of ways
+                    ways[nbr] = (ways[nbr] + ways[node]) % mod;
+                }
+            }
+        }
+        return ways[n-1] % mod;
     }
 };
 ```
