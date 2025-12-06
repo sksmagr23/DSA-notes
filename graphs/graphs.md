@@ -910,7 +910,7 @@ class Solution {
 };
 ```
 
-## Dijkstra’s Algorithm
+## <u>Dijkstra’s Algorithm</u>
 
 - In a weighted graph, the goal of Dijkstra’s algorithm is to find the shortest path from a source node to all other nodes. The idea is to always expand the closest node not yet processed.
 - Using a ***priority queue (min-heap)*** ensures that we can efficiently pick the node with the smallest current distance, instead of scanning all nodes each time and taking unnecessary iterations(which in case of normal queue).
@@ -1204,3 +1204,130 @@ public:
     }
 };
 ```
+
+###  Minimum Multiplications to Reach End
+
+* Problem Statement: Given start, end, and an array arr of n numbers. At each step, the start is multiplied by any number in the array and then a mod operation with 100000 is done to get the new start. we have to find the minimum steps in which the end can be achieved starting from the start. If it is not possible to reach the end, then return -1.
+
+- we define a Queue which would contain pairs of the type {num, steps}, where ‘steps’ indicates the currently updated value of no. of steps taken to reach from source to the current ‘num’.
+
+```cpp
+class Solution {
+  public:
+    int minimumMultiplications(vector<int>& arr, int start, int end) {
+        if (start == end) return 0;
+        
+        vector<int> dist(100000, 1e9);
+        dist[start] = 0;
+        int mod = 100000;
+        
+        queue<pair<int, int>> q;
+        q.push({start, 0});
+        
+        while (!q.empty()){
+            auto i = q.front();
+            q.pop();
+            int node = i.first;
+            int steps = i.second;
+            
+            for (auto it : arr){
+                int num = (node * it) % mod;
+                if (steps + 1 < dist[num]){
+                    dist[num] = steps + 1;
+                    if (num == end) return steps + 1;
+                    q.push({num, steps+1});
+                }
+            }
+        }
+        return -1;
+    }
+};
+```
+
+## <u>Bellman Ford Algorithm</u>
+
+- This is a single-source algorithm that finds the shortest paths from one starting point to all other points in directed graph. Works even when there are negative edge weights and can detect negative cycles (unlike Dijkstra). It works on the principle of relaxation of the edges.
+- **Where Dijkstra Fails**: When there are negative edges or a negative cycle because it may loop forever or give incorrect results.
+- **Negative Cycle**: A cycle where the total path weight is negative, causing the distance to decrease endlessly.
+- **Why Bellman-Ford?** It works with negative edges and can detect negative cycles. For undirected graphs, treat each edge as two directed edges, since bellman-ford works only for directed graph.
+
+* #### <u>Intuition</u>
+  - Go through all edges multiple times to update the shortest distances. After repeating this process for the (V-1) times, the shortest paths are found.
+  - **Relaxation**: If taking a certain edge gives a shorter path to a point, update that point with the new shorter distance. For an edge (u, v) with weight w: If going through u gives a shorter path to v from the source node (i.e., dist[v] > dist[u] + w), we update the dist[v] = dist[u] + w.
+  - ***Why Repeat V-1 Times?*** Because the shortest path to any point can involve at most one less edge than the total number of points.(in worst case)
+  - ***Detection of a Negative Weight Cycle*** :- After finishing the updates, go through all edges one more time , if any distance can still be reduced, a negative cycle exists. If not, the shortest distances are correct. i.e. If one additional relaxation (Vth) for any edge is possible, it indicates that some edges with overall negative weight has been traversed once more.
+
+- Time Complexity: O(V*E), takes more time than dijkstra.
+  
+```cpp
+class Solution {
+public:
+	vector<int> Bellman_ford(int V, vector<vector<int>>& edges, int src) {
+		vector<int> dist(V, 1e8);
+		dist[src] = 0;
+        // Relaxation of all the edges (V-1) times
+		for (int i = 0; i < V-1; i++) {
+			for (auto it : edges) {
+				int u = it[0];
+				int v = it[1];
+				int w = it[2];
+				if (dist[u] != 1e8 && dist[u] + w < dist[v]) {
+					dist[v] = dist[u] + w;
+				}
+			}
+		}
+		// Vth relaxation to check negative cycle
+		for (auto it : edges) {
+			int u = it[0];
+			int v = it[1];
+			int w = it[2];
+			if (dist[u] != 1e8 && dist[u] + w < dist[v]) {
+				return {-1};
+			}
+		}
+		return dist;
+	}
+};
+```
+
+## <u>Floyd Warshal Algorithm</u>
+
+- A Multi source algorithm used to compute the shortest path distances between every pair of vertices in a weighted graph.
+- This algorithm works for both the directed and undirected weighted graphs and can handle graphs with both positive and negative weight edges. It does not work for the graphs with negative cycles.
+  
+- The algorithm relies on the principle of optimal substructure, meaning:
+  - If the shortest path from i to j passes through some vertex k, then the path from i to k and the path from k to j must also be shortest paths.
+  - The iterative approach ensures that by the time vertex k is considered, all shortest paths using only vertices 0 to k-1 have already been computed.(like DP)
+  - By the end of the algorithm, all shortest paths are computed optimally because each possible intermediate vertex has been considered.
+
+- TC :- O(V<sup>3</sup>)
+
+- Problem :- The graph is represented by an adjacency matrix, dist[][] of size V x V, where dist[i][j] represents the weight of the edge from node i to node j. If there is no direct edge, dist[i][j] is set to a large value (i.e., 1e8) to represent infinity. We have to find the shortest distance between every pair of nodes i and j in the graph and modify the distances for every pair in place.
+
+```cpp
+class Solution {
+  public:
+    void floydWarshall(vector<vector<int>> &dist) {
+        int V = dist.size();
+        
+        // Try every vertex 'k' as an intermediate node between (i → j)
+        for (int k = 0; k < V; k++) {
+            for (int i = 0; i < V; i++) {
+                for (int j = 0; j < V; j++) {
+                    if(dist[i][k]==1e8 || dist[k][j]==1e8) continue;
+                
+                    dist[i][j] = min(dist[i][j],dist[i][k] + dist[k][j]);
+                }
+            }
+        }
+    }
+};
+```
+
+- To detect ***Negative Cycle*** :- we just have to check the nodes distance from itself and if it comes out to be negative, we will detect the required negative cycle.
+  
+```cpp
+for (int i = 0; i < V; i++)
+        if (dist[i][i] < 0) return cycle exists;
+```
+
