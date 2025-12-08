@@ -775,6 +775,8 @@ public:
 };
 ```
 
+---
+
 ## Shortest Path in Undirected Graph with unit weight (BFS)
 
 - Why BFS is used: All edges have unit weight. So as we explore adjacent nodes, they are at a fixed/sorted increment of distance (1, 2, 3…). This behavior naturally fits BFS because the queue automatically ensures we’re processing closer nodes first.
@@ -1330,4 +1332,338 @@ class Solution {
 for (int i = 0; i < V; i++)
         if (dist[i][i] < 0) return cycle exists;
 ```
+
+### Find the City With the Smallest Number of Neighbouring cities at a Threshold Distance
+
+- Problem Statement: There are n cities numbered from 0 to n-1. Given the array edges where edges[i] = [fromi, toi,weighti] represents a bidirectional and weighted edge between cities fromi and toi, and given the integer distance Threshold. We need to find out a city with the smallest number of cities that are reachable through some path and whose distance is at most Threshold Distance, If there are multiple such cities, our answer will be the city with the greatest number.
+
+```cpp
+class Solution {
+public:
+    int findTheCity(int n, vector<vector<int>>& edges, int distanceThreshold) {
+
+        vector<vector<int>> dist(n, vector<int>(n, INT_MAX));
+        for (auto it : edges){
+            dist[it[0]][it[1]] = it[2];
+            dist[it[1]][it[0]] = it[2];
+        }
+        for (int i = 0; i < n ; i++) dist[i][i] = 0;
+        
+        // Floyd-Warshall Algorithm to find the shortest paths between all pairs of cities
+        for (int k = 0 ; k < n; k++){
+            for (int i = 0; i < n; i++){
+                for (int j = 0; j < n; j++){
+                    if (dist[i][k] == INT_MAX || dist[k][j] == INT_MAX) continue;
+                    dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+                }
+            }
+        }
+
+        int city_count = n;
+        int cityno = -1;
+        // Check each city and count the number of cities within the threshold distance
+        for (int c = 0; c < n; c++){
+            int cnt = 0;
+            for (int adjcity = 0; adjcity < n; adjcity++){
+                if (dist[c][adjcity] <= distanceThreshold) cnt++;
+            }
+            // Update the city with the least number of reachable cities
+            if (cnt <= city_count){
+                city_count = cnt;
+                cityno = c;
+            }
+        }
+        return cityno;
+    }
+};
+```
+
+---
+
+## <u>Minimum Spanning Tree</u>
+
+- ***Spanning Tree*** :- A spanning tree is a tree-like subgraph of a connected undirected graph in which we have N nodes(i.e. All the nodes present in the original graph) and N-1 edges and all nodes are reachable from each other.
+
+- ##### Properties of a Spanning Tree
+  1. The number of vertices (V) in the graph and the spanning tree is the same.
+  2. There is a fixed number of edges in the spanning tree which is equal to one less than the total number of vertices ( E = V-1 ).
+  3. The spanning tree should not be disconnected, as in there should only be a single source of component, not more than that.
+  4. The spanning tree should be acyclic, which means there would not be any cycle in the tree.
+  5. The total cost (or weight) of the spanning tree is defined as the sum of the edge weights of all the edges of the spanning tree.
+  6. There can be many possible spanning trees for a graph. 
+
+
+- ***Minimum Spanning Tree (MST)*** :- Among all possible spanning trees of a graph, the minimum spanning tree is the one for which the sum of all the edge weights is the minimum.
+- There may exist multiple minimum spanning trees for a graph like a graph may have multiple spanning trees.
+
+- There are a couple of algorithms that help us to find the MST of a graph. One is **Prim’s algorithm** and the other is **Kruskal’s algorithm**
+
+### <u>Prim's Algorithm</u>
+
+- The task is to find the sum of weights of the edges of the MST or the MST array if we want
+
+- We will be requiring an visited array and a min-heap priority queue. We need another array(MST) as well if we wish to store the edge information of the minimum spanning tree in the form {u, v}(u = starting node, v = ending node)
+
+##### Algorithm steps
+- Priority Queue(Min Heap): It will be storing the pairs (edge weight, node). We can start from any given node. Here we are going to start from node 0 and so we will initialize the pq with (0, 0). If we wish to store the MST of the graph, the priority queue should instead store the triplets (edge weight, adjacent node, parent node) and in that case, we will initialize with (0, 0, -1).
+- Visited array: All the nodes will be initially marked as unvisited.
+- sum variable: It will be initialized with 0 and it will store the sum of the edge weights finally.
+- MST array(optional): This will store the edge information as a pair of starting and ending nodes of a particular edge in MST.
+
+##### Intuition
+The intuition of this algorithm is the greedy technique used for every node. If we carefully observe, for every node, we are greedily selecting its unvisited adjacent node with the minimum edge weight(as the priority queue here is a min-heap and the topmost element is the node with the minimum edge weight). Doing so for every node, we can get the sum of all the edge weights of the minimum spanning tree and the spanning tree itself(if we wish to) as well
+
+- **TC :- O(E*logE)**
+
+```cpp
+class Solution {
+  public:
+    int spanningTree(int V, vector<vector<int>>& edges) {
+        vector<vector<pair<int, int>>> adj(V);
+        for (auto it : edges){
+            adj[it[0]].push_back({it[1], it[2]});
+            adj[it[1]].push_back({it[0], it[2]});
+        }
+
+        priority_queue<vector<int>, vector<vector<int>>, greater<vector<int>>> pq;
+        pq.push({0, 0, -1}); // {edge_weight, node, parent_node}
+
+        vector<int> vis(V, 0);
+        int sum = 0;             // Total weight of MST
+        vector<pair<int, int>> mst;  // Stores MST edges as {parent, node}
+
+        while (!pq.empty()) {
+            auto it = pq.top();
+            pq.pop();
+            int wt = it[0];
+            int node = it[1];
+            int parent = it[2];
+
+            if (vis[node] == 1) continue; // If node already visited, skip
+
+            // Mark as visited and add edge wt to mst
+            vis[node] = 1;
+            sum += wt;
+            if (parent != -1) mst.push_back({parent, node});
+
+            for (auto i : adj[node]) {
+                int adjNode = i.first;
+                int adjWt = i.second;
+                if (!vis[adjNode]) {
+                    pq.push({adjWt, adjNode, node});
+                }
+            }
+        }
+        /* At this point:
+          - "sum" contains total weight of MST
+          - "mst" contains all MST edges as (u, v) */
+        return sum;
+    }
+};
+```
+
+### <u>**Disjoint Set**</u>
+
+- *The Disjoint Set data structure is designed to handle **Dynamic Graphs** (graphs that change configuration by adding edges) efficiently. It allows us to determine if two nodes belong to the same component in **constant time** rather than the BFS/DFS approach whose time complexity is O(N+E).*
+
+##### Functionalities of Disjoint Set data structure:-
+- `findUParent()`: Finds the "Ultimate Parent" of a particular node.
+- `Union()`: Connects two nodes (or their components) into a single component, basically adds an edge between two nodes. Uses two strategies : Union by rank, Union by size.
+
+##### Key Terminologies:-
+- ***Ultimate Parent*** :- The Ultimate Parent is the topmost node (root) of a component. If two nodes share the same ultimate Parent, they belong to the same connected component.
+- ***Path Compression*** :- Basically, connecting each node in a particular path to its ultimate parent refers to path compression because finding the parent in a skewed tree takes `O(log N)` for each case , so during the findUParent() recursion, we connect every visited node directly to the Ultimate Parent which flattens the tree structure, reducing future lookup time to nearly `O(1)`.
+
+#### Union by Rank
+
+- ***Rank*** : The rank of a node generally refers to the distance (the no of nodes including the leaf node) between the furthest leaf node and the current node. Represents the approximate height of the tree.
+- *Initial Configuration* : Rank array (initialized with 0), Parent array (initialized with the value of nodes i.e. parent[i] = i).
+- *Algorithm for union of u & v*:-
+  1. Find ultimate parents of u (**pu**) and v (**pv**) using findUPar() function.
+  2. Find the rank of pu and pv.
+  3. Connect the ultimate parent with smaller rank to the ultimate parent with larger rank. if ranks are equal, connect any parent to the other parent and increase the rank by one for the parent node to whom we have connected the other one.
+
+- **Note**:- we should always connect a smaller rank to a larger one as it shrinks the height of the graph and reduces the time for path compression as much as we can. 
+- Also **Rank is not adjusted during path compression** as we are not sure about whether rank of node is changing or not.
+
+#### Union by Size
+
+- Why **Preferred**? More intuitive than rank, as *rank gets distorted by path compression*.
+- ***Size*** : The size of a node refers to the number of nodes that are connected to it (the count of nodes in that component).
+- *Initial Configuration* : Size array (initialized with 1), Parent array (initialized with the value of nodes i.e. parent[i] = i).
+- *Algorithm for union of u & v* :-
+  1. Find ultimate parents of u (pu) and v (pv) using findUPar() function.
+  2. Find the size of pu and pv.
+  3. Connect the ultimate parent with smaller size to the ultimate parent with larger size.
+  4. Update the size: Increase the size of the parent node to whom we have connected by the size of the other parent node (e.g., if attaching pv to pu, size[pu] += size[pv]).
+
+- **Note**:- Unlike rank, if the sizes are equal, it does not matter which one you attach to which, but you must still add their sizes together.
+
+#### Time Complexity :- 
+- The actual TC is ```O(4α)```, where α (Alpha) is the Inverse Ackermann function which is very small and close to 1 , which is approximately considered Constant Time ``O(1)``.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class DisjointSet {
+    vector<int> rank, parent, size;
+public:
+    // Constructor
+    DisjointSet(int n) {
+        rank.resize(n + 1, 0); // For Union by Rank (1 based indexing)
+        size.resize(n + 1, 1); // For Union by Size
+        parent.resize(n + 1);
+        for (int i = 0; i <= n; i++) {
+            parent[i] = i; // Initially, every node is its own parent
+        }
+    }
+
+    // Find Ultimate Parent with Path Compression
+    int findUPar(int node) {
+        if (node == parent[node]) return node;
+
+        return parent[node] = findUPar(parent[node]); 
+    }
+
+    // Union by Rank
+    void unionByRank(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return; // Already in same component
+
+        if (rank[ulp_u] < rank[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+        } else if (rank[ulp_v] < rank[ulp_u]) {
+            parent[ulp_v] = ulp_u;
+        } else {
+            parent[ulp_v] = ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+
+    // Union by Size (Preferred)
+    void unionBySize(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+
+        if (size[ulp_u] < size[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        } else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+};
+
+int main() {
+    DisjointSet ds(7);
+    ds.unionBySize(1, 2);
+    ds.unionBySize(2, 3);
+    ds.unionBySize(4, 5);
+    ds.unionBySize(6, 7);
+    ds.unionBySize(5, 6);
+    
+    // Check if 3 and 7 are connected
+    if (ds.findUPar(3) == ds.findUPar(7)) {
+        cout << "Same\n";
+    } else cout << "Not same\n";
+
+    ds.unionBySize(3, 7);
+
+    if (ds.findUPar(3) == ds.findUPar(7)) {
+        cout << "Same\n";
+    } else cout << "Not same\n";
+    return 0;
+}
+// Output:-
+// Not same
+// Same
+```
+
+### <u>Kruskal's Algorithm</u>
+
+- The task is to find the sum of weights of the edges of the MST. The algo uses Disjoint set Data Structure.
+
+#### Algorithm Steps
+- Convert the adjacency list into a linear array edges of format {weight, u, v}.
+- Sort the edges array in ascending order of the edge weight.
+- Initialize Disjoint set DS : Create the parent array and rank/size array for the Disjoint Set.
+- Iterate through the sorted edges one by one
+  - Use findUPar() to identify the ultimate parent (root) of nodes u and v.
+  - If the ultimate parents are the same, it means there's already a path between these nodes, so skip this edge.
+  - If the ultimate parents are different, add the weight of the edge to the MST sum & and perform union(u, v), either by rank or size ,to combine the nodes u and v
+- At the end, the variable mstsum will contain the total weight of the MST.
+
+```cpp
+class DisjointSet {
+    vector<int> parent, size;
+public:
+    DisjointSet(int n) {
+        size.resize(n + 1, 1);
+        parent.resize(n + 1);
+        for (int i = 0; i <= n; i++) {
+            parent[i] = i;
+        }
+    }
+    
+    // Function to find ultimate parent
+    int findUPar(int node) {
+        if (node == parent[node])
+            return node;
+        return parent[node] = findUPar(parent[node]);
+    }
+    
+    // Function to implement union by size
+    void unionBySize(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+        if (size[ulp_u] < size[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+};
+
+class Solution{
+public:
+    int spanningTree(int V, vector<vector<int>> adj[]) {
+        vector<pair<int, pair<int, int>>> edges; // To store the edges
+        for (int i = 0; i < V; i++) {
+            for (auto it : adj[i]) {
+                int v = it[0]; // Node v
+                int wt = it[1]; // edge weight
+                int u = i; // Node u
+                edges.push_back({wt, {u, v}});
+            }
+        }
+        
+        DisjointSet ds(V); // Creating a disjoint set of V vertices
+        
+        sort(edges.begin(), edges.end()); // Sorting the edges based on their weights
+        
+        int sum = 0;
+        for (auto it : edges) {
+            int wt = it.first;
+            int u = it.second.first;
+            int v = it.second.second;
+
+            // Join the nodes if not in the same set 
+            if (ds.findUPar(u) != ds.findUPar(v)) {
+                sum += wt;// Update the sum of edges in MST
+                ds.unionBySize(u, v); // Union the nodes 
+            }
+        }
+        return sum;
+    }
+};
+```
+
 
