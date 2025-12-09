@@ -1462,7 +1462,7 @@ class Solution {
 };
 ```
 
-### <u>**Disjoint Set**</u>
+### <u>Disjoint Set</u>
 
 - *The Disjoint Set data structure is designed to handle **Dynamic Graphs** (graphs that change configuration by adding edges) efficiently. It allows us to determine if two nodes belong to the same component in **constant time** rather than the BFS/DFS approach whose time complexity is O(N+E).*
 
@@ -1666,4 +1666,313 @@ public:
 };
 ```
 
+### Accounts Merge
 
+- PS:- Given a list of details where each element details[i] is a list of strings, where the first element details[i][0] is a name, and the rest of the elements are emails representing emails of the account. Merge accounts that share common emails and return each user’s name followed by their sorted, unique emails.
+
+```cpp
+class DisjointSet {
+    vector<int> parent, size;
+public:
+    DisjointSet(int n) {
+        size.resize(n + 1, 1);
+        parent.resize(n + 1);
+        for (int i = 0; i <= n; i++) {
+            parent[i] = i;
+        }
+    }
+
+    int findUPar(int node) {
+        if (node == parent[node])
+            return node;
+        return parent[node] = findUPar(parent[node]);
+    }
+
+    void unionBySize(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+
+        if (size[ulp_u] < size[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+};
+
+class Solution {
+public:
+    vector<vector<string>> accountsMerge(vector<vector<string>> &details) {
+        int n = details.size();
+
+        DisjointSet ds(n);
+        unordered_map<string, int> mpp; // Map to store email -> account index
+
+        // Union accounts having common emails
+        for (int i = 0; i < n; i++) {
+            for (int j = 1; j < details[i].size(); j++) {
+                string mail = details[i][j];
+                if (mpp.find(mail) == mpp.end()) {
+                    mpp[mail] = i;
+                } else {
+                    ds.unionBySize(i, mpp[mail]);
+                }
+            }
+        }
+
+        // Group emails under ultimate parent
+        vector<string> mergedMail[n];
+        for (auto it : mpp) {
+            string mail = it.first;
+            int node = ds.findUPar(it.second);
+            mergedMail[node].push_back(mail);
+        }
+        // Prepare final merged result
+        vector<vector<string>> ans;
+        for (int i = 0; i < n; i++) {
+            if (mergedMail[i].empty()) continue;
+
+            sort(mergedMail[i].begin(), mergedMail[i].end());
+
+            vector<string> temp;
+            temp.push_back(details[i][0]);
+            for (auto &mail : mergedMail[i]) {
+                temp.push_back(mail);
+            }
+            ans.push_back(temp);
+        }
+        return ans;
+    }
+};
+```
+
+### Number of Islands 
+
+- You are given a n,m which means the row and column of the 2D matrix and an array A of size k denoting the number of operations. Matrix elements is 0 if there is water or 1 if there is land. Originally, the 2D matrix is all 0 which means there is no land in the matrix. Each operation has two integer A[i][0], A[i][1] means that you can change the cell matrix[A[i][0]][A[i][1]] from sea to island. Return how many island are there in the matrix after each operation.You need to return an array of size k.
+
+- Dynamic graphs - we use DS 
+- Node formula :- Nodeno = row*m + col;
+
+{% raw %}
+```cpp
+class Solution {
+  public:
+    vector<int> numOfIslands(int n, int m, vector<vector<int>> &operators) {
+        vector<vector<int>> mat(n, vector<int>(m, 0));
+        DisjointSet ds(n*m);
+        vector<int> ans;
+        int count = 0;
+        
+        for (auto it : operators){
+            int r = it[0];
+            int c = it[1];
+            
+            if (mat[r][c] == 1){ // Skip if the cell is already land
+                ans.push_back(count);
+                continue;
+            }
+            
+            mat[r][c] = 1;
+            count++;
+            vector<vector<int>> dirs = {{1,0}, {-1,0}, {0,1}, {0,-1}};
+            for (auto d : dirs){
+                int nr = r + d[0];
+                int nc = c + d[1];
+                if (nr >= 0 && nr < n && nc >= 0 && nc < m && mat[nr][nc] == 1){
+                   int node = r*m +c;
+                   int adjnode = nr*m + nc;
+                   // creating islands
+                   if (ds.findUPar(node) != ds.findUPar(adjnode)){
+                       count--;
+                       ds.unionBySize(node, adjnode);
+                   }
+                }
+            }
+            ans.push_back(count);
+        }
+        return ans;
+    }
+};
+```
+{% endraw %}
+
+---
+
+### <u>Kosaraju's Algorithm</u> - Strongly Connected Components
+
+- In a *directed graph*, ***strongly connected components (SCCs)*** are subsets of nodes where every node is reachable from every other node within the same subset. 
+- **Kosaraju’s Algorithm** efficiently finds these SCCs by leveraging the concept of graph transposition and finishing times in DFS.
+- The key idea is: if we perform a DFS on the graph and record the finishing times of nodes, then by reversing the graph and doing DFS in the order of decreasing finishing times, we can group nodes into SCCs.
+- On reversing all the edges, the SCCs don't change
+  
+```cpp
+class Solution {
+  public:
+    void dfs(int node, vector<int> &vis, vector<vector<int>> &adj, stack<int> &st){
+        vis[node] = 1;
+        for (auto it : adj[node]){
+            if (!vis[it]) dfs(it, vis, adj, st);
+        }
+        st.push(node);
+    }
+    // DFS on transposed graph
+    void dfs2(int node, vector<int> &vis, vector<vector<int>> &adjT){
+        vis[node] = 1;
+        for (auto it : adjT[node]){
+            if (!vis[it]) dfs2(it, vis, adjT);
+        }
+    }
+    // Function to find number of strongly connected components
+    int kosaraju(vector<vector<int>> &adj) {
+        int V = adj.size();
+        vector<int> vis(V, 0);
+        stack<int> st;
+        // Do DFS to fill stack by finishing times
+        for (int i = 0; i < V; i++){
+            if (!vis[i]) dfs(i, vis, adj, st);
+        }
+        // Build the transpose(reverse edge) graph
+        vector<vector<int>> adjT(V);
+        for (int i = 0; i < V; i++){
+            vis[i] = 0; // reset visited
+            for (auto it : adj[i]){
+                adjT[it].push_back(i);
+            }
+        }
+        
+        int scc = 0;
+        // Process stack to count SCCs
+        while (!st.empty()){
+            int node = st.top();
+            st.pop();
+            if (!vis[node]){
+                scc++;
+                dfs2(node, vis, adjT);
+            }
+        }
+        return scc;
+    }
+};
+```
+
+### Bridges in Graph - Tarjan's Algorithm
+
+- An edge in an undirected connected graph is a ***bridge*** if removing it disconnects the graph (break it into two or more components).
+- The following arrays used :-
+  - ``vis[]`` – to check whether a node has already been visited in DFS.
+  - ``tin[]`` – stores the time of insertion (first visit) of each node during DFS.
+  - ``low[]`` – stores the min lowest time of insertion among all adjacent nodes apart from the parent, so that if edge from parent is removed can the particular node can be reached other than parent.
+
+```cpp
+// TC:- O(V+2E)
+class Solution {
+private:
+    int timer = 1; // Global timer to assign discovery times
+
+    void dfs(int node, int parent, vector<int> &vis, vector<int> adj[], int tin[], int low[], vector<vector<int>> &bridges) {
+        vis[node] = 1;                 // Mark current node as visited
+        tin[node] = low[node] = timer; // Set discovery time and low-link value
+        timer++;
+
+        for (auto it : adj[node]) {    // Explore all adjacent nodes
+            if (it == parent) continue; // Skip the edge to parent
+            if (vis[it] == 0) {
+                dfs(it, node, vis, adj, tin, low, bridges);
+                // Update low-link value of current node
+                low[node] = min(low[node], low[it]);
+
+                // Check if the edge is a bridge
+                if (low[it] > tin[node]) {
+                    bridges.push_back({it, node});
+                }
+            } else {
+                // Back edge: update low-link value
+                low[node] = min(low[node], low[it]);
+            }
+        }
+    }
+public:
+    vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections) {
+        vector<int> adj[n];
+        for (auto it : connections) {
+            int u = it[0], v = it[1];
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+
+        vector<int> vis(n, 0);
+        int tin[n]; // Discovery time
+        int low[n]; // Lowest reachable time
+        vector<vector<int>> bridges;
+
+        dfs(0, -1, vis, adj, tin, low, bridges);
+
+        return bridges;
+    }
+};
+```
+
+### Articulation Point
+
+- An ***articulation point*** is a vertex whose removal, along with all its connected edges, increases the number of connected components in the graph. The graph may contain more than one connected component.
+
+- Using Tarjan's Algorithm - O(V + E) Time
+- The idea is to use DFS. In DFS, follow vertices in a tree form called the DFS tree. In the DFS tree, a vertex u is the parent of another vertex v, if v is discovered by u. 
+In DFS tree, a vertex u is an articulation point if one of the following two conditions is true. 
+  - u is the root of the DFS tree and it has at least two children. 
+  - u is not the root of the DFS tree and it has a child v such that no vertex in the subtree rooted with v has a back edge to one of the ancestors in DFS tree of u.
+
+```cpp
+class Solution {
+private:
+    int timer = 1;
+
+    void dfs(int node, int parent, vector<int> &vis, int tin[], int low[], vector<int> &mark, vector<int> adj[]) {
+        vis[node] = 1;
+        tin[node] = low[node] = timer++; // set discovery and low time
+        int child = 0; // for special case of starting node.
+
+        for (auto it : adj[node]) {
+            if (it == parent) continue; // skip the edge to parent
+            if (!vis[it]) {
+                dfs(it, node, vis, tin, low, mark, adj);
+                low[node] = min(low[node], low[it]);     // update low time
+
+                // Check articulation condition (excluding root)
+                if (low[it] >= tin[node] && parent != -1) {
+                    mark[node] = 1;
+                }
+                child++;
+            } else {
+                // back edge case
+                low[node] = min(low[node], tin[it]);
+            }
+        }
+
+        // If root node has more than one child
+        if (parent == -1 && child > 1) {
+            mark[node] = 1;
+        }
+    }
+public:
+    vector<int> articulationPoints(int n, vector<int> adj[]) {
+        vector<int> vis(n, 0);
+        vector<int> mark(n, 0); // mark to articulation points
+        int tin[n], low[n];
+
+        for (int i = 0; i < n; i++) {
+            if (!vis[i]) dfs(i, -1, vis, tin, low, mark, adj);
+        }
+
+        vector<int> ans;
+        for (int i = 0; i < n; i++) {
+            if (mark[i]) ans.push_back(i);
+        }
+        return ans.empty() ? vector<int>{-1} : ans;
+    }
+};
+```
