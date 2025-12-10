@@ -545,7 +545,7 @@ public:
 ```
 {% endraw %}
 
-### ``Bipartite Graph (BFS)``
+### Bipartite Graph (BFS)
 
 - **A Bipartite graph is a graph which can be coloured using 2 colours such that no adjacent nodes have the same colour**.
 -  Any graph with an *odd cycle* length can never be a bipartite graph.
@@ -615,7 +615,9 @@ public:
 };
 ```
 
-## Topological Sort Algorithm (DFS)
+---
+
+## <u>Topological Sort Algorithm (DFS)</u>
 
 - Problem Statement:- Given a **Directed Acyclic Graph (DAG)** with V vertices labeled from 0 to V-1. Find any Topological Sorting of that Graph.
 - *Topological sorting is a linear ordering of vertices in a Directed Acyclic Graph (DAG) such that for every directed edge from a vertex u to a vertex v (u → v), u appears before v in the ordering*.
