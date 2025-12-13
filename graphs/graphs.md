@@ -118,7 +118,8 @@ int main() {
 - BFS explores the graph level by level, starting from a source node and visiting all its neighbors before moving to the next level.
 - It uses a queue to keep track of nodes to visit next.
 - use visited array to keep track of traversed nodes
-
+- TC:- `O(V+E)`
+  
 ```cpp
 class Solution {
   public:
@@ -149,6 +150,7 @@ class Solution {
 ### Depth First Search (DFS) Traversal of graph
 
 - DFS explores as far as possible along each branch before backtracking.
+- TC:- `O(V+E)`
 
 ```cpp
 class Solution {
