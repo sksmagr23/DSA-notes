@@ -517,3 +517,118 @@ public:
     }
 };
 ```
+
+### Vertical Order Traversal of Binary Tree
+
+- Problem Statement: Given a Binary Tree, return the Vertical Order Traversal of it starting from the Leftmost to the Rightmost. If there are multiple nodes passing through a vertical line, then they should be printed as level wise sorted.
+
+- Vertical Coordinates -> x (vertical column)
+- Level Coordinates -> y
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> verticalTraversal(TreeNode* root) {
+        vector<vector<int>> ans;
+        if (!root) return ans;
+
+        queue<pair<TreeNode*, pair<int, int>>> q;
+        q.push({root, {0, 0}});  // {{node, {x, y}}}
+
+        map<int, map<int, vector<int>>> mpp; // mpp[vertical(x)][level(y)] -> vector of nodes 
+
+        while (!q.empty()) {
+            auto i = q.front();
+            q.pop();
+
+            TreeNode* node = i.first;
+            int x = i.second.first;
+            int y = i.second.second;
+
+            mpp[x][y].push_back(node->val);
+
+            if (node->left) q.push({node->left, {x - 1, y + 1}});
+            if (node->right) q.push({node->right, {x + 1, y + 1}});
+        }
+
+        for (auto& x : mpp) {
+            vector<int> col;
+            for (auto& y : x.second) {
+                sort(y.second.begin(), y.second.end());
+                for (int val : y.second) {
+                    col.push_back(val);
+                }
+            }
+            ans.push_back(col);
+        }
+        return ans;
+    }
+};
+```
+
+#### Top View of Binary tree (optimal)
+
+- A brute approach can be simple a vertical order traversal and getting the first entry of every vertical column
+
+- Optimal can be using just a single map storing just first value at a level.
+
+```cpp
+class Solution {
+public:
+    vector<int> topView(Node* root) {
+        vector<int> ans;
+        if (root == NULL) return ans;
+
+        map<int, int> mpp; // vertical level -> node value (only first encountered)
+
+        queue<pair<Node*, int>> q; // {node, vertical_level}
+        q.push({root, 0});
+
+        while (!q.empty()) {
+            auto it = q.front();
+            q.pop();
+            Node* node = it.first;
+            int line = it.second;
+
+            // If this vertical position is being visited for the first time, store it
+            if (mpp.find(line) == mpp.end()) {
+                mpp[line] = node->data;
+            }
+
+            if (node->left != NULL) q.push({node->left, line - 1});
+            if (node->right != NULL) q.push({node->right, line + 1});
+        }
+
+        for (auto it : mpp) {
+            ans.push_back(it.second);
+        }
+        return ans;
+    }
+};
+```
+
+- Similarly ***for bottom view*** , we can use brute force (a vertical order traversal and getting the first entry of every vertical column) and a optimal same may with a map , this time we always update the map value with node position , so last map value points to bottom value. (mpp[line] = node->data)
+
+### Symmetrical Binary Tree
+
+- A binary tree is symmetric if its left and right sides are mirror images of each other.
+
+```cpp
+class Solution {
+public:
+    // Function to check if left & right subtrees are symmetric
+    bool isMirror(TreeNode* root1, TreeNode* root2) {
+        if (root1 == nullptr || root2 == nullptr) {
+            return root1 == root2; // // If one subtree is NULL, the othe must also be NULL for symmetry
+        }
+        return (root1->val == root2->val) &&
+               isMirror(root1->left, root2->right) &&
+               isMirror(root1->right, root2->left);
+    }
+    bool isSymmetric(TreeNode* root) {
+        if (!root) return true;
+        return isMirror(root->left, root->right);
+    }
+};
+```
+

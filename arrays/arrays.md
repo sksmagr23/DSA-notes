@@ -174,7 +174,7 @@ public:
 };
 ```
 
-#### Prefix Sum Array
+### Prefix Sum Array (1D)
 
 ```cpp
 class Solution {
@@ -194,6 +194,34 @@ public:
     // Get sum of elements from index i to j (inclusive)
     int rangeSum(vector<int>& prefix, int i, int j) {
         return prefix[j + 1] - prefix[i];
+    }
+};
+```
+
+### Prefix sum in 2D Matrix
+
+```cpp
+class Solution {
+public:
+    //pre[i+1][j+1] stores sum of submatrix from (0,0) to (i,j)
+    vector<vector<int>> buildPrefixSum2D(vector<vector<int>> &mat) {
+        int n = mat.size();
+        int m = mat[0].size();
+
+        vector<vector<int>> pre(n+1, vector<int>(m+1, 0));
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                pre[i+1][j+1] = mat[i][j] + pre[i][j+1] + pre[i+1][j] - pre[i][j]; 
+                // (current cell + above + left - diagonal)
+            }
+        }
+        return pre;
+    }
+
+    // Get range sum of submatrix from (r1,c1) to (r2,c2) inclusive (0-based)
+    int rangeSum2D(vector<vector<int>>& pre, int r1, int c1, int r2, int c2) {
+        return pre[r2+1][c2+1] - pre[r1][c2+1] - pre[r2+1][c1] + pre[r1][c1];
     }
 };
 ```
@@ -220,7 +248,7 @@ public:
 };
 ```
 
-#### Two Sum (Optimal Solution)
+### Two Sum (Optimal Solution)
 
 ```cpp
 class Solution {
