@@ -632,3 +632,104 @@ public:
 };
 ```
 
+### Print Path from Root to given Node in a Binary Tree
+
+- It is given that x exists in tree
+
+```cpp
+class Solution {
+public:
+    bool path(TreeNode* root, vector<int>& arr, int x) {
+        if (!root) return false;
+
+        arr.push_back(root->val); // Add current node's value to the path
+
+        if (root->val == x) return true;
+
+        // Recursively search in left or right subtree
+        if (path(root->left, arr, x) || path(root->right, arr, x)) {
+            return true;
+        }
+        // If not found, backtrack and remove current node
+        arr.pop_back();
+        return false;
+    }
+    // Function to get the path from root to node with value x
+    vector<int> solve(TreeNode* root, int x) {
+        vector<int> arr;
+        if (root == NULL) return arr;
+        
+        path(root, arr, x);
+        return arr;
+    }
+};
+```
+
+### Lowest Common Ancestor (LCA) for two given Nodes
+
+- The lowest common ancestor (LCA) is defined between two nodes p and q as the lowest node in tree that has both p and q as descendants (where we allow a node to be a descendant of itself).
+
+```cpp
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        // Base case
+        if (root == NULL || root == p || root == q) {
+            return root;
+        }
+        
+        // Search in left and right subtrees
+        TreeNode* left = lowestCommonAncestor(root->left, p, q);
+        TreeNode* right = lowestCommonAncestor(root->right, p, q);
+        
+        if (left == NULL) {
+            return right;
+        } else if (right == NULL) {
+            return left;
+        } else { // Both left and right are not null, we found our result
+            return root;
+        }
+    }
+};
+```
+
+### Maximum Width of a Binary Tree
+
+- The *maximum width* of a Binary Tree is the maximum width among all its levels. The width of a level is the number of nodes between the leftmost and rightmost nodes in the level including the null nodes between the endnodes.
+
+- We assign index to each node from left to right from 0, and moving left as `(2*i + 1)` and right as `(2*i + 2)` where i = parent root index. Also at every level, we subtract the minindex of the level to prevent overflow of size. The width at a level will be (last_index - first_index + 1)
+  
+```cpp
+class Solution {
+public:
+    int widthOfBinaryTree(TreeNode* root) {
+        if (!root) return 0;
+
+        int maxwidth = 0;
+        queue<pair<TreeNode*, int>> q;
+        q.push({root, 0});
+
+        while (!q.empty()) {
+            int n = q.size();
+            long long minid = q.front().second; // the index of the first node at this level
+            int first = 0, last = 0;
+
+            for (int i = 0; i < n; i++) {
+                auto it = q.front();
+                q.pop();
+                TreeNode* node = it.first;
+                long long index = it.second - minid; // to make the index starting from zero
+
+                if (i == 0) first = index;
+                if (i == n - 1) last = index;
+
+                if (node->left) q.push({node->left, 2*index + 1});
+                if (node->right) q.push({node->right, 2*index + 2});
+            }
+            maxwidth = max(maxwidth, last-first+1);
+        }
+        return maxwidth;
+    }
+};
+```
+
