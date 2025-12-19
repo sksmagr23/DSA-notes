@@ -1,5 +1,7 @@
 ## Trie Implementation - I
 
+![Trie](https://media.geeksforgeeks.org/wp-content/uploads/20250417113106950395/Triedatastructure1.webp)
+
 The **Trie** data structure is used to store a set of keys represented as strings. It allows for efficient retrieval and storage of keys, making it highly effective in handling large datasets. Trie supports operations such as insertion, search, deletion of keys, and prefix searches.
 A **Trie node** is a basic element used to build a Trie, consisting of:
 - ***Child Node Links***: An array of pointers for each letter of the alphabet. Each pointer corresponds to a child node representing a letter. For example, index 0 points to 'a', index 1 to 'b', and so on.
@@ -201,3 +203,136 @@ public:
 };
 ```
 
+### Longest String with All Prefixes
+
+- Problem: Given an array of strings words[], find the longest string such that every prefix of it is also present in words[]. If multiple strings have the same maximum length, return the lexicographically smallest one.
+
+```cpp
+struct Node {
+    Node* links[26] = {nullptr};
+    bool flag = false;
+
+    bool containsKey(char ch) {
+        return links[ch - 'a'] != NULL;
+    }
+    void put(char ch, Node* node) {
+        links[ch - 'a'] = node;
+    }
+    Node* get(char ch) {
+        return links[ch - 'a'];
+    }
+    void setEnd() {
+        flag = true;
+    }
+    bool isEnd() {
+        return flag;
+    }
+};
+
+class Trie {
+public:
+    Node* root;
+    
+    Trie() {
+        root = new Node();
+    }
+    
+    void insert(string word){
+        Node* node = root;
+        for (int i = 0; i < word.size(); i++){
+            if (!node->containsKey(word[i])){
+                node->put(word[i], new Node());
+            }
+            node = node->get(word[i]);
+        }
+        node->setEnd();
+    }
+    
+    bool foundAllPrefix(string word){
+        Node* node = root;
+        for (char ch : word){
+            if (!node->containsKey(ch)) return false;
+            node = node->get(ch);
+            if (!node->isEnd()) return false; // prefix not marked as end
+        }
+        return true;
+    }
+};
+
+class Solution {
+public:    
+    string longestValidWord(vector<string>& words) {
+        Trie trie;
+        for (auto it : words){
+            trie.insert(it);
+        }
+        
+        string ans = "";
+        for (auto it : words){
+            if (trie.foundAllPrefix(it)){
+                if (it.size() > ans.size()) ans = it;
+                else if (it.size() == ans.size() && it < ans) ans = it;
+            }
+        }
+        return ans;
+    }
+};
+```
+
+### Number of Distinct Substrings in a String Using Trie
+
+- Using a Trie data structure significantly reduces the number of comparisons needed as we traverse the substring, resulting in better performance. The Trie also uses memory efficiently by storing only the necessary information and avoids redundancy by sharing common prefixes among substrings for better space utilisation especially for long strings with many repeated substrings.
+
+```cpp
+struct Node {
+    Node* links[26] = {nullptr};
+
+    bool containsKey(char ch) {
+        return links[ch - 'a'] != NULL;
+    }
+    void put(char ch, Node* node) {
+        links[ch - 'a'] = node;
+    }
+    Node* get(char ch) {
+        return links[ch - 'a'];
+    }
+};
+
+class Solution {
+  public:
+    int countSubs(string& s) {
+        int n = s.size();
+        Node* root = new Node();
+        int count = 0;
+        for (int i = 0; i < n; i++){
+            Node* node = root;
+            for (int j = i; j < n; j++){
+                if (!node->containsKey(s[j])){
+                    node->put(s[j], new Node());
+                    count++; // Increment the counter since a new substring is found
+                }
+                node = node->get(s[j]);
+            }
+        }
+        return count + 1; // +1 for empty substring
+    }
+};
+```
+
+### Bit PreRequisites
+
+- <u>Binary Representation</u>
+  - A standard 32-bit integer is represented as a sequence of bits from index 31 (Most Significant Bit - **MSB**) to index 0 (Least Significant Bit - **LSB**).
+  - In Trie problems ,numbers are often treated as strings of bits. We represent them from the MSB to the LSB to build the Trie branches.
+
+- <u>XOR Operation</u>(^)
+  - Rule: The result is 1 if the bits are different, and 0 if they are the same.
+  - `0 ^ 0 = 0` , `1 ^ 1 = 0` , `0 ^ 1 = 1` , `1 ^ 0 = 1`
+  - If there are an even number of 1s , XOR will result in 0. If there are an odd number of 1s, XOR will result in 1. 
+  - Key Property: $A \oplus B = C$ implies $A \oplus C = B$
+
+- ***How to Check if a Bit is Set***
+  - *A bit is "set" if it is 1*. To check if the $i$-th bit of a number $N$ is set:- Right Shift the $i$-th bit to the 0th position and checks if it is 1 using bitwise AND. ```(N >> i) & 1```
+
+- ***How to Turn On a Bit***
+  - *To "turn on" a bit means to set it to 1.* To turn on the $i$-th bit of a number $N$:- Use the bitwise OR operator with a mask where only the $i$-th bit is 1. ```N | (1 << i)```
