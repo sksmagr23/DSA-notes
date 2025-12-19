@@ -260,7 +260,7 @@ vector<int> rabin_karp(string &s, string &t) {
 ### <u>KMP algorithm</u> 
 [GFG article](https://www.geeksforgeeks.org/dsa/kmp-algorithm-for-pattern-searching)
 
-- The *Knuth-Morris-Pratt (KMP)* algorithm is an efficient string matching algorithm used to search for a pattern within a text
+- The *Knuth-Morris-Pratt (KMP)* algorithm is an efficient *string matching algorithm* used to search for a pattern within a text
 - The KMP algorithm works by preprocessing the pattern using an auxiliary array called **LPS (Longest Prefix Suffix)**. This array stores the length of the longest proper prefix which is also a suffix for every prefix of the pattern. When a mismatch occurs, KMP uses this information to shift the pattern intelligently, skipping over positions that are guaranteed not to match — instead of starting over. This ensures that each character in the text is compared at most once, reducing the T.C. to O(n + m).
 
 - ***Proper Prefix*** : A proper prefix of a string is a prefix that is not equal to the string itself. ex. proper prefixes of "abcd" are: "", "a", "ab", and "abc".
@@ -334,9 +334,9 @@ vector<int> search(string &pat, string &txt) {
     int m = pat.length();
 
     vector<int> lps(m);
-    vector<int> res;
-
     constructLps(pat, lps);
+
+    vector<int> res;
 
     int i = 0; // for traversing the text
     int j = 0; // for traversing the pattern
@@ -360,5 +360,3 @@ vector<int> search(string &pat, string &txt) {
     return res;
 }
 ```
-
-
