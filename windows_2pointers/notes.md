@@ -46,3 +46,30 @@ int longestOnes(vector<int>& nums, int k) {
         return maxlen;
     }
 ```
+
+### Count number of subarrays that contain exactly k distinct characters.
+
+```cpp
+class Solution {
+public:
+    int atmostk(vector<int>& nums, int k){
+        int n = nums.size();
+        unordered_map<int, int> mpp;
+        int res = 0;
+        int l = 0;
+        for (int r = 0; r < n; r++){
+            mpp[nums[r]]++;
+            while (mpp.size() > k){
+                mpp[nums[l]]--;
+                if (mpp[nums[l]] == 0) mpp.erase(nums[l]);
+                l++;
+            }
+            res += (r - l + 1);
+        }
+        return res;
+    }
+    int subarraysWithKDistinct(vector<int>& nums, int k) {
+        return atmostk(nums, k) - atmostk(nums, k-1);
+    }
+};
+```

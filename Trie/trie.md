@@ -329,10 +329,12 @@ class Solution {
   - Rule: The result is 1 if the bits are different, and 0 if they are the same.
   - `0 ^ 0 = 0` , `1 ^ 1 = 0` , `0 ^ 1 = 1` , `1 ^ 0 = 1`
   - If there are an even number of 1s , XOR will result in 0. If there are an odd number of 1s, XOR will result in 1. 
-  - Key Property: $A \oplus B = C$ implies $A \oplus C = B$
+  - Key Property: `A ^ B = C` implies `A ^ C = B`
 
 - ***How to Check if a Bit is Set***
-  - *A bit is "set" if it is 1*. To check if the $i$-th bit of a number $N$ is set:- Right Shift the $i$-th bit to the 0th position and checks if it is 1 using bitwise AND. ```(N >> i) & 1```
+  - *A bit is "set" if it is 1*. To check if the *i*-th bit of a number N is set:- Right Shift the *i*-th bit to the 0th position and checks if it is 1 using bitwise AND. ```(N >> i) & 1```
+  - ```(N >> i) & 1``` gives the bit at ith position
 
 - ***How to Turn On a Bit***
-  - *To "turn on" a bit means to set it to 1.* To turn on the $i$-th bit of a number $N$:- Use the bitwise OR operator with a mask where only the $i$-th bit is 1. ```N | (1 << i)```
+  - *To "turn on" a bit means to set it to 1.* To turn on the *i*-th bit of a number N:- Use the bitwise OR operator with a mask where only the *i*-th bit is 1. ```N | (1 << i)```
+
