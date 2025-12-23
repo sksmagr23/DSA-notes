@@ -68,6 +68,27 @@ int upperBound(int arr[], int n, int target) {
 }
 ```
 
+### Elements in range [a, b]
+
+- Given an unsorted array arr[] and a 2D array queries[][] of size q, where each query is in the form of [a, b]. For each query, count how many elements in arr[] lie within the range [a, b], i.e., elements satisfying a ≤ x ≤ b.
+
+```cpp
+class Solution {
+  public:
+    vector<int> cntInRange(vector<int> &arr, vector<vector<int>> &queries) {
+        sort(arr.begin(), arr.end());
+
+        for (const auto &q : queries) {
+            int l = q[0], r = q[1];
+            int lb = lower_bound(arr.begin(), arr.end(), l) - arr.begin(); // lower bound index
+            int rb = upper_bound(arr.begin(), arr.end(), r) - arr.begin(); // upper bound index
+            ans.push_back(rb - lb);
+        }
+        return ans;
+    }
+};
+```
+
 ## Search in rotated sorted array
 ```cpp
 int searchRotatedArray(int arr[], int n, int target) {

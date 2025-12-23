@@ -105,3 +105,30 @@ int minMeetingRooms(vector<vector<int>>& intervals) {
     return pq.size();
 }
 ```
+
+### Replace elements by its rank in the array
+
+```cpp
+class Solution {
+  public:
+    vector<int> replaceWithRank(vector<int> &arr, int N) {
+        priority_queue<int, vector<int>, greater<int>> pq;
+        unordered_map<int, int> mpp;
+        for (auto it : arr) pq.push(it);
+        int rank = 1;
+        while (!pq.empty()){
+            int it = pq.top();
+            pq.pop();
+            if (mpp.find(it) == mpp.end()){
+                mpp[it] = rank;
+                rank++;
+            }
+        }
+        vector<int> ans;
+        for (int i = 0 ; i < N; i++){
+            ans.push_back(mpp[arr[i]]);
+        }
+        return ans;
+    }
+};
+```

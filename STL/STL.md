@@ -533,7 +533,7 @@ void algorithms() {
     shuffle(v.begin(), v.end(), default_random_engine());    // C++11 shuffling
     
     // Sorting operations
-    sort(v.begin(), v.end());                                // Sort ascending
+    sort(v.begin(), v.end());          // TC:- O(Nlog(N))    // Sort ascending
     sort(v.begin(), v.end(), greater<int>());                // Sort descending
     stable_sort(v.begin(), v.end());                         // Stable sort
     
