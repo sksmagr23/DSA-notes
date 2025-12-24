@@ -150,6 +150,40 @@ public:
 };
 ```
 
+### Kth element of 2 sorted arrays
+
+- Given two sorted arrays a[] and b[] and an element k, the task is to find the element that would be at the kth position of the combined sorted array.
+
+```cpp
+class Solution {
+  public:
+    int kthElement(vector<int> &a, vector<int> &b, int k) {
+        int n = a.size(), m = b.size();
+        int i = 0, j = 0;
+        int ans = -1;
+        int count = 0;
+        while (i < n && j < m){
+            if (a[i] < b[j]) ans = a[i++];
+            else ans = b[j++];
+            count++;
+            if (count == k) return ans;
+        }
+        while (i < n){
+            ans = a[i++];
+            count++;
+            if (count == k) return ans;
+        }
+        while (j < m){
+            ans = b[j++];
+            count++;
+            if (count == k) return ans;
+        }
+        return ans;
+        
+    }
+};
+```
+
 ### To allocate the book to ‘m’ students such that the maximum number of pages assigned to a student is minimum
 
 ```cpp
