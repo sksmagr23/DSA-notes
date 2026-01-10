@@ -95,6 +95,41 @@ public:
 };
 ```
 
+#### Maximum Sum in Circular Subarray (Circular Kadane)
+
+- In a circular array, the maximum subarray is either a normal subarray (Kadane’s) or a circular/boundary subarray. A circular subarray is equivalent to total sum − minimum subarray sum. So we compute both max and min subarray sums in one pass. If all elements are negative, we simply return the maximum element.
+
+```cpp
+class Solution {
+public:
+    int maxSubarraySumCircular(vector<int> nums) {
+        int total = 0;                 // Total sum of the array
+        int maxSum = nums[0];          // Maximum subarray sum (non-circular)
+        int curMax = 0;        
+        int minSum = nums[0];          // Minimum subarray sum
+        int curMin = 0;
+        
+        for (int num : nums) {
+            // Standard Kadane's algorithm for maximum subarray sum
+            curMax = max(curMax + num, num);
+            maxSum = max(maxSum, curMax);
+            
+            // Modified Kadane's algorithm for minimum subarray sum
+            curMin = min(curMin + num, num);
+            minSum = min(minSum, curMin);
+            
+            total += num;
+        }
+        
+        // If all numbers are negative, return max element
+        if (maxSum < 0) return maxSum;
+        
+        // Maximum of normal subarray and circular subarray
+        return max(maxSum, total - minSum);
+    }
+};
+```
+
 #### Sliding Window Technique (Fixed Size)
 
 ```cpp

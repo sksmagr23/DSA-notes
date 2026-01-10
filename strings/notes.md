@@ -76,6 +76,34 @@ public:
 
 ---
 
+### Count Palindromic Substrings - Expand Around Center
+
+- *Intution*:- `Every palindrome has a center. For each index, treat it as the center of an odd-length palindrome and the gap after it as the center of an even-length palindrome. Expand outward while characters match, and count each valid expansion as one palindromic substring.`
+  
+```cpp
+class Solution {
+public:
+    void expandAroundCenter(string s, int l, int r, int &count) {
+        int n = s.size();
+        // Keep expanding while indices are inside bounds & characters at left and right are equal
+        while (l >= 0 && r < n && s[l] == s[r]) {
+            count++;
+            l--;       // Expand left
+            r++;       // Expand right
+        }
+    }
+    int countSubstrings(string s) {
+        int n = s.size();
+        int count = 0;
+        for (int i = 0; i < n; i++) {
+            expandAroundCenter(s, i, i, count); // Odd length (single character center)
+            expandAroundCenter(s, i, i + 1, count); // Even length (center between two characters)
+        }
+        return count;
+    }
+};
+```
+
 ### Longest Palindromic Substring (using dp)
 
 ```cpp

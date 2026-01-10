@@ -693,6 +693,27 @@ public:
 };
 ```
 
+### Smallest Subtree with all the Deepest Nodes
+
+- Given the root of a binary tree, the depth of each node is the shortest distance to the root. Return the smallest subtree such that it contains all the deepest nodes in the original tree. A node is called the deepest if it has the largest depth possible among any node in the entire tree.
+
+```cpp
+class Solution {
+public:
+    pair<int, TreeNode*> dfs(TreeNode* root){
+        if (!root) return {0, nullptr};
+        auto [d1, r1] = dfs(root->left);
+        auto [d2, r2] = dfs(root->right);
+        if (d1 == d2) return {1+d1, root};
+        else if (d1 > d2) return {1+d1, r1};
+        else return {1+d2, r2};
+    }
+    TreeNode* subtreeWithAllDeepest(TreeNode* root) {
+        return dfs(root).second;
+    }
+};
+```
+
 ### Maximum Width of a Binary Tree
 
 - The *maximum width* of a Binary Tree is the maximum width among all its levels. The width of a level is the number of nodes between the leftmost and rightmost nodes in the level including the null nodes between the endnodes.
