@@ -190,3 +190,93 @@ public:
 };
 ```
 
+### Shortest Common Supersequence 
+
+- We are given two strings ‘S1’ and ‘S2’. We need to return their shortest common supersequence. A supersequence is defined as the string which contains both the strings S1 and S2 as subsequences.
+
+- Approach :- Shortest Common Supersequence (SCS) is basically formed by merging both strings while writing the Longest Common Subsequence (LCS) only once. If we just concatenate, we repeat many characters unnecessarily; instead, LCS gives the maximum set of characters already common in correct order, so we keep them single and only insert the “extra” non-LCS characters from both strings around them. Using the LCS DP table, we backtrack from dp[n][m]: when characters match, we take it once and move diagonally; when they don’t, we move in the direction of the larger DP value and add the skipped character, finally reversing the built string to get the SCS.
+
+- length of the shortest Common supersequence = n + m - k,
+
+```cpp
+class Solution {
+public:
+    string shortestCommonSupersequence(string str1, string str2) {
+        int n = str1.size();
+        int m = str2.size();
+        vector<vector<int>> dp(n+1, vector<int>(m+1, -1));
+        for (int i = 0; i < n; i++) dp[i][0] = 0;
+        for (int i = 0; i < m; i++) dp[0][i] = 0;
+        for (int i = 1; i <= n; i++){
+            for (int j = 1; j <= m; j++){
+                if (str1[i-1] == str2[j-1]) dp[i][j] = 1 + dp[i-1][j-1];
+                else dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+            }
+        }
+
+        int i = n;
+        int j = m;
+        string ans = "";
+        while (i > 0 && j > 0){
+            if (str1[i-1] == str2[j-1]){
+                ans += str1[i-1];
+                i--;
+                j--;
+            } else if (dp[i-1][j] > dp[i][j-1]){
+                ans += str1[i-1];
+                i--;
+            } else {
+                ans += str2[j-1];
+                j--;
+            }
+        }
+        while (i > 0){
+            ans += str1[i-1];
+            i--;
+        }
+        while (j > 0){
+            ans += str2[j-1];
+            j--;
+        }
+        reverse(ans.begin(), ans.end());
+        return ans;
+    }
+};
+```
+
+### Distinct Subsequences
+
+- Given two strings s and t, return the number of distinct subsequences of s which equals t.
+
+```cpp
+class Solution {
+public:
+    int numDistinct(string s, string t) {
+        int n = s.size();
+        int m = t.size();
+        
+        // dp[i][j] = no. of distinct subsequences of s[0…i-1] that form t[0…j-1]
+        vector<vector<int>> dp(n + 1, vector<int>(m + 1, 0));
+
+        for (int i = 0; i <= n; i++) {
+            dp[i][0] = 1;
+        }
+
+        // Fill dp table from bottom to top
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                // If characters match, we have two options:
+                // pick this character -> dp[i-1][j-1] ; skip this character -> dp[i-1][j]
+                if (s[i-1] == t[j-1]) {
+                    dp[i][j] = dp[i-1][j-1] + dp[i-1][j];
+                } else {
+                    // If characters don't match, we can only skip
+                    dp[i][j] = dp[i-1][j];
+                }
+            }
+        }
+        return dp[n][m];
+    }
+};
+```
+
