@@ -101,31 +101,29 @@ public:
 
 ```cpp
 class Solution {
-public:
-    int maxSubarraySumCircular(vector<int> nums) {
-        int total = 0;                 // Total sum of the array
-        int maxSum = nums[0];          // Maximum subarray sum (non-circular)
-        int curMax = 0;        
-        int minSum = nums[0];          // Minimum subarray sum
-        int curMin = 0;
-        
-        for (int num : nums) {
+  public:
+    int maxSubarraySumCircular(vector<int> &arr) {
+        int mini = INT_MAX, maxi = INT_MIN;
+        int curmini = 0, curmaxi = 0;
+        int total = 0;
+
+        for (int i = 0; i < arr.size(); i++){
+            total += arr[i];
+
             // Standard Kadane's algorithm for maximum subarray sum
-            curMax = max(curMax + num, num);
-            maxSum = max(maxSum, curMax);
-            
+            curmaxi += arr[i];
+            maxi = max(maxi, curmaxi);
+            if (curmaxi < 0) curmaxi = 0;
+
             // Modified Kadane's algorithm for minimum subarray sum
-            curMin = min(curMin + num, num);
-            minSum = min(minSum, curMin);
-            
-            total += num;
+            curmini += arr[i];
+            mini = min(mini, curmini);
+            if (curmini > 0) curmini = 0;
         }
-        
-        // If all numbers are negative, return max element
-        if (maxSum < 0) return maxSum;
-        
-        // Maximum of normal subarray and circular subarray
-        return max(maxSum, total - minSum);
+
+        if (maxi < 0) return maxi; // If all numbers are negative, return max element
+
+        return max(maxi, total-mini); // Maximum of normal subarray and circular subarray
     }
 };
 ```
