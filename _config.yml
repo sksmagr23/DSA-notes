@@ -1,3 +1,8 @@
 title: DSA Notes
 description: Data Structures and Algorithms notes and implementations
 theme: jekyll-theme-hacker
+markdown: kramdown
+highlighter: rouge
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
