@@ -9,8 +9,8 @@
   --border-bright:  #2a3650;
 
   --text-primary:   #e2e8f4;
-  --text-secondary: #7d8fa8;
-  --text-muted:     #4a5568;
+  --text-secondary: #bec8d6;
+  --text-muted:     #9aa0aa;
   --text-code:      #c9d8f0;
 
   --accent:         #3b82f6;        /* electric blue */
@@ -44,7 +44,7 @@
 
 html {
   scroll-behavior: smooth;
-  font-size: 16px;
+  font-size: 17px;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -54,23 +54,26 @@ html {
 ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
-
+/* ── BODY ────────────────────────────────────────── */
 body {
   background: var(--bg-base);
   color: var(--text-primary);
   font-family: var(--font-body);
-  font-size: 15.5px;
+  font-size: 16px;
   line-height: 1.75;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ══════════════════════════════════════════════════
+   NAVBAR
+   ══════════════════════════════════════════════════ */
 .navbar {
-  position: fixed;
-  top: 0; left: 0; right: 0;
+  position: sticky;
+  top: 0;
   height: var(--navbar-h);
-  background: rgba(10,12,16,.92);
+  background: rgba(10,12,16,.97);
   backdrop-filter: blur(16px) saturate(160%);
   border-bottom: 1px solid var(--border);
   z-index: 100;
@@ -103,7 +106,7 @@ body {
 }
 
 .brand-text {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -.3px;
@@ -125,7 +128,7 @@ body {
   border-radius: var(--radius-md);
   padding: 7px 36px 7px 14px;
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text-primary);
   outline: none;
   transition: border-color .2s, box-shadow .2s;
@@ -198,7 +201,7 @@ body {
   flex-shrink: 0;
 }
 .navbar-links a {
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--text-secondary);
   text-decoration: none;
@@ -228,8 +231,7 @@ body {
    ══════════════════════════════════════════════════ */
 .layout-root {
   display: flex;
-  min-height: 100vh;
-  padding-top: var(--navbar-h);
+  min-height: calc(100vh - var(--navbar-h));
   max-width: 1440px;
   margin: 0 auto;
 }
@@ -241,7 +243,7 @@ body {
   width: var(--sidebar-w);
   flex-shrink: 0;
   position: sticky;
-  top: var(--navbar-h);
+  top: 0;
   height: calc(100vh - var(--navbar-h));
   overflow-y: auto;
   border-right: 1px solid var(--border);
@@ -258,7 +260,7 @@ body {
 }
 
 .sidebar-label {
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: .12em;
   text-transform: uppercase;
@@ -319,7 +321,9 @@ body {
 .topic-list a:hover { color: var(--text-primary); background: var(--bg-hover); }
 .topic-active a { color: var(--accent) !important; background: var(--accent-subtle) !important; }
 
-
+/* ══════════════════════════════════════════════════
+   CONTENT AREA
+   ══════════════════════════════════════════════════ */
 .content-area {
   flex: 1;
   min-width: 0;
@@ -410,6 +414,11 @@ body {
 h1:hover .heading-anchor,
 h2:hover .heading-anchor,
 h3:hover .heading-anchor { opacity: 1; }
+
+/* ── ANCHOR SCROLL OFFSET ────────────────────────── */
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  scroll-margin-top: calc(var(--navbar-h) + 16px);
+}
 
 /* ── BODY TEXT ───────────────────────────────────── */
 .prose p {
