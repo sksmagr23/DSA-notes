@@ -1,8 +1,27 @@
 title: DSA Notes
-description: Data Structures and Algorithms notes and implementations
-theme: jekyll-theme-hacker
+description: Data Structures and Algorithms — notes, implementations, and walkthroughs
+
+
 markdown: kramdown
 highlighter: rouge
+
 kramdown:
   input: GFM
   syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    disable: true       
+
+# Default front matter for all pages
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+
+# Exclude build artifacts
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor

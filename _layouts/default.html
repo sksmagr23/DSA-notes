@@ -1,24 +1,203 @@
 <!DOCTYPE html>
-<html lang="{{ site.lang | default: "en-US" }}">
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% if page.title %}{{ page.title }} — {% endif %}{{ site.title }}</title>
+  <meta name="description" content="{{ site.description }}" />
 
-{% seo %}
-    <link rel="stylesheet" href="{{ "/assets/css/style.css?v=" | append: site.github.build_revision | relative_url }}">
-  <link rel="stylesheet" href="{{ "/assets/css/custom.css" | relative_url }}">
-  </head>
-  <body style="margin: 10px 10px;">
-    <div class="container-lg px-3 my-5 markdown-body">
-      {% if site.title and site.title != page.title %}
-      <h1><a href="{{ "/" | absolute_url }}">{{ site.title }}</a></h1>
-      {% endif %}
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 
-      {{ content }}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/onedark.min.css" />
 
+  <link rel="stylesheet" href="{{ '/assets/css/custom.css' | relative_url }}" />
+</head>
+<body>
+  <header class="navbar">
+    <div class="navbar-inner">
+      <a class="navbar-brand" href="{{ '/' | relative_url }}">
+        <span class="brand-icon">◈</span>
+        <span class="brand-text">DSA<span class="brand-accent">Notes</span></span>
+      </a>
+
+      <div class="navbar-search">
+        <input type="text" id="search-input" placeholder="Search topics…" autocomplete="off" />
+        <span class="search-icon">⌕</span>
+        <div id="search-results" class="search-dropdown"></div>
+      </div>
+
+      <nav class="navbar-links">
+        <a href="{{ '/' | relative_url }}">Index</a>
+      </nav>
+
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">☰</button>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
-    <script>anchors.add();</script>
-  </body>
+  </header>
+
+  <div class="layout-root">
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-inner">
+
+        <div class="sidebar-section">
+          <p class="sidebar-label">On this page</p>
+          <nav id="toc" class="toc-nav">
+          </nav>
+        </div>
+
+        <div class="sidebar-section sidebar-topics">
+          <p class="sidebar-label">All Topics</p>
+          <ul class="topic-list">
+            <li><a href="{{ '/STL/STL.html' | relative_url }}">STL</a></li>
+            <li><a href="{{ '/arrays/arrays.html' | relative_url }}">Arrays</a></li>
+            <li><a href="{{ '/sorts/sorts.html' | relative_url }}">Sorting</a></li>
+            <li><a href="{{ '/binary_search/binary_search.html' | relative_url }}">Binary Search</a></li>
+            <li><a href="{{ '/Hashing/Hashing.html' | relative_url }}">Hashing</a></li>
+            <li><a href="{{ '/strings/notes.html' | relative_url }}">Strings</a></li>
+            <li><a href="{{ '/windows_2pointers/notes.html' | relative_url }}">Sliding Window</a></li>
+            <li><a href="{{ '/linked_list/ll.html' | relative_url }}">Linked List</a></li>
+            <li><a href="{{ '/greedy/notes.html' | relative_url }}">Greedy</a></li>
+            <li><a href="{{ '/stack_queue/notes.html' | relative_url }}">Stack & Queue</a></li>
+            <li><a href="{{ '/PriorityQueue/notes.html' | relative_url }}">Heaps</a></li>
+            <li><a href="{{ '/Trees/binary_trees.html' | relative_url }}">Trees</a></li>
+            <li><a href="{{ '/Trees/BST.html' | relative_url }}">BST</a></li>
+            <li class="topic-active"><a href="{{ '/graphs/graphs.html' | relative_url }}">Graphs</a></li>
+            <li><a href="{{ '/DP/1D.html' | relative_url }}">DP — 1D</a></li>
+            <li><a href="{{ '/DP/2-3D.html' | relative_url }}">DP — 2D/3D</a></li>
+            <li><a href="{{ '/DP/subsequence.html' | relative_url }}">DP — Subsequences</a></li>
+            <li><a href="{{ '/DP/stringsdp.html' | relative_url }}">DP — Strings</a></li>
+            <li><a href="{{ '/Trie/trie.html' | relative_url }}">Trie</a></li>
+            <li><a href="{{ '/Algorithms/algo.html' | relative_url }}">Algorithms</a></li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+    <main class="content-area">
+      <div class="prose" id="prose-body">
+        {{ content }}
+      </div>
+
+      <footer class="page-footer">
+        <div class="footer-inner">
+          <span>DSA Notes</span>
+          <span class="footer-sep">·</span>
+          <a href="{{ '/' | relative_url }}">← Back to Index</a>
+        </div>
+      </footer>
+    </main>
+
+  </div>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('pre code').forEach(block => {
+        hljs.highlightElement(block);
+      });
+
+      document.querySelectorAll('pre').forEach(pre => {
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.textContent = 'copy';
+        pre.appendChild(btn);
+        btn.addEventListener('click', () => {
+          const code = pre.querySelector('code');
+          navigator.clipboard.writeText(code.innerText).then(() => {
+            btn.textContent = 'copied ✓';
+            setTimeout(() => (btn.textContent = 'copy'), 1800);
+          });
+        });
+      });
+
+      const toc = document.getElementById('toc');
+      const headings = document.querySelectorAll('#prose-body h1, #prose-body h2, #prose-body h3');
+      const tocItems = [];
+
+      headings.forEach((h, i) => {
+        if (!h.id) h.id = 'heading-' + i;
+        const level = parseInt(h.tagName[1]);
+        const a = document.createElement('a');
+        a.href = '#' + h.id;
+        a.textContent = h.textContent.replace(/^#+\s*/, '');
+        a.className = 'toc-item toc-h' + level;
+        a.dataset.target = h.id;
+        toc.appendChild(a);
+        tocItems.push({ el: h, link: a });
+      });
+
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          const link = toc.querySelector(`[data-target="${entry.target.id}"]`);
+          if (link) link.classList.toggle('active', entry.isIntersecting);
+        });
+      }, { rootMargin: '-10% 0px -80% 0px' });
+
+      headings.forEach(h => observer.observe(h));
+
+      const toggle = document.getElementById('menu-toggle');
+      const sidebar = document.getElementById('sidebar');
+      toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+
+      const searchInput = document.getElementById('search-input');
+      const searchResults = document.getElementById('search-results');
+
+      const searchableContent = Array.from(document.querySelectorAll('#prose-body h1, #prose-body h2, #prose-body h3, #prose-body p')).map(el => ({
+        text: el.textContent.trim(),
+        tag: el.tagName,
+        id: el.id || ''
+      }));
+
+      searchInput.addEventListener('input', () => {
+        const q = searchInput.value.trim().toLowerCase();
+        searchResults.innerHTML = '';
+        if (!q) { searchResults.style.display = 'none'; return; }
+
+        const matches = searchableContent
+          .filter(item => item.text.toLowerCase().includes(q))
+          .slice(0, 8);
+
+        if (!matches.length) {
+          searchResults.style.display = 'none';
+          return;
+        }
+
+        matches.forEach(m => {
+          const d = document.createElement('a');
+          d.href = m.id ? '#' + m.id : '#';
+          d.className = 'search-result-item';
+          const tag = m.tag.toLowerCase();
+          d.innerHTML = `<span class="sr-tag">${tag}</span><span class="sr-text">${m.text.slice(0, 72)}${m.text.length > 72 ? '…' : ''}</span>`;
+          d.addEventListener('click', () => {
+            searchResults.style.display = 'none';
+            searchInput.value = '';
+          });
+          searchResults.appendChild(d);
+        });
+        searchResults.style.display = 'block';
+      });
+
+      document.addEventListener('click', e => {
+        if (!e.target.closest('.navbar-search')) {
+          searchResults.style.display = 'none';
+        }
+      });
+
+      headings.forEach(h => {
+        const anchor = document.createElement('a');
+        anchor.href = '#' + h.id;
+        anchor.className = 'heading-anchor';
+        anchor.innerHTML = '#';
+        h.appendChild(anchor);
+      });
+    });
+  </script>
+</body>
 </html>
