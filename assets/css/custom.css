@@ -1,8 +1,8 @@
 :root {
-  --bg-base:        #0a0c10;
+  --bg-base:        #10141c;
   --bg-surface:     #0f1117;
   --bg-elevated:    #161b24;
-  --bg-hover:       #1c2333;
+  --bg-hover:       #212b43;
   --bg-code:        #111620;
 
   --border:         #1e2636;
@@ -13,12 +13,12 @@
   --text-muted:     #9aa0aa;
   --text-code:      #c9d8f0;
 
-  --accent:         #3b82f6;        /* electric blue */
-  --accent-glow:    rgba(59,130,246,.18);
+  --accent:         #287aff;        /* electric blue */
+  --accent-glow:    rgba(37, 121, 255, 0.18);
   --accent-subtle:  rgba(59,130,246,.08);
-  --accent2:        #06d6a0;        /* mint green for h3 */
-  --accent3:        #f59e0b;        /* amber for warnings/notes */
-  --accent4:        #e879f9;        /* violet for special marks */
+  --accent2:        #05ed71;        /* mint green for h3 */
+  --accent3:        #f5af0b;        /* amber for warnings/notes */
+  --accent4:        #ff3434;        /* violet for special marks */
 
   --green:          #10b981;
   --red:            #f43f5e;
@@ -255,8 +255,8 @@ body {
 }
 
 .sidebar-section {
-  padding: 0 16px;
-  margin-bottom: 28px;
+  padding: 0 8px;
+  margin-bottom: 20px;
 }
 
 .sidebar-label {
