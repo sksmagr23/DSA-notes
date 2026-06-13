@@ -20,5 +20,7 @@
   - [2D/3D DP](DP/2-3D.md)
   - [DP on Subsequences](DP/subsequence.md)
   - [DP on Strings](DP/stringsdp.md)
+  - [DP on stocks](DP/stocks.md)
+  - [DP on LIS](DP/lis.md)
 - [Trie](Trie/trie.md)
 - [Algorithms](Algorithms/algo.md)
