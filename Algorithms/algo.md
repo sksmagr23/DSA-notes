@@ -1,4 +1,5 @@
 # Extra Concepts and Algos
+---
 
 ## Euclidean algorithm
 
@@ -221,4 +222,105 @@ Rounded to O(log N) for small K (like Fibonacci, k= 2)
 ```
 
 > Leetcode problem explanation : https://leetcode.com/problems/domino-and-tromino-tiling/solutions/8255420/efficient-ologn-solution-using-matrix-ex-on3x
+
 ---
+
+## C++ Lambda Expressions
+
+Lambda expressions (introduced in C++11) are anonymous and inline functions that allow writing small pieces of logic directly at the place of use. They improve code readability by keeping behavior close to where it is applied, making them ideal for passing custom logic to STL algorithms.
+
+### Syntax
+
+```cpp
+[capture_clause](parameters) -> return_type {
+    // function body
+};
+```
+* **capture_clause**: Specifies which outside variables are available inside the lambda.
+* **parameters**: (Optional) Parameters passed to the lambda function.
+* **return_type**: (Optional) Inferred automatically by the compiler in most cases if omitted.
+* **body**: Code to be executed.
+
+### Capture Clauses
+* `[]`: Capture nothing.
+* `[=]`: Capture all local variables in scope by value (read-only).
+* `[&]`: Capture all local variables in scope by reference (can modify).
+* `[x, &y]`: Capture `x` by value and `y` by reference.
+* `[=, &x]`: Capture all by value, except `x` by reference.
+* `[&, x]`: Capture all by reference, except `x` by value.
+
+### Example Lambda Function
+
+```cpp
+int main() {
+    vector<int> v;
+
+    //  Capture all by reference
+    auto byRef = [&](int m) {
+        v.push_back(m);
+    };
+
+    //  Capture all by value
+    auto byVal = [=](int m) mutable {
+        v.push_back(m);
+    };
+
+    byRef(20);
+    byVal(30);
+    for (auto x : v) cout << x << " ";
+    return 0;
+
+    // output: 20
+}
+```
+
+### Example Usages with STL
+
+#### 1. Custom Sorting (e.g. Descending Order)
+```cpp
+vector<int> arr = {4, 1, 3, 5, 2};
+
+sort(arr.begin(), arr.end(), [](int a, int b) {
+    return a > b;
+});
+```
+
+#### 2. Using `std::for_each` and `std::find_if`
+```cpp
+vector<int> nums = {1, 2, 3, 4, 5, 6};
+
+// Print all elements
+for_each(nums.begin(), nums.end(), [](int x) {
+    cout << x << " ";
+});
+
+// Find first number divisible by 3
+auto it = find_if(nums.begin(), nums.end(), [](int x) {
+    return x % 3 == 0;
+});
+```
+
+#### 3. Capturing Local Variables
+```cpp
+vector<int> nums = {1, 2, 3, 4, 5};
+int threshold = 3;
+
+int count = count_if(nums.begin(), nums.end(), [threshold](int x) {
+    return x > threshold;
+});
+```
+
+#### 4. Mutable Lambda
+By default, variables captured by value cannot be modified. Use the `mutable` keyword to modify them inside the lambda (note: this does not change the original variable outside the lambda).
+```cpp
+int x = 10;
+auto modifyX = [x]() mutable {
+    x = 20; // Allowed because of 'mutable'
+    cout << x << endl;
+};
+modifyX(); // Prints 20
+cout << x << endl; // Still prints 10
+```
+
+---
+
