@@ -1,5 +1,5 @@
 
-## Topics
+## Index
 
 - [STL (Standard Template Library)](STL/STL.md)
 - [Arrays](arrays/arrays.md)
