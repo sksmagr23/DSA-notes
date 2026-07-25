@@ -77,6 +77,7 @@ class Solution {
   public:
     vector<int> cntInRange(vector<int> &arr, vector<vector<int>> &queries) {
         sort(arr.begin(), arr.end());
+        vector<int> ans;
 
         for (const auto &q : queries) {
             int l = q[0], r = q[1];

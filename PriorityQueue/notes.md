@@ -132,3 +132,220 @@ class Solution {
     }
 };
 ```
+
+---
+
+### Optimal K-th Largest Element (Min-Heap of size K)
+
+- **Intuition**: Maintaining a full Max-Heap takes $O(N \log N)$ time and $O(N)$ space. Instead, use a **Min-Heap of size K**. At any time, the Min-Heap contains the $K$ largest elements seen so far, and the top element is the $K$-th largest.
+- **TC**: $O(N \log K)$, **SC**: $O(K)$.
+
+```cpp
+class Solution {
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        priority_queue<int, vector<int>, greater<int>> minHeap;
+
+        for (int num : nums) {
+            minHeap.push(num);
+            if (minHeap.size() > k) {
+                minHeap.pop(); // Remove smallest element
+            }
+        }
+        return minHeap.top(); // K-th largest
+    }
+};
+```
+
+---
+
+### Find Median from Data Stream (Two Heaps Pattern)
+
+- **Intuition**: Divide numbers into two halves:
+  - `maxHeap` (lower half of numbers)
+  - `minHeap` (upper half of numbers)
+  Keep sizes balanced: `maxHeap.size() == minHeap.size()` or `maxHeap.size() == minHeap.size() + 1`.
+- **TC**: `addNum`: $O(\log N)$, `findMedian`: $O(1)$, **SC**: $O(N)$.
+
+```cpp
+class MedianFinder {
+    priority_queue<int> maxHeap; // Lower half
+    priority_queue<int, vector<int>, greater<int>> minHeap; // Upper half
+
+public:
+    MedianFinder() {}
+
+    void addNum(int num) {
+        if (maxHeap.empty() || num <= maxHeap.top()) {
+            maxHeap.push(num);
+        } else {
+            minHeap.push(num);
+        }
+
+        // Rebalance heaps
+        if (maxHeap.size() > minHeap.size() + 1) {
+            minHeap.push(maxHeap.top());
+            maxHeap.pop();
+        } else if (minHeap.size() > maxHeap.size()) {
+            maxHeap.push(minHeap.top());
+            minHeap.pop();
+        }
+    }
+
+    double findMedian() {
+        if (maxHeap.size() > minHeap.size()) {
+            return maxHeap.top();
+        }
+        return (maxHeap.top() + minHeap.top()) / 2.0;
+    }
+};
+```
+
+---
+
+### Merge K Sorted Lists
+
+- **Intuition**: Put the head of all $K$ linked lists into a Min-Heap. Extract the smallest node, attach to result list, and push its next node into the heap.
+- **TC**: $O(N \log K)$ where $N$ is total number of nodes, **SC**: $O(K)$.
+
+```cpp
+struct compare {
+    bool operator()(ListNode* a, ListNode* b) {
+        return a->val > b->val;
+    }
+};
+
+class Solution {
+public:
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        priority_queue<ListNode*, vector<ListNode*>, compare> pq;
+
+        for (auto head : lists) {
+            if (head) pq.push(head);
+        }
+
+        ListNode* dummy = new ListNode(-1);
+        ListNode* tail = dummy;
+
+        while (!pq.empty()) {
+            ListNode* minNode = pq.top();
+            pq.pop();
+
+            tail->next = minNode;
+            tail = tail->next;
+
+            if (minNode->next) {
+                pq.push(minNode->next);
+            }
+        }
+        return dummy->next;
+    }
+};
+```
+
+---
+
+### Task Scheduler
+
+- **Problem**: CPU tasks with cooldown parameter $n$. Calculate minimum intervals needed to complete all tasks.
+- **Intuition**: Use a Max-Heap to prioritize tasks with highest remaining frequency. Process tasks in blocks of $n + 1$ time slots.
+- **TC**: $O(N)$, **SC**: $O(1)$ (since max 26 English letters).
+
+```cpp
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+        unordered_map<char, int> freq;
+        for (char t : tasks) freq[t]++;
+
+        priority_queue<int> maxHeap;
+        for (auto& [ch, count] : freq) maxHeap.push(count);
+
+        int time = 0;
+        while (!maxHeap.empty()) {
+            vector<int> temp;
+            int cycle = n + 1;
+
+            while (cycle > 0 && !maxHeap.empty()) {
+                int count = maxHeap.top();
+                maxHeap.pop();
+                if (count > 1) temp.push_back(count - 1);
+                time++;
+                cycle--;
+            }
+
+            for (int count : temp) maxHeap.push(count);
+
+            if (maxHeap.empty()) break; // All tasks finished
+            time += cycle; // Idle time
+        }
+        return time;
+    }
+};
+```
+
+---
+
+## Binary Heap Implementation from Scratch
+
+```cpp
+class MaxHeap {
+    vector<int> heap;
+
+    void heapifyUp(int i) {
+        while (i > 0) {
+            int parent = (i - 1) / 2;
+            if (heap[parent] < heap[i]) {
+                swap(heap[parent], heap[i]);
+                i = parent;
+            } else break;
+        }
+    }
+
+    void heapifyDown(int i) {
+        int n = heap.size();
+        while (i < n) {
+            int left = 2 * i + 1;
+            int right = 2 * i + 2;
+            int largest = i;
+
+            if (left < n && heap[left] > heap[largest]) largest = left;
+            if (right < n && heap[right] > heap[largest]) largest = right;
+
+            if (largest != i) {
+                swap(heap[i], heap[largest]);
+                i = largest;
+            } else break;
+        }
+    }
+
+public:
+    MaxHeap() {}
+
+    void push(int val) {
+        heap.push_back(val);
+        heapifyUp(heap.size() - 1);
+    }
+
+    void pop() {
+        if (heap.empty()) return;
+        heap[0] = heap.back();
+        heap.pop_back();
+        heapifyDown(0);
+    }
+
+    int top() {
+        return heap.empty() ? -1 : heap[0];
+    }
+
+    // Build Heap in O(N) time from un-ordered array
+    void buildHeap(vector<int>& arr) {
+        heap = arr;
+        int n = heap.size();
+        for (int i = n / 2 - 1; i >= 0; i--) {
+            heapifyDown(i);
+        }
+    }
+};
+```
+

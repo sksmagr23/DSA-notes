@@ -324,3 +324,183 @@ cout << x << endl; // Still prints 10
 
 ---
 
+## Segment Tree (Point Update & Range Query)
+
+A **Segment Tree** is a binary tree used to perform range queries (e.g., sum, min, max, gcd) and point/range updates on an array in **$O(\log N)$** time.
+
+### Structure
+- Size of tree array: $4N$ elements.
+- Node $ind$ has left child at $2 \cdot ind + 1$ and right child at $2 \cdot ind + 2$.
+
+```cpp
+class SegmentTree {
+    vector<int> tree;
+    int n;
+
+    void build(int ind, int low, int high, const vector<int>& arr) {
+        if (low == high) {
+            tree[ind] = arr[low];
+            return;
+        }
+        int mid = (low + high) / 2;
+        build(2 * ind + 1, low, mid, arr);
+        build(2 * ind + 2, mid + 1, high, arr);
+        tree[ind] = tree[2 * ind + 1] + tree[2 * ind + 2]; // Range Sum
+    }
+
+    void update(int ind, int low, int high, int i, int val) {
+        if (low == high) {
+            tree[ind] = val;
+            return;
+        }
+        int mid = (low + high) / 2;
+        if (i <= mid) update(2 * ind + 1, low, mid, i, val);
+        else update(2 * ind + 2, mid + 1, high, i, val);
+        tree[ind] = tree[2 * ind + 1] + tree[2 * ind + 2];
+    }
+
+    int query(int ind, int low, int high, int l, int r) {
+        // Complete overlap
+        if (low >= l && high <= r) return tree[ind];
+        // No overlap
+        if (high < l || low > r) return 0;
+        // Partial overlap
+        int mid = (low + high) / 2;
+        int left = query(2 * ind + 1, low, mid, l, r);
+        int right = query(2 * ind + 2, mid + 1, high, l, r);
+        return left + right;
+    }
+
+public:
+    SegmentTree(const vector<int>& arr) {
+        n = arr.size();
+        tree.resize(4 * n, 0);
+        build(0, 0, n - 1, arr);
+    }
+
+    void update(int i, int val) {
+        update(0, 0, n - 1, i, val);
+    }
+
+    int query(int l, int r) {
+        return query(0, 0, n - 1, l, r);
+    }
+};
+```
+
+---
+
+## Fenwick Tree / Binary Indexed Tree (BIT)
+
+A **Fenwick Tree** provides $O(\log N)$ prefix sum queries and point updates with half the memory of a Segment Tree.
+
+- **Isolation of LSB**: `i & (-i)` gives the lowest set bit.
+- **Update**: `i += (i & -i)`
+- **Query (Prefix Sum)**: `i -= (i & -i)`
+
+```cpp
+class FenwickTree {
+    vector<int> bit;
+    int n;
+
+public:
+    FenwickTree(int n) {
+        this->n = n;
+        bit.assign(n + 1, 0); // 1-based indexing
+    }
+
+    void add(int i, int delta) {
+        for (; i <= n; i += i & -i) {
+            bit[i] += delta;
+        }
+    }
+
+    int query(int i) {
+        int sum = 0;
+        for (; i > 0; i -= i & -i) {
+            sum += bit[i];
+        }
+        return sum;
+    }
+
+    int rangeQuery(int l, int r) {
+        return query(r) - query(l - 1);
+    }
+};
+```
+
+---
+
+## Sieve of Eratosthenes & Prime Factorization (SPF)
+
+### Sieve of Eratosthenes (Find all primes up to N)
+- **TC**: $O(N \log \log N)$, **SC**: $O(N)$.
+
+```cpp
+vector<bool> sieve(int n) {
+    vector<bool> isPrime(n + 1, true);
+    isPrime[0] = isPrime[1] = false;
+
+    for (int p = 2; p * p <= n; p++) {
+        if (isPrime[p]) {
+            for (int i = p * p; i <= n; i += p) {
+                isPrime[i] = false;
+            }
+        }
+    }
+    return isPrime;
+}
+```
+
+### Smallest Prime Factor (SPF) for $O(\log N)$ Prime Factorization
+
+```cpp
+class PrimeFactorizer {
+    vector<int> spf;
+public:
+    PrimeFactorizer(int n) {
+        spf.resize(n + 1);
+        for (int i = 0; i <= n; i++) spf[i] = i;
+
+        for (int i = 2; i * i <= n; i++) {
+            if (spf[i] == i) {
+                for (int j = i * i; j <= n; j += i) {
+                    if (spf[j] == j) spf[j] = i;
+                }
+            }
+        }
+    }
+
+    vector<int> getFactorization(int x) {
+        vector<int> factors;
+        while (x != 1) {
+            factors.push_back(spf[x]);
+            x /= spf[x];
+        }
+        return factors;
+    }
+};
+```
+
+---
+
+## Modular Multiplicative Inverse (Fermat's Little Theorem)
+
+If $P$ is prime and $\gcd(a, P) = 1$, then $a^{P-1} \equiv 1 \pmod P \implies a^{P-2} \equiv a^{-1} \pmod P$.
+
+```cpp
+long long power(long long base, long long exp, long long mod) {
+    long long res = 1;
+    base %= mod;
+    while (exp > 0) {
+        if (exp % 2 == 1) res = (res * base) % mod;
+        base = (base * base) % mod;
+        exp /= 2;
+    }
+    return res;
+}
+
+long long modInverse(long long n, long long p) {
+    return power(n, p - 2, p);
+}
+```
