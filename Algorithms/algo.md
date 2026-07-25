@@ -486,7 +486,11 @@ public:
 
 ## Modular Multiplicative Inverse (Fermat's Little Theorem)
 
-If $P$ is prime and $\gcd(a, P) = 1$, then $a^{P-1} \equiv 1 \pmod P \implies a^{P-2} \equiv a^{-1} \pmod P$.
+If $P$ is prime and $\gcd(a, P) = 1$, then by Fermat's Little Theorem:
+
+$$a^{P-1} \equiv 1 \pmod P \implies a^{P-2} \equiv a^{-1} \pmod P$$
+
+Thus, the modular inverse of $a \pmod P$ is $a^{P-2} \pmod P$.
 
 ```cpp
 long long power(long long base, long long exp, long long mod) {
