@@ -431,80 +431,43 @@ public:
 
 ---
 
-## Sieve of Eratosthenes & Prime Factorization (SPF)
+## Difference Array Concept
 
-### Sieve of Eratosthenes (Find all primes up to N)
-- **TC**: $O(N \log \log N)$, **SC**: $O(N)$.
+A **Difference Array** is a helper array used to perform multiple range update queries of the form "add value $v$ to range $[l, r]$" in $O(1)$ time. After all updates are done, the final array can be reconstructed in $O(N)$ time.
+
+### How it works:
+1. **Initialize** a difference array `diff` of size $n+1$ with all zeros.
+2. **For each query** $[l, r, v]$ (add $v$ to subarray `arr[l...r]`):
+   - Add $v$ to `diff[l]`: `diff[l] += v`
+   - Subtract $v$ from `diff[r+1]`: `diff[r+1] -= v` (if $r+1 < n$)
+3. **Reconstruct** the actual updates by computing prefix sums of `diff`, and add them to the original array.
+
+### Complexity:
+- **Range Update Query**: $O(1)$
+- **Rebuilding Array**: $O(N)$
+- **Space Complexity**: $O(N)$ for the difference array
+
+### C++ Code Implementation
 
 ```cpp
-vector<bool> sieve(int n) {
-    vector<bool> isPrime(n + 1, true);
-    isPrime[0] = isPrime[1] = false;
-
-    for (int p = 2; p * p <= n; p++) {
-        if (isPrime[p]) {
-            for (int i = p * p; i <= n; i += p) {
-                isPrime[i] = false;
-            }
-        }
+vector<int> diffArray(vector<int>& arr, vector<vector<int>> & queries) {
+    int n = arr.size();
+    vector<int> diff(n + 1, 0);
+    for (auto q : queries) {
+        int l = q[0], r = q[1], v = q[2];
+        diff[l] += v;
+        if (r + 1 < n)
+            diff[r + 1] -= v;
     }
-    return isPrime;
+
+    vector<int> ans = arr;
+    ans[0] += diff[0];
+    for (int i = 1; i < n; i++) {
+        diff[i] += diff[i - 1];
+        ans[i] += diff[i];
+    }
+    return ans;
 }
-```
-
-### Smallest Prime Factor (SPF) for $O(\log N)$ Prime Factorization
-
-```cpp
-class PrimeFactorizer {
-    vector<int> spf;
-public:
-    PrimeFactorizer(int n) {
-        spf.resize(n + 1);
-        for (int i = 0; i <= n; i++) spf[i] = i;
-
-        for (int i = 2; i * i <= n; i++) {
-            if (spf[i] == i) {
-                for (int j = i * i; j <= n; j += i) {
-                    if (spf[j] == j) spf[j] = i;
-                }
-            }
-        }
-    }
-
-    vector<int> getFactorization(int x) {
-        vector<int> factors;
-        while (x != 1) {
-            factors.push_back(spf[x]);
-            x /= spf[x];
-        }
-        return factors;
-    }
-};
 ```
 
 ---
-
-## Modular Multiplicative Inverse (Fermat's Little Theorem)
-
-If $P$ is prime and $\gcd(a, P) = 1$, then by Fermat's Little Theorem:
-
-$$a^{P-1} \equiv 1 \pmod P \implies a^{P-2} \equiv a^{-1} \pmod P$$
-
-Thus, the modular inverse of $a \pmod P$ is $a^{P-2} \pmod P$.
-
-```cpp
-long long power(long long base, long long exp, long long mod) {
-    long long res = 1;
-    base %= mod;
-    while (exp > 0) {
-        if (exp % 2 == 1) res = (res * base) % mod;
-        base = (base * base) % mod;
-        exp /= 2;
-    }
-    return res;
-}
-
-long long modInverse(long long n, long long p) {
-    return power(n, p - 2, p);
-}
-```
