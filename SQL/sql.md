@@ -45,6 +45,7 @@ An RDBMS is a database management system based on the relational model introduce
 Data types define the type of value a column can hold. While specific names vary slightly across RDBMS dialects, the standard SQL types are:
 
 ### A. Numeric Types
+
 | Data Type | Description |
 | :--- | :--- |
 | `INT` / `INTEGER` | Whole numbers (typically 4 bytes). |
@@ -55,6 +56,7 @@ Data types define the type of value a column can hold. While specific names vary
 | `FLOAT(p)` / `DOUBLE` | Approximate floating-point numbers. |
 
 ### B. String / Character Types
+
 | Data Type | Description |
 | :--- | :--- |
 | `CHAR(n)` | Fixed-length character string. Padded with spaces if shorter than `n`. Max size: 255. |
@@ -62,6 +64,7 @@ Data types define the type of value a column can hold. While specific names vary
 | `TEXT` | Large variable-length character data (up to 2GB or 64KB depending on DB). Used for long descriptions or articles. |
 
 ### C. Date and Time Types
+
 | Data Type | Description | Format |
 | :--- | :--- | :--- |
 | `DATE` | Stores date only. | `YYYY-MM-DD` |
@@ -639,6 +642,7 @@ FROM employees;
 ```
 
 *Output Simulation for 4 employees with salaries `100k, 90k, 90k, 80k`:*
+
 | Name | Salary | ROW_NUMBER | RANK | DENSE_RANK |
 | :--- | :--- | :--- | :--- | :--- |
 | John | 100,000 | 1 | 1 | 1 |

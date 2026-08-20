@@ -15,7 +15,7 @@ A collection of data structures & algorithms reference notes, implementations, a
 
 ## Intermediate & Advanced
 * [Sliding Windows & Two Pointers](windows_2pointers/notes.md)
-* [Bit Manipulation](Bits/bit.md)
+* [Bit Masking](Bits/bit_masking.md)
 * [Greedy Algorithms](greedy/notes.md)
 * [Heaps (Priority Queue)](PriorityQueue/notes.md)
 * [Trees](Trees/binary_trees.md)
