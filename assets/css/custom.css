@@ -56,7 +56,7 @@ body {
   position: sticky;
   top: 0;
   height: var(--navbar-h);
-  background: rgba(9, 9, 11, 0.85);
+  background: #1e1e23f3; /* Semi-transparent background */
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
   z-index: 100;
@@ -144,7 +144,7 @@ body {
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 12px #1e1e23d8;
   max-height: 300px;
   overflow-y: auto;
   z-index: 200;
@@ -570,7 +570,7 @@ pre:hover .copy-btn {
     z-index: 90;
     transform: translateX(-100%);
     transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.6);
+    box-shadow: 4px 0 24px #1e1e23cd;
   }
   
   .sidebar.open {
