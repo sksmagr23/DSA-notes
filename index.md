@@ -35,6 +35,7 @@ A collection of data structures & algorithms reference notes, implementations, a
 * [Advanced DP (MCM, Trees, Bitmask)](DP/advanced.md)
 {: .topic-index}
 
-## Database & SQL
+## Additional Topics
 * [SQL Study Guide](SQL/sql.md)
+* [OS Study Guide](OS/os.md)
 {: .topic-index}
