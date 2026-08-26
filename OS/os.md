@@ -1306,3 +1306,440 @@ Docker is a popular platform for developing, shipping, and running containers. I
 3. Dockerfile: A text file that contains instructions for building a Docker image.
 
 ---
+
+## Scheduling Algorithms
+
+### Q1: What is scheduling in operating systems?
+
+Scheduling in operating systems is the process of deciding which task or process should be executed next by the CPU. It's like a traffic controller for your computer, making sure all programs get their fair share of CPU time and resources.
+
+### Q2: Why is scheduling important?
+
+1. It helps maximize CPU usage
+2. It ensures fair allocation of resources among processes
+3. It improves overall system performance
+4. It helps meet deadlines for time-sensitive tasks
+
+### Q3: What is a scheduler and what does it do?
+
+A scheduler is a part of the operating system that handles the scheduling of processes. It has three main jobs:
+
+1. Selecting which process to run next (based on a scheduling algorithm)
+2. Switching the CPU to that process (this involves context switching, which you've already learned about)
+3. Keeping track of all processes and their states
+
+Think of the scheduler as a manager in a busy restaurant, deciding which order to prepare next and telling the chefs when to switch tasks.
+
+### Q4: What is the difference between preemptive and non-preemptive scheduling?
+
+* **Preemptive scheduling:** The operating system can interrupt a running process and move it to the ready state to let another process run. It's like being able to pause a video game to answer an important phone call.
+* **Non-preemptive scheduling:** Once a process starts running, it continues until it finishes or voluntarily gives up the CPU (e.g., when it needs to wait for I/O). It's like having to finish your entire meal before someone else can use the table at a busy restaurant.
+
+Preemptive scheduling is more common in modern operating systems because it allows for better responsiveness and fairness.
+
+### Q5: What are some common scheduling algorithms?
+
+1. First-Come, First-Served (FCFS): Processes are executed in the order they arrive. Simple but can lead to long wait times.
+2. Shortest Job First (SJF): The process with the shortest execution time goes first. Efficient but can lead to starvation of longer processes.
+3. Round Robin (RR): Each process gets a small unit of CPU time (called a quantum), then is moved to the back of the queue. Fair but can be inefficient for processes with varying CPU burst times.
+4. Priority Scheduling: Processes are assigned priorities, and the highest priority process runs first. Can be preemptive or non-preemptive.
+
+### Q6: What is the concept of a 'ready queue'?
+
+A ready queue is a list of all processes that are ready to execute but are waiting for the CPU. When the scheduler needs to choose the next process to run, it typically looks at the ready queue.
+
+### Q7: What is CPU burst?
+
+A CPU burst is the amount of time a process spends executing on the CPU before it's either finished or needs to wait for something (like I/O operations).
+
+---
+
+## First-Come, First-Served (FCFS)
+
+### Q1: What is First-Come, First-Served (FCFS) scheduling?
+
+First-Come, First-Served (FCFS) scheduling is one of the simplest scheduling algorithms used in operating systems. In this method, processes are executed in the order they arrive in the ready queue. It's like a queue at a ticket counter – the first person to arrive gets served first.
+
+### Q2: How does FCFS scheduling work?
+
+1. When a process enters the ready queue, it's added to the back of the queue.
+2. The CPU takes the process at the front of the queue and executes it.
+3. Once the process finishes or is interrupted, the CPU moves to the next process in line.
+
+### Q3: What are the advantages of FCFS scheduling?
+
+1. Simplicity: It's easy to understand and implement.
+2. Fairness: Processes are executed in the order they arrive, without favoritism.
+3. No starvation: Every process eventually gets CPU time (assuming processes terminate).
+
+### Q4: What are the disadvantages of FCFS scheduling?
+
+1. Convoy Effect: Short processes stuck behind long ones must wait, potentially wasting CPU time.
+2. High average waiting time: Especially if a long process comes first.
+3. Not suitable for interactive systems: Users might wait a long time for responses.
+
+Example of Convoy Effect: P1 (24 ms), P2 (3 ms), P3 (3 ms) arrive in order. P2 and P3 must wait for P1 to finish, even though they're much shorter.
+
+### Q5: How do we calculate average waiting time in FCFS?
+
+To calculate average waiting time:
+
+1. For each process, calculate its waiting time (time spent in ready queue).
+2. Sum up all waiting times.
+3. Divide the sum by the number of processes.
+
+Example:
+
+P1 (burst time 10 ms), P2 (burst time 5 ms), P3 (burst time 8 ms)
+P1 waiting time = 0 ms
+P2 waiting time = 10 ms (P1's burst time)
+P3 waiting time = 15 ms (P1 + P2's burst times)
+
+Average waiting time = (0 + 10 + 15) / 3 = 8.33 ms
+
+### Q6: Is FCFS a preemptive or non-preemptive scheduling algorithm?
+
+FCFS is a non-preemptive scheduling algorithm. This means:
+
+* Once a process starts executing, it continues until it finishes or voluntarily releases the CPU.
+* The scheduler doesn't interrupt a running process to give CPU time to another process.
+
+### Q7: In what scenarios might FCFS be a good choice?
+
+FCFS could be suitable in:
+
+1. Batch systems where immediate response isn't necessary.
+2. Systems with long-running processes of similar length.
+3. Simple embedded systems with predictable, sequential tasks.
+
+---
+
+## Shortest Job First (SJF)
+
+### Q1: What is Shortest Job First (SJF) scheduling?
+
+A1: Shortest Job First (SJF) is a scheduling algorithm used in operating systems to decide which process should be executed next. In SJF, the process with the shortest execution time (or burst time) is selected to run first. This algorithm aims to minimize the average waiting time for all processes.
+
+### Q2: How does SJF differ from First-Come, First-Served (FCFS) scheduling?
+
+The main difference between SJF and FCFS is the criteria for selecting the next process to run:
+
+* FCFS: Processes are executed in the order they arrive, regardless of their execution time.
+* SJF: Processes are executed based on their burst time, with the shortest job getting priority.
+
+### Q3: What are the two types of SJF scheduling?
+
+There are two types of SJF scheduling:
+
+1. Non-preemptive SJF: Once a process starts executing, it continues until it completes or is blocked.
+2. Preemptive SJF: Also known as Shortest Remaining Time First (SRTF). In this version, if a new process arrives with a shorter burst time than the remaining time of the currently running process, the current process is preempted (interrupted) and the new process is scheduled.
+
+### Q4: What are the advantages of SJF scheduling?
+
+1. Minimum average waiting time: Among all scheduling algorithms, SJF provides the minimum average waiting time for a given set of processes.
+2. Improved system throughput: By prioritizing shorter jobs, more processes can be completed in less time.
+3. Reduced turnaround time: The time between submission and completion of a process is generally reduced for shorter processes.
+
+### Q5: What are the limitations or challenges of implementing SJF in real systems?
+
+1. Starvation: Long processes may be continuously pushed back if shorter processes keep arriving, leading to starvation.
+2. Difficulty in predicting burst time: In real systems, it's often impossible to know the exact execution time of a process beforehand.
+3. Overhead: Constantly comparing and selecting the shortest job can introduce additional overhead to the scheduling process.
+
+### Q6: How can the problem of starvation in SJF be mitigated?
+
+To mitigate starvation in SJF, we can use a technique called aging. Here's how it works:
+
+1. Assign a priority to each process.
+2. As time passes, gradually increase the priority of processes that have been waiting for a long time.
+3. At some point, the priority of a long-waiting process will exceed that of shorter processes, allowing it to be scheduled.
+
+This ensures that all processes eventually get a chance to execute, preventing indefinite starvation.
+
+---
+
+## Round Robin (RR)
+
+### Q1: What is Round Robin (RR) scheduling?
+
+Round Robin (RR) is a CPU scheduling algorithm used in operating systems. It's designed to be fair, giving each process an equal share of CPU time. In RR scheduling, each process is assigned a fixed time slot called a "time quantum" or "time slice". The CPU cycles through all processes, giving each one a turn to run for the duration of the time quantum.
+
+### Q2: How does Round Robin scheduling work?
+
+Round Robin scheduling works as follows:
+
+1. Processes are kept in a circular queue (like a merry-go-round).
+2. Each process gets a fixed time quantum to execute.
+3. If a process doesn't finish within its time quantum, it's moved to the back of the queue.
+4. The CPU then moves on to the next process in the queue.
+5. This cycle continues until all processes are completed.
+
+### Q3: What happens if a process finishes before its time quantum expires?
+
+If a process completes its execution before its time quantum expires, the CPU immediately switches to the next process in the queue. This helps in utilizing CPU time efficiently.
+
+### Q4: What are the advantages of Round Robin scheduling?
+
+1. Fairness: All processes get an equal share of CPU time.
+2. Responsiveness: It's good for time-sharing systems as each process gets regular CPU time.
+3. Low average waiting time: Processes don't have to wait long for their turn.
+4. Simple to implement: The algorithm is straightforward and easy to code.
+
+### Q5: What are the disadvantages of Round Robin scheduling?
+
+1. Performance depends on time quantum size: If the quantum is too large, it behaves like FCFS. If too small, it causes too many context switches.
+2. Higher average turnaround time: Compared to SJF, processes might take longer to complete.
+3. No priority: It doesn't consider process priorities, treating all processes equally.
+
+### Q6: How does the choice of time quantum affect Round Robin scheduling?
+
+* Too small: Causes frequent context switching, reducing CPU efficiency.
+* Too large: May lead to poor response time and behave like First-Come, First-Served (FCFS).
+
+---
+
+## Priority scheduling
+
+### Q1: What is Priority Scheduling?
+
+Priority Scheduling is a method used by operating systems to decide which process should be executed next. In this approach, each process is assigned a priority number. The process with the highest priority (usually denoted by the lowest number) is executed first.
+
+### Q2: How are priorities assigned to processes?
+
+1. System-defined priorities: The operating system may assign priorities based on the type of process (system process vs. user process).
+2. User-defined priorities: Users or administrators may set priorities for different processes.
+3. Time-dependent priorities: Priorities may change over time, like increasing the priority of a process that has been waiting for a long time.
+
+### Q3: What is the concept of "starvation" in Priority Scheduling, and how can it be addressed?
+
+Starvation occurs when lower-priority processes are continuously bypassed by higher-priority ones, potentially never getting executed. To address this, we use a technique called "aging". Aging gradually increases the priority of processes that have been waiting for a long time. This ensures that even low-priority processes eventually get their turn to execute.
+
+### Q4: What are the advantages and disadvantages of Priority Scheduling?
+
+**Advantages:**
+
+1. Important processes get CPU time more quickly.
+2. System responsiveness can improve if interactive processes get higher priority.
+3. It's flexible, as priorities can be adjusted based on various factors.
+
+**Disadvantages:**
+
+1. Lower priority processes may face starvation.
+2. It can be complex to implement, especially with dynamic priorities.
+3. There's potential for priority inversion, where a high-priority process indirectly waits for a low-priority one.
+
+---
+
+## Multilevel queue scheduling
+
+### Q1: What is Multilevel Queue Scheduling?
+
+Multilevel Queue Scheduling is a CPU scheduling algorithm used in operating systems to organize processes into different queues based on their characteristics or priority. Each queue has its own scheduling algorithm, and there's a scheduling system among the queues themselves.
+
+### Q2: How does Multilevel Queue Scheduling work?
+
+1. Processes are permanently assigned to a queue when they enter the system.
+2. Each queue has its own scheduling algorithm (e.g., First-Come-First-Served, Round Robin).
+3. There's a scheduling algorithm to choose between the queues (usually priority-based).
+4. The system processes all jobs from higher priority queues before moving to lower priority queues.
+
+---
+
+## Introduction to concurrency and Synchronization
+
+### Q1: What is concurrency in operating systems?
+
+Concurrency in operating systems refers to the ability of the system to handle multiple tasks or processes at the same time. In practice, this means that the operating system can switch between different tasks rapidly, giving the illusion that they're all running at once.
+
+### Q2: What challenges does concurrency introduce?
+
+1. Race conditions: When multiple processes access shared resources simultaneously, unexpected results may occur.
+2. Deadlocks: Processes may end up waiting for each other indefinitely, like two people each waiting for the other to go through a door first.
+3. Starvation: Some processes might not get fair access to resources, potentially never completing their tasks.
+4. Complexity: Concurrent programs are often more difficult to design, implement, and debug than sequential ones.
+
+### Q3: What is synchronization in the context of operating systems?
+
+Synchronization in operating systems refers to the coordination of multiple processes or threads to ensure they access shared resources or perform operations in a correct and orderly manner.
+
+The main goals of synchronization are:
+
+1. To avoid race conditions
+2. To ensure mutual exclusion when accessing shared resources
+3. To maintain data consistency
+4. To prevent deadlocks and starvation
+
+### Q4: What is a critical section?
+
+A critical section is a part of a program where shared resources are accessed. It's a section of code that only one process should execute at a time to prevent race conditions.
+
+### Q5: What are some basic synchronization mechanisms?
+
+1. Mutex (Mutual Exclusion): A mutex is like a lock that only one process can hold at a time. When a process wants to enter a critical section, it must first acquire the mutex. Once finished, it releases the mutex for other processes to use.
+2. Semaphores: A semaphore is a counter that controls access to a shared resource. It can allow multiple processes to access a resource simultaneously, up to a set limit.
+3. Monitors: A monitor is a high-level synchronization construct that combines mutex and condition variables. It provides a way to both protect shared data and coordinate processes.
+4. Condition Variables: These allow processes to wait for certain conditions to be met before proceeding.
+
+---
+
+## Mutual exclusion
+
+### Q1: What is mutual exclusion?
+
+Mutual exclusion is a way to make sure that only one process can use a shared resource at a time. It prevents multiple processes from accessing the same memory or file at the same time, which could lead to errors or inconsistent data.
+
+### Q2: How can we implement mutual exclusion?
+
+There are several ways to implement mutual exclusion:
+
+1. Locks: A process must acquire a lock before entering its critical section and release it after exiting. If the lock is already held, the process must wait.
+2. Semaphores: These are like counters that control access to a resource. A process must wait if the semaphore is at zero.
+3. Monitors: These are high-level synchronization constructs that package up mutual exclusion and the ability to wait for a condition to be true.
+
+### Q3: What problems can occur if we don't use mutual exclusion?
+
+1. Race conditions: The outcome of the program depends on the timing of events, leading to unpredictable results.
+2. Inconsistent data: Multiple processes might read and write data in an interleaved manner, leaving the data in an inconsistent state.
+3. Lost updates: One process's changes might be overwritten by another process without being taken into account.
+
+### Q4: What is deadlock and how is it related to mutual exclusion?
+
+Deadlock is a situation where two or more processes are unable to proceed because each is waiting for the other to release a resource. It's a potential downside of mutual exclusion if not implemented carefully.
+
+To prevent deadlocks, we can use techniques like:
+
+* Resource ordering: Always request resources in a specific order
+* Timeouts: Release held resources if waiting too long for another
+* Deadlock detection and recovery: Periodically check for deadlocks and resolve them
+
+---
+
+## Semaphores and monitors
+
+### Q1: What is a semaphore in operating systems?
+
+A semaphore is a synchronization tool used in operating systems to control access to shared resources by multiple processes. It's essentially a variable that can have non-negative integer values and supports two main operations:
+
+1. Wait (also called P or down): Decrements the semaphore value. If the value becomes negative, the process is blocked and put into a waiting queue.
+2. Signal (also called V or up): Increments the semaphore value. If there are blocked processes in the waiting queue, one is unblocked.
+
+Semaphores help prevent race conditions and ensure proper synchronization between processes.
+
+### Q2: What are the types of semaphores?
+
+1. Binary Semaphore: Can only have values 0 or 1. It's often used for mutual exclusion (mutex) to protect critical sections.
+2. Counting Semaphore: Can have any non-negative integer value. It's used to control access to a resource that has multiple instances.
+
+### Q3: How does a semaphore solve the producer-consumer problem?
+
+The producer-consumer problem is a classic synchronization issue where producers add data to a shared buffer and consumers remove data from it. Semaphores can solve this problem by:
+
+1. Using a mutex semaphore to ensure mutual exclusion when accessing the buffer.
+2. Using two counting semaphores: one to track empty slots (initially set to buffer size) and one to track filled slots (initially 0).
+
+Here's a simplified pseudocode example:
+
+```text
+mutex = Semaphore(1)
+empty = Semaphore(BUFFER_SIZE)
+full = Semaphore(0)
+
+Producer:
+    while true:
+        item = produce_item()
+        empty.wait()
+        mutex.wait()
+        add_to_buffer(item)
+        mutex.signal()
+        full.signal()
+
+Consumer:
+    while true:
+        full.wait()
+        mutex.wait()
+        item = remove_from_buffer()
+        mutex.signal()
+        empty.signal()
+        consume_item(item)
+```
+
+This ensures that producers wait when the buffer is full, consumers wait when it's empty, and buffer access is mutually exclusive.
+
+### Q4: What is a monitor in operating systems?
+
+A monitor is a high-level synchronization construct that encapsulates shared data and the procedures that operate on that data. It provides a way to achieve mutual exclusion and cooperation among processes. Key features of monitors include:
+
+1. Only one process can execute within the monitor at a time (mutual exclusion).
+2. Data variables can only be accessed within the monitor.
+3. Processes may have to wait to enter the monitor if another process is already executing inside it.
+4. Condition variables are used for process coordination within the monitor.
+
+Monitors are easier to use correctly compared to semaphores, as they handle the locking and unlocking automatically.
+
+### Q5: How do condition variables work in monitors?
+
+Condition variables in monitors are used for process coordination. They support two main operations:
+
+1. Wait: Causes the calling process to block and releases the monitor lock.
+2. Signal: Wakes up one waiting process (if any).
+
+When a process calls wait(), it's added to the condition's wait queue and releases the monitor. When another process calls signal(), it wakes up one process from the wait queue (if any).
+
+### Q6: What are the main differences between semaphores and monitors?
+
+1. Abstraction Level:
+
+   * Semaphores are lower-level primitives.
+   * Monitors are higher-level constructs that encapsulate data and operations.
+2. Ease of Use:
+
+   * Semaphores require careful programming to avoid errors like deadlocks.
+   * Monitors handle synchronization automatically, making them easier to use correctly.
+3. Mutual Exclusion:
+
+   * With semaphores, programmers must implement mutual exclusion explicitly.
+   * Monitors provide mutual exclusion automatically for all procedures within the monitor.
+4. Condition Synchronization:
+
+   * Semaphores use their counter for condition synchronization.
+   * Monitors use separate condition variables for more explicit condition synchronization.
+5. Visibility of Synchronization:
+
+   * Semaphore operations are scattered throughout the code.
+   * Monitor synchronization is centralized within the monitor structure.
+
+---
+
+## Deadlock prevention, avoidance, and detection
+
+### Q1: What is a deadlock in operating systems?
+
+A deadlock is a situation where two or more processes are unable to proceed because each is waiting for the other to release a resource.
+
+### Q2: What is deadlock prevention, and how does it work?
+
+Deadlock prevention is a strategy that aims to make at least one of the four necessary conditions for deadlock impossible. Here are ways to prevent each condition:
+
+1. Mutual Exclusion: This is often impossible to prevent as some resources are inherently non-sharable.
+2. Hold and Wait: Require processes to request all needed resources at once and block the process until all requests can be granted simultaneously.
+3. No Preemption: Allow preemption of resources from processes that are waiting for additional resources.
+4. Circular Wait: Impose a total ordering of resource types and require that each process requests resources in an increasing order of enumeration.
+
+### Q3: What is deadlock avoidance, and how does it differ from prevention?
+
+Deadlock avoidance is a strategy where the operating system dynamically examines the resource allocation state to predict and avoid the possibility of deadlock. Unlike prevention, which restricts how requests can be made, avoidance allows more freedom but requires more information about resource usage.
+
+The most common algorithm for deadlock avoidance is the Banker's Algorithm. It works by simulating the allocation of predetermined maximum possible amounts of all resources, and then makes an "s-state" check to test for the possibility of deadlock before deciding whether allocation should be allowed to continue.
+
+### Q4: What is deadlock detection, and how does it work?
+
+Deadlock detection is a strategy where the system allows deadlocks to occur but then takes action to recover. The system periodically checks for deadlocks using an algorithm similar to the Banker's Algorithm. If a deadlock is detected, the system must recover using one of several possible approaches:
+
+1. Process Termination: Abort one or more processes to break the deadlock.
+2. Resource Preemption: Forcibly take resources from one or more processes and give these resources to other processes until the deadlock cycle is broken.
+
+### Q5: What is a race condition?
+
+A race condition is a situation in concurrent programming where the outcome of a program depends on the timing or order of execution of multiple processes or threads. It occurs when two or more processes or threads access shared resources or data simultaneously, and at least one of them modifies the data.
+
+---
