@@ -1,1745 +1,1915 @@
-## Introduction to Operating Systems
-
-### Q1: What is an Operating System?
-
-An **Operating System (OS)** is system software that acts as a bridge between the **user and computer hardware**. It manages computer resources and provides services required by application programs.
-
-Think of an OS as a **traffic controller for a computer**. It manages the flow of information, decides which programs can use system resources, and ensures that everything works efficiently.
-
-#### Key Responsibilities
-
-* Manages hardware resources such as CPU, memory, and storage.
-* Provides services to application programs.
-* Acts as an interface between users and hardware.
-* Controls and coordinates system activities.
+# Operating Systems — Complete Notes
 
 ---
 
-### Q2: What are Some Examples of Operating Systems?
-    
-Common operating systems include:
+## Table of Contents
 
-1. **Microsoft Windows** — Windows 10, Windows 11
-2. **macOS** — Used on Apple computers
-3. **Linux** — Ubuntu, Fedora, Debian, etc.
-4. **Android** — Used on many smartphones and tablets
-5. **iOS** — Used on iPhones and iPads
+- [Operating Systems — Complete Notes](#operating-systems--complete-notes)
+  - [Table of Contents](#table-of-contents)
+  - [1. OS Fundamentals \& Architecture](#1-os-fundamentals--architecture)
+    - [1.1 What is an Operating System?](#11-what-is-an-operating-system)
+    - [1.2 Fundamental Functions of an OS](#12-fundamental-functions-of-an-os)
+    - [1.3 Application Software vs. System Software](#13-application-software-vs-system-software)
+    - [1.4 Primary Goals \& Design Trade-offs](#14-primary-goals--design-trade-offs)
+    - [1.5 OS Architectures: Monolithic, Microkernel, Layered, Hybrid](#15-os-architectures-monolithic-microkernel-layered-hybrid)
+  - [2. Types of Operating Systems](#2-types-of-operating-systems)
+    - [2.1 Single-Tasking / Batch Processing Systems](#21-single-tasking--batch-processing-systems)
+    - [2.2 Multiprogramming Systems](#22-multiprogramming-systems)
+    - [2.3 Multitasking \& Time-Sharing Systems](#23-multitasking--time-sharing-systems)
+    - [2.4 Multiprocessing Systems (SMP vs. ASMP)](#24-multiprocessing-systems-smp-vs-asmp)
+    - [2.5 Distributed \& Clustered Operating Systems](#25-distributed--clustered-operating-systems)
+    - [2.6 Real-Time Operating Systems (Hard vs. Soft RTOS)](#26-real-time-operating-systems-hard-vs-soft-rtos)
+  - [3. Kernel, System Calls \& Operating Modes](#3-kernel-system-calls--operating-modes)
+    - [3.1 The Kernel \& User Space](#31-the-kernel--user-space)
+    - [3.2 Dual-Mode Operation (User Mode vs. Kernel Mode)](#32-dual-mode-operation-user-mode-vs-kernel-mode)
+    - [3.3 System Calls vs. Library/Function Calls](#33-system-calls-vs-libraryfunction-calls)
+    - [3.4 Categories of System Calls](#34-categories-of-system-calls)
+    - [3.5 Interrupts, Traps, Faults, and Aborts](#35-interrupts-traps-faults-and-aborts)
+  - [4. Booting, Hardware Interface \& Architecture](#4-booting-hardware-interface--architecture)
+    - [4.1 The Complete Booting Sequence (POST, BIOS/UEFI, Bootloader)](#41-the-complete-booting-sequence-post-biosuefi-bootloader)
+    - [4.2 32-bit vs. 64-bit Systems](#42-32-bit-vs-64-bit-systems)
+    - [4.3 Memory \& Storage Hierarchy](#43-memory--storage-hierarchy)
+  - [5. Process Management \& Lifecycle](#5-process-management--lifecycle)
+    - [5.1 Program vs. Process](#51-program-vs-process)
+    - [5.2 Process Control Block (PCB) \& Memory Layout](#52-process-control-block-pcb--memory-layout)
+    - [5.3 Process State Transitions (5-State and 7-State Models)](#53-process-state-transitions-5-state-and-7-state-models)
+      - [Classic 5-State Transition Diagram](#classic-5-state-transition-diagram)
+      - [Extended 7-State Model (With Swapping)](#extended-7-state-model-with-swapping)
+    - [5.4 Process Queues \& Schedulers (LTS, STS, MTS)](#54-process-queues--schedulers-lts-sts-mts)
+    - [5.5 Dispatcher \& Context Switching](#55-dispatcher--context-switching)
+    - [5.6 Process Creation \& Termination (`fork()`, `exec()`, `wait()`, `exit()`)](#56-process-creation--termination-fork-exec-wait-exit)
+    - [5.7 Zombie, Orphan, and Daemon Processes](#57-zombie-orphan-and-daemon-processes)
+  - [6. CPU Scheduling](#6-cpu-scheduling)
+    - [6.1 CPU Burst \& Scheduling Criteria](#61-cpu-burst--scheduling-criteria)
+    - [6.2 Preemptive vs. Non-Preemptive Scheduling](#62-preemptive-vs-non-preemptive-scheduling)
+    - [6.3 First-Come, First-Served (FCFS) \& Convoy Effect](#63-first-come-first-served-fcfs--convoy-effect)
+    - [6.4 Shortest Job First (SJF) \& Exponential Burst Prediction](#64-shortest-job-first-sjf--exponential-burst-prediction)
+    - [6.5 Shortest Remaining Time First (SRTF)](#65-shortest-remaining-time-first-srtf)
+    - [6.6 Priority Scheduling, Starvation \& Aging](#66-priority-scheduling-starvation--aging)
+    - [6.7 Round Robin (RR) \& Quantum Selection](#67-round-robin-rr--quantum-selection)
+    - [6.8 Multilevel Queue (MLQ) \& Multilevel Feedback Queue (MLFQ)](#68-multilevel-queue-mlq--multilevel-feedback-queue-mlfq)
+    - [6.9 Multiprocessor Scheduling (Affinity \& Load Balancing)](#69-multiprocessor-scheduling-affinity--load-balancing)
+  - [7. Threads \& Multithreading](#7-threads--multithreading)
+    - [7.1 Concept of a Thread](#71-concept-of-a-thread)
+    - [7.2 Process vs. Thread](#72-process-vs-thread)
+    - [7.3 User-Level Threads (ULT) vs. Kernel-Level Threads (KLT)](#73-user-level-threads-ult-vs-kernel-level-threads-klt)
+    - [7.4 Multithreading Models (Many-to-One, One-to-One, Many-to-Many)](#74-multithreading-models-many-to-one-one-to-one-many-to-many)
+  - [8. Inter-Process Communication (IPC)](#8-inter-process-communication-ipc)
+    - [8.1 Shared Memory vs. Message Passing](#81-shared-memory-vs-message-passing)
+    - [8.2 Pipes (Anonymous Pipes vs. Named Pipes / FIFOs)](#82-pipes-anonymous-pipes-vs-named-pipes--fifos)
+    - [8.3 Sockets, Message Queues \& Signals](#83-sockets-message-queues--signals)
+  - [9. Process Synchronization \& Critical Section](#9-process-synchronization--critical-section)
+    - [9.1 Concurrency, Race Conditions \& Critical Sections](#91-concurrency-race-conditions--critical-sections)
+    - [9.2 Requirements of a Valid Critical Section Solution](#92-requirements-of-a-valid-critical-section-solution)
+    - [9.3 Hardware-Assisted Synchronization (`TestAndSet`, `CompareAndSwap`)](#93-hardware-assisted-synchronization-testandset-compareandswap)
+      - [`TestAndSet`](#testandset)
+      - [`CompareAndSwap` (CAS)](#compareandswap-cas)
+    - [9.4 Peterson's Solution (Two-Process Software Solution)](#94-petersons-solution-two-process-software-solution)
+    - [9.5 Semaphores (Binary vs. Counting Semaphores)](#95-semaphores-binary-vs-counting-semaphores)
+      - [Conceptual Operations](#conceptual-operations)
+    - [9.6 Mutex vs. Binary Semaphore](#96-mutex-vs-binary-semaphore)
+    - [9.7 Condition Variables \& Monitors](#97-condition-variables--monitors)
+  - [10. Classical Synchronization Problems](#10-classical-synchronization-problems)
+    - [10.1 Producer-Consumer (Bounded-Buffer) Problem](#101-producer-consumer-bounded-buffer-problem)
+    - [10.2 Readers-Writers Problem](#102-readers-writers-problem)
+    - [10.3 Dining Philosophers Problem](#103-dining-philosophers-problem)
+    - [10.4 Sleeping Barber \& Cigarette Smokers Problems](#104-sleeping-barber--cigarette-smokers-problems)
+  - [11. Deadlocks](#11-deadlocks)
+    - [11.1 Definition \& Necessary Conditions (Coffman Conditions)](#111-definition--necessary-conditions-coffman-conditions)
+      - [The 4 Coffman Conditions (Must hold simultaneously)](#the-4-coffman-conditions-must-hold-simultaneously)
+    - [11.2 Resource Allocation Graphs (RAG)](#112-resource-allocation-graphs-rag)
+    - [11.3 Deadlock Handling Strategies Overview](#113-deadlock-handling-strategies-overview)
+    - [11.4 Deadlock Prevention](#114-deadlock-prevention)
+    - [11.5 Deadlock Avoidance \& Banker's Algorithm](#115-deadlock-avoidance--bankers-algorithm)
+      - [Safe vs. Unsafe State](#safe-vs-unsafe-state)
+      - [Banker's Algorithm Data Structures](#bankers-algorithm-data-structures)
+      - [Safety Algorithm](#safety-algorithm)
+    - [11.6 Deadlock Detection \& Recovery](#116-deadlock-detection--recovery)
+  - [12. Memory Management: Contiguous Allocation](#12-memory-management-contiguous-allocation)
+    - [12.1 Address Binding \& MMU (Logical vs. Physical Addresses)](#121-address-binding--mmu-logical-vs-physical-addresses)
+    - [12.2 Fixed vs. Dynamic Partitioning](#122-fixed-vs-dynamic-partitioning)
+    - [12.3 Fragmentation (Internal vs. External)](#123-fragmentation-internal-vs-external)
+    - [12.4 Dynamic Allocation Algorithms (First Fit, Best Fit, Worst Fit, Next Fit)](#124-dynamic-allocation-algorithms-first-fit-best-fit-worst-fit-next-fit)
+  - [13. Paging \& Non-Contiguous Memory](#13-paging--non-contiguous-memory)
+    - [13.1 Basic Architecture of Paging](#131-basic-architecture-of-paging)
+    - [13.2 Address Translation in Paging](#132-address-translation-in-paging)
+    - [13.3 Page Table Entries \& Flags](#133-page-table-entries--flags)
+    - [13.4 Translation Lookaside Buffer (TLB) \& Effective Access Time (EAT)](#134-translation-lookaside-buffer-tlb--effective-access-time-eat)
+      - [Effective Access Time (EAT) Formula](#effective-access-time-eat-formula)
+    - [13.5 Multi-Level, Hashed, and Inverted Page Tables](#135-multi-level-hashed-and-inverted-page-tables)
+    - [13.6 Shared Pages \& Reentrant Code](#136-shared-pages--reentrant-code)
+  - [14. Segmentation \& Combined Schemes](#14-segmentation--combined-schemes)
+    - [14.1 Segmentation Architecture \& Address Translation](#141-segmentation-architecture--address-translation)
+    - [14.2 Paging vs. Segmentation Detailed Comparison](#142-paging-vs-segmentation-detailed-comparison)
+    - [14.3 Segmented Paging](#143-segmented-paging)
+  - [15. Virtual Memory \& Demand Paging](#15-virtual-memory--demand-paging)
+    - [15.1 Concept of Virtual Memory](#151-concept-of-virtual-memory)
+    - [15.2 Demand Paging \& The Page Fault Sequence](#152-demand-paging--the-page-fault-sequence)
+    - [15.3 Effective Access Time (EAT) with Page Faults](#153-effective-access-time-eat-with-page-faults)
+    - [15.4 Pure Demand Paging \& Locality of Reference](#154-pure-demand-paging--locality-of-reference)
+  - [16. Page Replacement Algorithms](#16-page-replacement-algorithms)
+    - [16.1 FIFO \& Belady's Anomaly](#161-fifo--beladys-anomaly)
+    - [16.2 Optimal Page Replacement (Bélády's Min)](#162-optimal-page-replacement-béládys-min)
+    - [16.3 Least Recently Used (LRU)](#163-least-recently-used-lru)
+    - [16.4 LRU Approximations: Second Chance (Clock) \& Enhanced Second Chance](#164-lru-approximations-second-chance-clock--enhanced-second-chance)
+      - [Second Chance (Clock) Algorithm](#second-chance-clock-algorithm)
+      - [Enhanced Second Chance](#enhanced-second-chance)
+    - [16.5 Counting Algorithms (LFU \& MFU)](#165-counting-algorithms-lfu--mfu)
+  - [17. Thrashing \& Frame Allocation](#17-thrashing--frame-allocation)
+    - [17.1 Cause \& Mechanism of Thrashing](#171-cause--mechanism-of-thrashing)
+    - [17.2 Working Set Model](#172-working-set-model)
+    - [17.3 Page-Fault Frequency (PFF) Strategy](#173-page-fault-frequency-pff-strategy)
+  - [18. File Systems \& Storage Management](#18-file-systems--storage-management)
+    - [18.1 File Concepts, Attributes \& Operations](#181-file-concepts-attributes--operations)
+    - [18.2 File Control Block (FCB) \& Directory Structures](#182-file-control-block-fcb--directory-structures)
+    - [18.3 Hard Links vs. Soft (Symbolic) Links](#183-hard-links-vs-soft-symbolic-links)
+    - [18.4 File Allocation Methods (Contiguous, Linked, Indexed)](#184-file-allocation-methods-contiguous-linked-indexed)
+    - [18.5 UNIX Inode Architecture \& Max File Size Calculations](#185-unix-inode-architecture--max-file-size-calculations)
+      - [Maximum File Size Formula](#maximum-file-size-formula)
+    - [18.6 Free Space Management (Bit Vector, Linked List, Grouping, Counting)](#186-free-space-management-bit-vector-linked-list-grouping-counting)
+  - [19. Disk Structure \& Disk Scheduling](#19-disk-structure--disk-scheduling)
+    - [19.1 Magnetic Disk Geometry \& Access Times](#191-magnetic-disk-geometry--access-times)
+    - [19.2 Disk Scheduling Algorithms (FCFS, SSTF, SCAN, C-SCAN, LOOK, C-LOOK)](#192-disk-scheduling-algorithms-fcfs-sstf-scan-c-scan-look-c-look)
+  - [20. I/O Management \& Kernel Subsystems](#20-io-management--kernel-subsystems)
+    - [20.1 I/O Hardware: Ports, Buses, Controllers \& Registers](#201-io-hardware-ports-buses-controllers--registers)
+    - [20.2 I/O Techniques: Polling, Interrupt-Driven I/O \& DMA](#202-io-techniques-polling-interrupt-driven-io--dma)
+    - [20.3 Spooling vs. Buffering vs. Caching](#203-spooling-vs-buffering-vs-caching)
+  - [21. Protection, Security \& System Threats](#21-protection-security--system-threats)
+    - [21.1 Protection vs. Security](#211-protection-vs-security)
+    - [21.2 Access Matrix, Access Control Lists (ACL) \& Capabilities](#212-access-matrix-access-control-lists-acl--capabilities)
+    - [21.3 Common System Threats \& Attacks](#213-common-system-threats--attacks)
+  - [22. High-Yield Comparison Tables](#22-high-yield-comparison-tables)
+    - [22.1 Process vs. Thread](#221-process-vs-thread)
+    - [22.2 Mutex vs. Semaphore vs. Spinlock](#222-mutex-vs-semaphore-vs-spinlock)
+    - [22.3 Paging vs. Segmentation](#223-paging-vs-segmentation)
+  - [23. Complete Formula Cheat Sheet](#23-complete-formula-cheat-sheet)
+    - [CPU Scheduling](#cpu-scheduling)
+    - [Memory \& Paging](#memory--paging)
+    - [Storage \& Inode](#storage--inode)
+  - [24. How to Solve OS Numerical Problems](#24-how-to-solve-os-numerical-problems)
+    - [24.1 CPU Scheduling Numerical Walkthrough](#241-cpu-scheduling-numerical-walkthrough)
+      - [Step 1: Draw Gantt Chart Tracking Remaining Times](#step-1-draw-gantt-chart-tracking-remaining-times)
+      - [Step 2: Build Evaluation Table](#step-2-build-evaluation-table)
+    - [24.2 Banker's Algorithm Numerical Walkthrough](#242-bankers-algorithm-numerical-walkthrough)
+      - [Execution Steps:](#execution-steps)
+    - [24.3 Effective Access Time (TLB) Numerical Walkthrough](#243-effective-access-time-tlb-numerical-walkthrough)
+    - [24.4 UNIX Inode Maximum File Size Numerical Walkthrough](#244-unix-inode-maximum-file-size-numerical-walkthrough)
 
 ---
 
-### Q3: What are the Main Functions of an Operating System?
+## 1. OS Fundamentals & Architecture
 
-An operating system performs several important functions:
+### 1.1 What is an Operating System?
 
-#### 1. Resource Management
+An **Operating System (OS)** is system software that acts as an intermediary between computer hardware and user applications. It manages hardware resources (CPU, memory, I/O devices, storage) and provides a secure, abstracted, and convenient execution environment.
 
-The OS manages hardware resources such as:
-
-* CPU
-* Main memory
-* Storage
-* Input/output devices
-
-#### 2. File Management
-
-The OS organizes and manages **files and directories**, allowing users and applications to store, access, modify, and delete data.
-
-#### 3. Process Management
-
-The OS manages running programs, including:
-
-* Creating and terminating processes
-* Allocating CPU time
-* Scheduling processes
-* Managing process execution
-
-#### 4. User Interface
-
-The OS provides an interface through which users interact with the computer. This can be a **Graphical User Interface (GUI)** or **Command-Line Interface (CLI)**.
-
-#### 5. Security and Protection
-
-The OS protects system resources from unauthorized access and helps prevent malicious or unintended operations.
-
----
-
-### Q4: What is a User Interface in the Context of Operating Systems?
-
-A **User Interface (UI)** is the mechanism through which a user interacts with an operating system.
-
-There are two major types of user interfaces:
-
-#### 1. Graphical User Interface (GUI)
-
-A **GUI** uses visual elements such as:
-
-* Icons
-* Windows
-* Menus
-* Buttons
-* Dialog boxes
-
-Users typically interact with a GUI using a **mouse, keyboard, or touchscreen**.
-
-**Examples:** Windows and macOS.
-
-#### 2. Command-Line Interface (CLI)
-
-A **CLI** is a text-based interface where users type commands to interact with the operating system.
-
-For example, creating a directory using a CLI:
-
-```bash
-mkdir new_folder
+```text
++-------------------------------------------------------+
+|                    Users / Humans                     |
++-------------------------------------------------------+
+                           ↓
++-------------------------------------------------------+
+|        Application Programs (Browser, Compiler, IDE)  |
++-------------------------------------------------------+
+                           ↓
++-------------------------------------------------------+
+|        Operating System (Process, Memory, File, I/O)  |
++-------------------------------------------------------+
+                           ↓
++-------------------------------------------------------+
+|       Computer Hardware (CPU, RAM, Disks, Devices)    |
++-------------------------------------------------------+
 ```
 
-The same operation in a GUI could be performed by right-clicking and selecting **New Folder**.
+### 1.2 Fundamental Functions of an OS
 
-> **Note:** Linux commonly provides a CLI, but Linux distributions can also provide a complete GUI.
+1. **Resource Allocator / Manager:** Manages and arbitrates conflicting requests for CPU time, memory space, file storage, and I/O devices fairly and efficiently.
+2. **Control Program:** Controls execution of user programs to prevent errors, resource conflicts, and unauthorized hardware access.
+3. **Hardware Abstraction Layer (HAL):** Hides low-level hardware peculiarities (e.g., sector formatting, disk geometry) behind clean abstractions (files, streams, sockets).
+4. **User Interface:** Provides Command Line Interfaces (CLI), Graphical User Interfaces (GUI), or programmatic Application Binary Interfaces (ABIs).
+
+### 1.3 Application Software vs. System Software
+
+| Dimension | Application Software | System Software |
+| :--- | :--- | :--- |
+| **Purpose** | Performs specific end-user tasks (e.g., MS Word, Chrome) | Manages and operates the computer hardware platform (e.g., Windows, Linux, Drivers) |
+| **Execution Space** | User Space (unprivileged mode) | Kernel Space & privileged system daemons |
+| **Hardware Access** | Indirect (must invoke system calls) | Direct or privileged access to hardware |
+| **Dependency** | Depends on OS runtime and libraries | Autonomous; serves as the foundation for applications |
+
+### 1.4 Primary Goals & Design Trade-offs
+
+- **Maximize CPU Utilization:** Keep the CPU as busy as possible ($100\%$ theoretical).
+- **Maximize Throughput:** Complete the highest number of processes per unit of time.
+- **Minimize Turnaround Time (TAT):** Minimize time elapsed between process submission and completion.
+- **Minimize Waiting Time (WT):** Minimize total time spent waiting in the ready queue.
+- **Minimize Response Time (RT):** Minimize time from submission to the very first CPU output/response.
+- **Fairness & Starvation Prevention:** Guarantee every process eventually receives resources.
+
+> [!NOTE]
+> Different computing domains prioritize different metrics:
+> - **Desktop/Personal OS:** Prioritizes responsiveness and user experience.
+> - **Server/Cloud OS:** Prioritizes throughput and resource utilization.
+> - **Real-Time Systems:** Prioritizes determinism and strict deadline adherence.
+
+### 1.5 OS Architectures: Monolithic, Microkernel, Layered, Hybrid
+
+```text
+Monolithic Architecture                Microkernel Architecture
++-------------------------------+      +-------------------------------+
+| User Apps | Shell | Libraries |      | User Apps | Drivers | Servers | (User Space)
++-------------------------------+      +-------------------------------+
+| IPC, VFS, Memory, Scheduler,  | (Kernel)           ↓ IPC / System Calls
+| Network, Hardware Drivers     |      +-------------------------------+
++-------------------------------+      | IPC | Scheduler | Basic Memory| (Kernel Space)
++-------------------------------+      +-------------------------------+
+|            Hardware           |      |            Hardware           |
++-------------------------------+      +-------------------------------+
+```
+
+| Feature | Monolithic Kernel | Microkernel |
+| :--- | :--- | :--- |
+| **Structure** | All OS services (VFS, drivers, networking, IPC) run inside the kernel address space. | Only minimal essential services (IPC, basic scheduling, virtual memory) stay in the kernel; drivers and filesystems run in user space as servers. |
+| **Performance** | **High performance:** Communication between components is via direct function calls. | **Slightly lower:** Heavy IPC overhead and context switching between user servers and microkernel. |
+| **Extensibility & Reliability** | Poor isolation: A bug in any device driver can crash the entire OS. | High isolation: Crashed user-space drivers can be restarted without bringing down the kernel. |
+| **Examples** | Linux, traditional UNIX, MS-DOS | Mach, QNX, Minix, L4 |
+| **Hybrid Kernels** | Combines microkernel modularity with monolithic speed (e.g., Windows NT, macOS XNU). |
 
 ---
 
-### Q5: What is Multitasking in Operating Systems?
+## 2. Types of Operating Systems
 
-**Multitasking** is the ability of an operating system to manage multiple programs or tasks concurrently.
+### 2.1 Single-Tasking / Batch Processing Systems
 
-On a single CPU core, the OS achieves this by rapidly switching the CPU between tasks. This creates the appearance that multiple programs are running simultaneously. The OS schedules these tasks and allocates the necessary system resources to each one.
+- **Single-Tasking:** Only one process resides in memory and executes at a time (e.g., early MS-DOS). CPU sits completely idle during I/O operations.
+- **Batch Processing:** Similar jobs are batched together on punched cards/tapes and submitted via a human operator. No interactive execution; high turnaround time.
 
-#### Key Idea
+### 2.2 Multiprogramming Systems
 
-> **Multitasking = Managing multiple tasks concurrently through CPU scheduling and resource allocation.**
+- **Core Concept:** Multiple jobs are loaded into main memory simultaneously.
+- **Working Mechanism:** When the currently executing process requests I/O, the OS switches CPU allocation to another process waiting in the ready queue.
+- **Primary Goal:** Maximize **CPU Utilization**.
+
+```text
+Memory
++---------------+
+| OS Kernel     |
++---------------+
+| Job 1 (I/O)   | ───> Waiting for Disk/Network
++---------------+
+| Job 2 (Ready) | ───> CPU switches here immediately (No CPU Idleness)
++---------------+
+| Job 3         |
++---------------+
+```
+
+### 2.3 Multitasking & Time-Sharing Systems
+
+- **Logical extension of multiprogramming:** CPU time is sliced into small intervals (time quanta, e.g., $10\text{ ms} - 100\text{ ms}$).
+- The CPU switches among active processes so rapidly that users perceive simultaneous execution.
+- **Primary Goal:** Minimize **Response Time** and provide interactive computing.
+
+### 2.4 Multiprocessing Systems (SMP vs. ASMP)
+
+Computers containing two or more physical CPUs or multi-core processors sharing memory and system buses.
+
+```text
+Symmetric Multiprocessing (SMP)        Asymmetric Multiprocessing (ASMP)
++------+ +------+ +------+             +-------------+  +-------------+
+| CPU1 | | CPU2 | | CPU3 |             | Master CPU  |  | Slave CPU 1 |
++--+---+ +---+--+ +---+--+             | (OS tasks)  |  | (User tasks)|
+   |         |        |                +------+------+  +------+------+
+===+=========+========+=== (Bus)              |                |
+     | Main Memory |                   =======+================+======
+```
+
+- **Symmetric Multiprocessing (SMP):** All processors are peers; any processor can run OS kernel routines and user tasks. Standard in modern OSes (Linux, Windows, macOS).
+- **Asymmetric Multiprocessing (ASMP):** A master processor allocates tasks and runs the OS, while slave processors execute assigned user jobs.
+
+### 2.5 Distributed & Clustered Operating Systems
+
+- **Distributed OS:** Manages a collection of physically independent, networked computers and presents them to users as a single unified system (loosely coupled).
+- **Clustered OS:** Combines multiple independent nodes sharing storage area networks (SAN) to provide high availability and load balancing.
+
+### 2.6 Real-Time Operating Systems (Hard vs. Soft RTOS)
+
+An RTOS guarantees processing within strictly defined timing constraints (deadlines).
+
+```text
+Hard RTOS vs Soft RTOS
++----------------------------------+----------------------------------+
+| Hard Real-Time                   | Soft Real-Time                   |
+| Missing a deadline = Catastrophe | Missing a deadline = Performance |
+| & complete system failure.       | degradation, but acceptable.     |
+| Examples: Airbag controller,     | Examples: Video streaming,       |
+| Pacemaker, Flight guidance.      | Online gaming, VoIP audio.       |
++----------------------------------+----------------------------------+
+```
 
 ---
 
-### Q6: What is a File System?
+## 3. Kernel, System Calls & Operating Modes
 
-A **file system** is the method used by an operating system to **organize, store, retrieve, and manage files and directories** on a storage device.
+### 3.1 The Kernel & User Space
 
-Think of a file system like a **filing cabinet**:
+- **Kernel Space:** Protected memory region where the core operating system code, device drivers, and kernel data structures reside.
+- **User Space:** Sandboxed memory partition where standard user applications, GUI shells, and user libraries execute without direct hardware privileges.
 
-* **Directories/Folders** → Drawers or sections
-* **Files** → Individual documents
-* **File system** → The organizational method used to manage everything
+### 3.2 Dual-Mode Operation (User Mode vs. Kernel Mode)
 
-Different operating systems and storage environments use different file systems.
+To protect the system from erratic or malicious programs, modern CPU hardware enforces at least two execution modes, tracked by a hardware **Mode Bit** (e.g., $0 = \text{Kernel Mode}$, $1 = \text{User Mode}$).
 
-#### Examples
+```text
+User Mode (Mode Bit = 1)                 Kernel Mode (Mode Bit = 0)
++------------------------+               +--------------------------+
+| User Application       |               | Kernel System Call       |
+| calls library wrapper  |               | Handler executes service |
++-----------+------------+               +------------+-------------+
+            |                                         |
+            | Trap / Syscall (Mode bit -> 0)          | Return (Mode bit -> 1)
+            ↓                                         ↓
++-------------------------------------------------------------------+
+|                     Hardware Mode Switch                          |
++-------------------------------------------------------------------+
+```
 
-| Operating System | Common File System |
-| ---------------- | ------------------ |
-| Windows          | NTFS               |
-| macOS            | APFS               |
-| Linux            | ext4, XFS, Btrfs   |
+- **Privileged Instructions:** Instructions that can only be executed in Kernel Mode (e.g., direct I/O port access, modifying the Page Table Base Register, disabling interrupts, clearing the timer). If executed in User Mode, the CPU raises a hardware trap/exception.
+
+### 3.3 System Calls vs. Library/Function Calls
+
+```text
+User Application
+       ↓ (e.g., printf("Hello"))
+C Standard Library (libc)
+       ↓ (wraps write() with SYS_write number in register)
+System Call / Trap Instruction (e.g., 'syscall' / 'int 0x80')
+       ↓ [Hardware switches to Kernel Mode, consults Interrupt Vector Table]
+Kernel System Call Handler (sys_write)
+       ↓
+Device Driver & Hardware
+```
+
+| Property | Library Function Call | System Call |
+| :--- | :--- | :--- |
+| **Execution Domain** | Executes entirely in User Space | Transitions execution from User Space to Kernel Space |
+| **Overhead** | Very low (simple stack push and jump) | Higher (context switch, register saves, privilege change, security validation) |
+| **Example** | `sqrt()`, `strcpy()`, `atoi()` | `fork()`, `read()`, `write()`, `mmap()`, `kill()` |
+
+### 3.4 Categories of System Calls
+
+```text
+1. Process Control:      fork(), execve(), wait(), exit(), getpid(), brk()
+2. File Management:      open(), read(), write(), close(), unlink(), stat()
+3. Device Management:    ioctl(), read(), write(), attach/detach
+4. Information/System:   gettimeofday(), sysinfo(), uname(), time()
+5. Communication / IPC:  pipe(), shmget(), mmap(), msgget(), socket(), send(), recv()
+6. Protection/Security:  chmod(), chown(), umask()
+```
+
+### 3.5 Interrupts, Traps, Faults, and Aborts
+
+```text
+Hardware Interrupt (Asynchronous)     Trap / Exception (Synchronous)
+Generated by external hardware        Generated internally by CPU during
+(e.g., Timer tick, Disk I/O done)     instruction execution (e.g., Divide by 0, Syscall)
+```
+
+- **Hardware Interrupt:** Asynchronous event triggered by physical hardware (timer, keyboard, network card) asserting an interrupt line.
+- **Trap (Software Interrupt):** Synchronous instruction purposefully executed by software (e.g., `syscall`) to request kernel services.
+- **Fault:** Recoverable exception generated before an instruction completes (e.g., **Page Fault**). Once serviced, the CPU re-executes the faulting instruction.
+- **Abort:** Severe unrecoverable hardware or parity failure. Results in process termination.
 
 ---
 
-## Process Creation and Termination
+## 4. Booting, Hardware Interface & Architecture
 
-### Q1: What is a process in an operating system?
+### 4.1 The Complete Booting Sequence (POST, BIOS/UEFI, Bootloader)
 
-A process is a program in execution. It's like a recipe being cooked in the kitchen. When you open an application on your computer, like a web browser or a text editor, you're starting a process. Each process has its own memory space and resources allocated by the operating system.
+```text
+[1. Power ON]
+      ↓
+[2. CPU Reset & Jump to Firmware Entry Address in ROM / Flash]
+      ↓
+[3. BIOS / UEFI Initialized] ──> Runs POST (Power-On Self-Test: RAM, CPU, Bus check)
+      ↓
+[4. Locate Boot Device (Disk / NVMe / USB) via Boot Order]
+      ↓
+[5. Load Bootloader (MBR Sector 0 or EFI System Partition / GRUB)]
+      ↓
+[6. Bootloader loads Kernel Image & Initrd into Main Memory]
+      ↓
+[7. Kernel initializes Hardware, Memory Pages, Drivers & Mounts Root FS]
+      ↓
+[8. Kernel spawns PID 1 (init / systemd in User Space)]
+      ↓
+[9. System Daemons, Login Prompt & User GUI Shell started]
+```
 
-### Q2: How does an operating system create a new process?
+- **BIOS vs. UEFI:**
+  - **BIOS (Legacy):** 16-bit real mode, limited to Master Boot Record (MBR) partition tables ($\le 2\text{ TB}$, max 4 primary partitions).
+  - **UEFI (Modern):** 32/64-bit mode, supports GPT (GUID Partition Table, $>2\text{ TB}$ disks, $128$ partitions), Secure Boot, and faster initialization.
 
-The operating system creates a new process through these steps:
+### 4.2 32-bit vs. 64-bit Systems
 
-1. Allocate memory for the new process
-2. Load the program code into memory
-3. Set up a process control block (PCB) to store process information
-4. Assign a unique process ID (PID)
-5. Set the process state to "ready"
-6. Add the process to the scheduler's queue
+- **Addressable Memory Limit:**
+  - 32-bit architecture: $2^{32}\text{ bytes} = 4\text{ GiB}$ maximum direct physical memory address space.
+  - 64-bit architecture: $2^{64}\text{ bytes} = 16\text{ Exbibytes}$ (in practice, modern architectures use 48-bit or 57-bit virtual addressing, supporting terabytes of RAM).
+- **Register Size & Pointer Width:** 32-bit uses 4-byte pointers; 64-bit uses 8-byte pointers, allowing wider arithmetic operations per clock cycle.
 
-In most operating systems, a new process is created when an existing process calls a system function like `fork()` (in Unix-like systems) or `CreateProcess()` (in Windows).
+### 4.3 Memory & Storage Hierarchy
 
-### Q3: Can you give an example of process creation?
+```text
+                       ▲  Fastest, Smallest, Highest Cost / Bit
+                      / \
+                     /   \    Registers (< 1 KB, ~0.5 ns)
+                    /     \
+                   /       \   L1, L2, L3 Cache (MBs, 1-10 ns)
+                  /         \
+                 /           \  Main Memory / RAM (GBs, ~50-100 ns)
+                /             \
+               /               \ Solid-State Drives / NVMe (TBs, ~10-100 μs)
+              /                 \
+             /                   \ Hard Disk Drives / Network Storage (~ms)
+            /─────────────────────\
+             ▼  Slowest, Largest, Lowest Cost / Bit, Non-Volatile
+```
 
-Sure! Let's use a Unix-like system as an example:
+---
+
+## 5. Process Management & Lifecycle
+
+### 5.1 Program vs. Process
+
+```text
+Program (Passive)                         Process (Active)
++-----------------------+                 +--------------------------------+
+| Stored on Disk        |  Loaded via     | Resides in RAM                 |
+| Binary file / code    | ─────────────>  | Has Program Counter, Stack,    |
+| No CPU/memory consumed|  execve()       | Heap, Open File Descriptors    |
++-----------------------+                 +--------------------------------+
+```
+
+### 5.2 Process Control Block (PCB) & Memory Layout
+
+The **Process Control Block (PCB)** is the central data structure maintained by the OS for every active process.
+
+```text
++--------------------------------------+      Process Virtual Memory Layout
+|         Process ID (PID, PPID)       |      High Address (0xFFFFFFFF)
++--------------------------------------+      +-----------------------------+
+|         Process State                |      | Stack (Local vars, frames)  |
++--------------------------------------+      |              ↓              |
+|         Program Counter (PC)         |      |                             |
++--------------------------------------+      |              ↑              |
+|         CPU Registers (SP, AX, BX...) |     | Heap (malloc / dynamic mem) |
++--------------------------------------+      +-----------------------------+
+|         CPU Scheduling Info          |      | BSS (Uninitialized Globals) |
++--------------------------------------+      +-----------------------------+
+|         Memory Management (PTBR)     |      | Data (Initialized Globals)  |
++--------------------------------------+      +-----------------------------+
+|         Accounting & Limits          |      | Text (Compiled Code / Read) |
++--------------------------------------+      +-----------------------------+
+|         List of Open I/O Files       |      Low Address (0x00000000)
++--------------------------------------+
+```
+
+### 5.3 Process State Transitions (5-State and 7-State Models)
+
+#### Classic 5-State Transition Diagram
+
+```text
+                [New]
+                  │  admitted
+                  ▼
+            ┌───────────┐
+            │   Ready   │◀──────────────┐
+            └─────┬─────┘               │
+      scheduler   │                     │ timer expire /
+      dispatch    │                     │ preemption
+                  ▼                     │
+            ┌───────────┐               │
+            │  Running  │───────────────┘
+            └─────┬─────┘
+                  │  I/O wait / event wait
+                  ▼
+            ┌───────────┐
+            │  Waiting  │───────────────┐
+            │  (Blocked)│  I/O complete │
+            └───────────┘ (event occurs)│
+                  │                     │
+                  └─────────────────────┘
+```
+
+#### Extended 7-State Model (With Swapping)
+
+When main memory is constrained, the OS swapper (Medium-Term Scheduler) moves inactive processes to secondary storage:
+
+```text
+Ready (RAM)       ──[Suspend / Swap Out]──>  Suspend Ready (Disk)
+Waiting (RAM)     ──[Suspend / Swap Out]──>  Suspend Blocked (Disk)
+Suspend Blocked   ──[Event Occurs]────────>  Suspend Ready
+Suspend Ready     ──[Resume / Swap In]────>  Ready (RAM)
+```
+
+### 5.4 Process Queues & Schedulers (LTS, STS, MTS)
+
+- **Job Queue:** Holds all submitted programs awaiting admission.
+- **Ready Queue:** Holds all processes resident in main memory, ready and waiting for CPU time.
+- **Device / Waiting Queue:** Holds processes waiting for specific I/O devices or synchronization events.
+
+```text
++------------------------+------------------------------------+--------------------------+
+| Scheduler              | Primary Function                   | Invocation Frequency     |
++------------------------+------------------------------------+--------------------------+
+| Long-Term (Job)        | Selects jobs from pool, loads into | Infrequent (Seconds /    |
+|                        | RAM; controls multiprogramming.    | Minutes)                 |
++------------------------+------------------------------------+--------------------------+
+| Short-Term (CPU)       | Selects ready process and allocates| Extremely Frequent       |
+|                        | CPU.                               | (Every 10-100 ms)        |
++------------------------+------------------------------------+--------------------------+
+| Medium-Term (Swapper)  | Swaps processes between RAM and    | Intermediate             |
+|                        | secondary storage.                 | (As memory pressure rises)
++------------------------+------------------------------------+--------------------------+
+```
+
+### 5.5 Dispatcher & Context Switching
+
+The **Dispatcher** is the kernel module that gives control of the CPU to the process selected by the Short-Term Scheduler:
+
+1. **Saves context** of currently running process $P_1$ into its PCB.
+2. Updates $P_1$'s state (Ready/Waiting).
+3. Moves PCB of $P_2$ into active CPU registers (PC, SP, Base/Limit registers).
+4. Switches CPU to User Mode and jumps to $P_2$'s Program Counter.
+
+> [!IMPORTANT]
+> **Context Switch Overhead:** During a context switch, the CPU performs zero useful user work. Context switch latency includes register saving, cache invalidation, and TLB flushes.
+
+### 5.6 Process Creation & Termination (`fork()`, `exec()`, `wait()`, `exit()`)
 
 ```c
 #include <stdio.h>
 #include <unistd.h>
+#include <sys/wait.h>
 
 int main() {
     pid_t pid = fork();
-    
-    if (pid == 0) {
-        printf("I'm the child process!\n");
-    } else if (pid > 0) {
-        printf("I'm the parent process, and I created a child with PID %d\n", pid);
+
+    if (pid < 0) {
+        // Fork failed
+        perror("fork failed");
+        return 1;
+    } else if (pid == 0) {
+        // Child process
+        printf("Child Process: PID = %d, Parent PID = %d\n", getpid(), getppid());
+        char *args[] = {"/bin/ls", "-l", NULL};
+        execvp(args[0], args); // Overlays child address space with new binary
     } else {
-        printf("Fork failed\n");
+        // Parent process
+        printf("Parent Process: PID = %d, Child PID = %d\n", getpid(), pid);
+        int status;
+        wait(&status); // Blocks until child terminates and reaps child exit status
+        printf("Child reaped successfully.\n");
     }
-    
     return 0;
 }
 ```
 
-In this example, the `fork()` function creates a new process by duplicating the calling process. The new process (child) is an exact copy of the parent process.
+- **`fork()`:** Duplicates calling process (creates child). Returns `0` to child, child PID to parent, `-1` on error. Uses **Copy-on-Write (COW)** optimization.
+- **`execve()` / `exec()` family:** Replaces current process memory space, stack, heap, and code segment with a new executable program.
+- **`wait()` / `waitpid()`:** Suspends parent until a child process terminates; collects child exit code.
+- **`exit()`:** Terminates process, frees allocated memory, closes file descriptors, retains exit status in process table until reaped.
 
-### Q4: What happens when a process terminates?
+### 5.7 Zombie, Orphan, and Daemon Processes
 
-When a process terminates, the operating system performs these steps:
-
-1. Free up the memory used by the process
-2. Remove the process from any queues (e.g., ready queue, I/O queue)
-3. Update the status of child processes (if any)
-4. Notify the parent process (if it's waiting)
-5. Delete the process control block (PCB)
-
-### Q5: How can a process be terminated?
-
-A process can be terminated in several ways:
-
-1. Normal exit: The process completes its task and calls an exit system call.
-2. Error exit: The process encounters an error and exits.
-3. Fatal error: The operating system terminates the process due to a severe error.
-4. Killed by another process: Another process (usually with higher privileges) sends a termination signal.
-
-For example, in Unix-like systems, you can use the `kill` command to terminate a process:
-
-```bash
-kill -9 1234
+```text
+                       Process Lifecycle Quirks
++-------------------------------------------------------------------------------+
+| Zombie Process                                                                |
+| - A process that has finished execution (via exit()) but still has an entry   |
+|   in the Process Table because its parent has NOT yet called wait().          |
+| - Consumes no RAM or CPU, but occupies a PID slot.                            |
+| - Reaping: Once parent calls wait(), the zombie is removed.                   |
++-------------------------------------------------------------------------------+
+| Orphan Process                                                                |
+| - A process actively running whose parent terminated before calling wait().   |
+| - Adoption: Automatically adopted by systemd / init (PID 1), which            |
+|   periodically reaps terminated children.                                     |
++-------------------------------------------------------------------------------+
+| Daemon Process                                                                |
+| - Background, non-interactive process running detached from any controlling   |
+|   terminal (e.g., sshd, cron, systemd-journald).                              |
++-------------------------------------------------------------------------------+
 ```
 
-This command sends a SIGKILL signal to the process with PID 1234, forcibly terminating it.
+---
 
-### Q6: What's the difference between a zombie process and an orphan process?
+## 6. CPU Scheduling
 
-* **Zombie process:** A process that has finished execution but still has an entry in the process table. This happens when a child process terminates, but the parent hasn't yet called `wait()` to collect the child's exit status.
-* **Orphan process:** A process whose parent process has terminated before it. The orphan process is usually adopted by the init process (PID 1) in Unix-like systems.
+### 6.1 CPU Burst & Scheduling Criteria
+
+Processes alternate between **CPU execution bursts** and **I/O wait bursts**.
+
+```text
+CPU-Bound Process:    [─── Long CPU Burst ───] [IO] [─── Long CPU Burst ───]
+I/O-Bound Process:    [CPU] [────── Long I/O Wait ──────] [CPU] [── Long I/O ──]
+```
+
+- **Turnaround Time ($\text{TAT}$):** $\text{TAT} = \text{Completion Time (CT)} - \text{Arrival Time (AT)}$
+- **Waiting Time ($\text{WT}$):** $\text{WT} = \text{Turnaround Time (TAT)} - \text{Burst Time (BT)}$
+- **Response Time ($\text{RT}$):** $\text{RT} = \text{Time of First CPU Allocation} - \text{Arrival Time (AT)}$
+- **Throughput:** Processes completed per unit of time ($\frac{\text{Total Processes}}{\text{Total Schedule Time}}$).
+- **CPU Utilization:** Percentage of time CPU is executing instructions.
+
+### 6.2 Preemptive vs. Non-Preemptive Scheduling
+
+- **Non-Preemptive:** Once the CPU is allocated to a process, the process retains it until it either terminates or voluntarily yields the CPU (e.g., requests I/O).
+- **Preemptive:** The OS scheduler can forcibly interrupt a currently running process to assign the CPU to a higher-priority or newly arrived process (e.g., timer interrupt, priority arrival).
+
+### 6.3 First-Come, First-Served (FCFS) & Convoy Effect
+
+- **Policy:** Processes are allocated the CPU strictly in order of arrival time (FIFO queue).
+- **Type:** Non-Preemptive.
+- **Convoy Effect:** If a heavy CPU-bound process arrives before short I/O-bound processes, all subsequent processes get delayed behind it, leading to poor average waiting time and underutilized I/O devices.
+
+### 6.4 Shortest Job First (SJF) & Exponential Burst Prediction
+
+- **Policy:** Allocates CPU to the process with the smallest next CPU burst length.
+- **Optimality:** Proven to yield the **minimum average waiting time** for a given set of stationary processes.
+- **Limitation:** Cannot know future burst times in advance.
+- **Exponential Smoothing Formula:**
+  $$\tau_{n+1} = \alpha \cdot t_n + (1 - \alpha) \cdot \tau_n$$
+  - $t_n$: Actual duration of the $n$-th CPU burst.
+  - $\tau_n$: Predicted duration of the $n$-th burst.
+  - $\tau_{n+1}$: Predicted duration for the next $(n+1)$-th burst.
+  - $\alpha$: Smoothing factor ($0 \le \alpha \le 1$, typically $\alpha = 0.5$).
+
+### 6.5 Shortest Remaining Time First (SRTF)
+
+- **Policy:** Preemptive version of SJF. When a new process arrives with a remaining burst time smaller than the currently executing process's remaining time, the running process is preempted.
+- **Advantage:** Minimizes waiting time for short jobs dynamically.
+- **Disadvantage:** Risk of **starvation** for long-burst jobs if short jobs arrive continuously.
+
+### 6.6 Priority Scheduling, Starvation & Aging
+
+- **Policy:** Each process is assigned an integer priority (conventionally, smaller integer = higher priority). The CPU is assigned to the highest-priority process.
+- **Problem: Starvation (Indefinite Blocking):** Low-priority processes may never execute in heavily loaded systems.
+- **Solution: Aging:** Technique of gradually increasing the priority of processes that have waited in the ready queue for prolonged durations.
+- **Priority Inversion & Priority Inheritance:** When a low-priority task holds a resource needed by a high-priority task, medium-priority tasks can preempt the low-priority task, indirectly starving the high-priority task. Solution: Temporarily elevate the low-priority task to the priority of the waiting high-priority task (**Priority Inheritance Protocol**).
+
+### 6.7 Round Robin (RR) & Quantum Selection
+
+- **Policy:** Specifically designed for time-sharing. The ready queue is treated as a circular FIFO queue. Each process is allocated a fixed time slice (**Time Quantum $q$**).
+- **Quantum Trade-offs:**
+  - $q \to \infty$: Round Robin degenerates into **FCFS**.
+  - $q \to 0$: Severe context-switch overhead dominates execution.
+  - **Rule of Thumb:** $80\%$ of CPU bursts should be shorter than the time quantum $q$.
+
+```text
+Ready Queue: [P1, P2, P3] (Quantum = 4ms)
+Gantt Chart:
+|   P1 (4ms)   |   P2 (4ms)   |   P3 (2ms)   |   P1 (2ms)   |
+0              4              8             10             12
+```
+
+### 6.8 Multilevel Queue (MLQ) & Multilevel Feedback Queue (MLFQ)
+
+```text
+Multilevel Queue (MLQ)                Multilevel Feedback Queue (MLFQ)
++-------------------------+           +-----------------------------+
+| Queue 1: System (RR)    |           | Q1 (RR, q=4ms) [Highest]    | ──(Demote if burst > 4)──┐
++-------------------------+           +-----------------------------+                          │
+| Queue 2: Interactive(RR)|           | Q2 (RR, q=8ms) [Medium]     | ◀────────────────────────┘
++-------------------------+           +-----------------------------+                          │
+| Queue 3: Batch (FCFS)   |           | Q3 (FCFS)      [Lowest]     | ◀──(Demote if burst > 8)─┘
++-------------------------+           +-----------------------------+
+(Processes fixed in queue)            (Processes dynamically move; Aging promotes up)
+```
+
+### 6.9 Multiprocessor Scheduling (Affinity & Load Balancing)
+
+- **Processor Affinity:** A process prefers to continue executing on the same CPU core to benefit from cached memory lines (**Soft Affinity** = OS preference; **Hard Affinity** = strictly bound via `sched_setaffinity`).
+- **Load Balancing:**
+  - **Push Migration:** A specific monitor routine checks imbalances and pushes tasks from overloaded to idle cores.
+  - **Pull Migration:** An idle processor pulls pending tasks from the ready queue of busy cores.
 
 ---
 
-## Process States and Transitions
+## 7. Threads & Multithreading
 
-### Q1: What are the main states a process can be in?
+### 7.1 Concept of a Thread
 
-The main states a process can be in are:
+A **thread** is the fundamental unit of CPU utilization (lightweight process). It represents an independent control flow inside a process.
 
-1. New: The process is being created.
-2. Ready: The process is waiting to be assigned to a processor.
-3. Running: The process is being executed on a processor.
-4. Waiting (or Blocked): The process is waiting for some event to occur.
-5. Terminated: The process has finished execution.
+```text
+Single-Threaded Process                   Multi-Threaded Process
++------------------------------------+    +------------------------------------+
+| Code | Data | Heap | Files         |    | Code | Data | Heap | Files         |
++------------------------------------+    +------------------------------------+
+| Registers | Stack                  |    | Regs | Stack | Regs | Stack | Regs |
+| (Thread 1)                         |    |  T1  |  T1   |  T2  |  T2   |  T3  |
++------------------------------------+    +------------------------------------+
+```
 
-Think of these states like the different stages of a customer in a restaurant: entering (New), waiting to order (Ready), eating (Running), waiting for the next course (Waiting), and leaving (Terminated).
+### 7.2 Process vs. Thread
 
-### Q2: Can you explain the "New" state with an example?
+| Dimension | Process | Thread |
+| :--- | :--- | :--- |
+| **Address Space** | Isolated, private address space | Shares address space (Code, Data, Heap) with peer threads |
+| **Creation & Destruction** | Expensive (heavyweight, allocates memory pages, file tables) | Cheap (lightweight, allocates private stack & registers) |
+| **Context Switch Overhead** | High (flushes TLB, swaps page tables, invalidates cache) | Low (retains page tables and memory mappings) |
+| **Communication** | Requires IPC (Pipes, Shared Memory, Sockets) | Direct memory reads/writes to shared variables |
+| **Fault Isolation** | High: One process crash does not terminate others | Low: An illegal memory access in one thread crashes the entire process |
 
-The "New" state is when a process is first created but not yet ready to run. For example, when you double-click on an application icon, the operating system starts creating a new process. It allocates memory and resources for the process, loads the program code into memory, and sets up initial data structures. This all happens in the "New" state before the process is ready to actually start running.
+### 7.3 User-Level Threads (ULT) vs. Kernel-Level Threads (KLT)
 
-### Q3: What happens when a process is in the "Ready" state?
+```text
+User-Level Threads (ULT)               Kernel-Level Threads (KLT)
++-----------------------+              +-----------------------+
+| Thread Library (User) |              | User App              |
++-----------------------+              +-----------------------+
+           │                                       │
++──────────▼────────────+              +───────────▼───────────+
+| Single Kernel Entity  |              | Kernel Thread Table   |
++-----------------------+              +-----------------------+
+| Operating System      |              | Operating System      |
++-----------------------+              +-----------------------+
+```
 
-When a process is in the "Ready" state, it's like a runner on the starting line, waiting for the gun to go off. The process has everything it needs to run, but the CPU is currently busy with other processes. All "Ready" processes are kept in a queue, waiting for their turn to use the CPU. The operating system's scheduler decides which process from the "Ready" queue will run next.
+| Metric | User-Level Threads (ULT) | Kernel-Level Threads (KLT) |
+| :--- | :--- | :--- |
+| **Management** | Implemented by user library (e.g., Green threads, fibers) | Managed directly by the OS Kernel scheduler |
+| **Switching Speed** | Ultra-fast (pure user-space function call; no mode switch) | Slower (requires trap to kernel mode) |
+| **System Call Blocking** | If one thread executes a blocking syscall, the **entire process blocks** | If one thread blocks, other threads continue executing on CPU |
+| **Multicore Parallelism**| Cannot achieve true multi-core parallel execution | Can schedule different threads on separate physical CPU cores |
 
-### Q4: How does a process transition from "Ready" to "Running" state?
+### 7.4 Multithreading Models (Many-to-One, One-to-One, Many-to-Many)
 
-The transition from "Ready" to "Running" happens when the operating system's scheduler selects the process to run on a CPU. This is called "dispatching" or "scheduling" the process.
-
-For example, let's say you have three programs open: a text editor, a web browser, and a music player. They might all be in the "Ready" state. The scheduler then decides, "Okay, let's run the text editor now," and moves it to the "Running" state by allocating CPU time to it.
-
-### Q5: What causes a process to go into the "Waiting" state?
-
-A process enters the "Waiting" (or "Blocked") state when it needs to wait for something before it can continue running. Common reasons include:
-
-1. Waiting for user input (like waiting for you to type something)
-2. Waiting for a file to be read from disk
-3. Waiting for a network response
-
-For instance, when you're using a word processor and you click "Save," the process might enter the "Waiting" state while it waits for the file to be written to the disk.
-
-### Q6: How does a process transition from "Running" to "Terminated" state?
-
-A process moves to the "Terminated" state when it finishes its execution or is forcefully terminated. This can happen in a few ways:
-
-1. Normal completion: The process finishes all its tasks.
-2. Exit call: The process calls an exit function to terminate itself.
-3. Fatal error: An unrecoverable error occurs.
-4. Killed by another process: Another process (often initiated by the user) forces this process to terminate.
-
-For example, when you finish using a calculator app and close it, or when you use Task Manager to force-quit an unresponsive program, the process moves to the "Terminated" state.
-
-### Q7: What is a context switch and when does it occur?
-
-A context switch is when the CPU switches from executing one process to another. It's like a chef switching from cooking one dish to another. This occurs when:
-
-1. A higher priority process becomes ready to run.
-2. The current running process goes into a waiting state.
-3. The time slice allocated to the current process expires.
-
-During a context switch, the operating system saves the state of the currently running process and loads the saved state of the next process to run. This allows multiple processes to share the CPU, creating the illusion of simultaneous execution.
+- **Many-to-One ($N:1$):** Many user threads mapped to 1 kernel thread. Fast switching, but no multi-core parallelism and blocking syscalls halt everything.
+- **One-to-One ($1:1$):** Every user thread maps directly to 1 kernel thread. Supports true parallelism. Default model in Linux (NPTL) and Windows.
+- **Many-to-Many ($M:N$):** Multiplexes $M$ user threads over $N$ kernel threads ($M \ge N$). Maximum flexibility, but high implementation complexity.
 
 ---
 
-## Process Control Block (PCB)
+## 8. Inter-Process Communication (IPC)
 
-### Q1: What is a Process Control Block (PCB)?
+### 8.1 Shared Memory vs. Message Passing
 
-A Process Control Block (PCB) is a data structure used by the operating system to store and manage information about a specific process. Think of it as an ID card for a process, containing all the important details the OS needs to know about that process.
+```text
+Shared Memory Model                   Message Passing Model
++-------------+  +-------------+      +-------------+        +-------------+
+|  Process A  |  |  Process B  |      |  Process A  |        |  Process B  |
++------+------+  +------+------+      +------+------+        +------+------+
+       |                |                    |                      ▲
+       ↓                ↓                    ↓                      │
++------------------------------+      +------------------------------------+
+|     Shared Memory Region     |      |          Kernel Message            |
+| (Fast, Zero Kernel Overhead) |      |          Queue / Pipe              |
++------------------------------+      +------------------------------------+
+```
 
-### Q2: Why is the PCB important in an operating system?
+| Feature | Shared Memory | Message Passing |
+| :--- | :--- | :--- |
+| **Mechanism** | Region of memory mapped into both address spaces | System calls: `send(msg)` and `receive(msg)` via kernel |
+| **Performance** | Maximum speed (memory read/write speeds, no syscalls after setup) | Slower (requires context switches and kernel buffer copies) |
+| **Synchronization** | Programmer must handle synchronization (Mutex/Semaphores) | Synchronization built-in (blocking/non-blocking queues) |
+| **Suitability** | Best for large data exchange on single machine | Natural for distributed systems & microservices |
 
-The PCB is crucial because it allows the operating system to:
+### 8.2 Pipes (Anonymous Pipes vs. Named Pipes / FIFOs)
 
-1. Keep track of multiple processes
-2. Manage process scheduling
-3. Allocate resources to processes
-4. Switch between processes quickly (context switching)
+- **Anonymous Pipe:** Unidirectional byte stream used for parent-child communication (`pipe()` syscall in UNIX). Exists only while the process is active.
+- **Named Pipe (FIFO):** Appears as a special file on the filesystem (`mkfifo`). Unrelated processes can open it for bidirectional/unidirectional communication across lifecycles.
 
-It's like a manager's notebook, containing all the essential information about each worker (process) in the system.
+### 8.3 Sockets, Message Queues & Signals
 
-### Q3: What information does a PCB typically contain?
+- **Sockets:** Bidirectional communication endpoint across networks (TCP/UDP) or locally (UNIX Domain Sockets).
+- **Message Queues:** Kernel-maintained linked lists of typed messages (`msgget`, `msgsnd`, `msgrcv`).
+- **Signals:** Asynchronous software notifications delivered to processes (e.g., `SIGINT`, `SIGKILL`, `SIGSEGV`).
 
-A PCB usually includes:
+---
 
-1. Process ID (PID): A unique number to identify the process
-2. Process State: Whether it's running, ready, waiting, etc.
-3. Program Counter: Address of the next instruction to be executed
-4. CPU Registers: Contents of various processor registers
-5. CPU Scheduling Information: Priority level, scheduling queue pointers
-6. Memory Management Information: Memory allocated to the process
-7. I/O Status Information: List of I/O devices allocated to the process
-8. Accounting Information: CPU time used, time limits, account numbers
+## 9. Process Synchronization & Critical Section
 
-### Q4: Can you give a practical example of how a PCB is used?
+### 9.1 Concurrency, Race Conditions & Critical Sections
 
-Let's say you're running a word processor and a web browser on your computer. The operating system maintains a PCB for each of these processes.
-
-When you switch from typing in the word processor to browsing a webpage, here's what happens:
-
-1. The OS saves the current state of the word processor in its PCB (including the cursor position, open file, etc.)
-2. It then loads the state of the web browser from its PCB
-3. The CPU starts executing instructions for the web browser
-
-This allows you to switch back to your document later and find everything exactly as you left it.
-
-### Q5: How does the operating system create and manage PCBs?
-
-The operating system creates a PCB when a new process is created. Here's a simplified step-by-step process:
-
-1. When you start a program (e.g., clicking on an app icon):
-
-   * The OS creates a new process
-   * It allocates memory for the PCB
-   * It initializes the PCB with default values
-2. As the process runs:
-
-   * The OS continuously updates the PCB (e.g., changing the process state, updating CPU usage)
-3. When the process ends:
-
-   * The OS retrieves any final information it needs
-   * It deallocates the PCB, freeing up that memory
-
-It's like creating, updating, and eventually shredding an employee file as they join, work at, and leave a company.
-
-### Q6: How does the PCB help in context switching?
-
-Context switching is when the CPU switches from executing one process to another. The PCB plays a crucial role here:
-
-1. When switching away from a process:
-
-   * The OS saves the current CPU registers, program counter, etc., into that process's PCB
-2. When switching to a new process:
-
-   * The OS loads the CPU registers, program counter, etc., from the new process's PCB
-
-This is like a teacher keeping notes on where each student left off in their work, so they can quickly resume when it's their turn again.
-
-### Q7: Can you provide a simple code-like representation of a PCB?
-
-Sure! Here's a simplified representation of a PCB structure in C:
+- **Race Condition:** An undesirable situation where multiple concurrent threads access and manipulate shared data, and the final outcome depends on the non-deterministic order of execution.
+- **Critical Section:** The section of code that accesses shared mutable state (e.g., shared variables, buffers, files).
 
 ```c
-struct PCB {
-    int process_id;
-    enum {READY, RUNNING, WAITING, TERMINATED} process_state;
-    int program_counter;
-    int cpu_registers[10];  // Simplified; actual number varies
-    int priority;
-    int* memory_limits;
-    struct {
-        int files_open[20];
-        int io_devices[10];
-    } io_status;
-    struct {
-        int cpu_time_used;
-        int time_limit;
-        int account_number;
-    } accounting_info;
-};
+// Standard Critical Section Skeleton
+do {
+    // 1. Entry Section (Acquire permission/lock)
+    
+    // 2. Critical Section (Access shared variables)
+    
+    // 3. Exit Section (Release lock / signal others)
+    
+    // 4. Remainder Section (Non-critical work)
+} while (true);
 ```
 
-This structure gives you an idea of how an operating system might organize PCB information in memory.
+### 9.2 Requirements of a Valid Critical Section Solution
 
----
+Any valid solution to the critical section problem must satisfy three mandatory criteria:
 
-## Context Switching in Operating Systems
+1. **Mutual Exclusion (Safety):** If process $P_i$ is executing in its critical section, no other processes can be executing in their critical sections.
+2. **Progress (Liveness):** If no process is in its critical section and some processes wish to enter, only those processes not in their remainder section can participate in deciding who enters next, and this selection cannot be postponed indefinitely.
+3. **Bounded Waiting (Starvation Freedom):** There must exist a bound on the number of times other processes are allowed to enter their critical sections after a process has made a request to enter and before that request is granted.
 
-### Q1: What is context switching in operating systems?
+### 9.3 Hardware-Assisted Synchronization (`TestAndSet`, `CompareAndSwap`)
 
-Context switching is the process where a computer's CPU (Central Processing Unit) changes from one task or process to another. It's like when you're reading a book and switch to checking your phone - you need to remember where you left off in the book and what you were doing on your phone. The operating system does something similar with running programs.
+Atomic hardware instructions execute in a single clock cycle without interruption.
 
-### Q2: Why is context switching necessary?
+#### `TestAndSet`
 
-Context switching is necessary because:
+```c
+// Atomic Hardware Primitive
+bool TestAndSet(bool *target) {
+    bool rv = *target;
+    *target = true;
+    return rv;
+}
 
-1. It allows multiple programs to run on a single CPU, creating the illusion of multitasking.
-2. It helps in managing resources efficiently, ensuring that the CPU isn't idle while waiting for slow operations (like reading from disk).
-3. It enables the operating system to respond quickly to important events or high-priority tasks.
-
-### Q3: What information is saved during a context switch?
-
-During a context switch, the operating system saves the current state of the running process. This includes:
-
-* The value of the CPU registers
-* The program counter (which points to the next instruction to be executed)
-* Memory management information
-* I/O status information (like open files)
-
-This saved information is called the process's "context."
-
-### Q4: Can you give a simple analogy to explain context switching?
-
-Imagine you're a chef cooking multiple dishes at once. You're stirring a soup (Process A) when the oven timer goes off for your cake (Process B). You need to:
-
-1. Remember where you were with the soup (save Process A's context)
-2. Put down the soup spoon and pick up oven mitts (switch tools)
-3. Recall what you need to do with the cake (restore Process B's context)
-4. Check on the cake
-
-When you go back to the soup, you'll do these steps in reverse. This is similar to how an operating system handles context switching between processes.
-
-### Q5: What are the steps involved in a context switch?
-
-The basic steps in a context switch are:
-
-1. Save the context of the currently running process
-2. Select the next process to run (using a scheduling algorithm)
-3. Restore the context of the new process
-4. Resume execution of the new process
-
-### Q6: What is the performance impact of context switching?
-
-Context switching has a performance cost because:
-
-1. It takes time to save and restore process contexts
-2. It can disrupt CPU caches, requiring data to be reloaded
-3. Frequent context switches can lead to a phenomenon called "thrashing," where the system spends more time switching between processes than actually executing them
-
-For example, if context switches happen too frequently, it's like our chef spending more time changing between tasks than actually cooking anything!
-
-### Q7: How do operating systems minimize the impact of context switching?
-
-Operating systems use several techniques to minimize the impact:
-
-1. Efficient scheduling algorithms to reduce unnecessary switches
-2. Using hardware support (like multiple CPU registers) to speed up context saves and restores
-3. Implementing lightweight processes or threads that require less context to be saved
-4. Grouping related processes to improve cache usage
-
-For instance, modern CPUs have special instructions to quickly save and restore contexts, making the process faster.
-
----
-
-## Inter-process Communication (IPC)
-
-### Q1: What is Inter-process Communication (IPC)?
-
-Inter-process Communication (IPC) is a set of methods that allow different processes (running programs) in an operating system to share data and communicate with each other. It's like having a conversation between two or more programs running at the same time on a computer.
-
-### Q2: Why is IPC important in operating systems?
-
-IPC is important because:
-
-1. It allows programs to work together and share information.
-2. It helps in dividing complex tasks into smaller, manageable parts.
-3. It enables efficient use of system resources by allowing processes to share data instead of duplicating it.
-
-For example, when you copy text from a web browser and paste it into a text editor, IPC is working behind the scenes to make this possible.
-
-### Q3: What are some common methods of IPC?
-
-Some common IPC methods include:
-
-1. Pipes: Think of these as virtual tubes that connect two processes, allowing data to flow from one to the other.
-2. Shared Memory: This is like a whiteboard that multiple processes can read from and write to.
-3. Message Queues: Imagine a line of people passing messages from one to another.
-4. Sockets: These are like phone lines that allow processes to communicate, even across different computers on a network.
-
-### Q4: Can you give a simple example of how pipes work in IPC?
-
-Sure! Let's consider a common use of pipes in Unix-like systems:
-
-```bash
-ls | grep .txt
+// Mutual Exclusion Implementation (Spinlock)
+do {
+    while (TestAndSet(&lock))
+        ; // Busy wait (Spinning)
+    
+    // Critical Section
+    
+    lock = false;
+    
+    // Remainder Section
+} while (true);
 ```
 
-In this example:
+#### `CompareAndSwap` (CAS)
 
-* The `ls` command lists files in a directory.
-* The `|` symbol creates a pipe.
-* The `grep .txt` command filters the output to show only files ending with `.txt`.
+```c
+// Atomic Hardware Primitive
+int CompareAndSwap(int *value, int expected, int new_value) {
+    int temp = *value;
+    if (*value == expected)
+        *value = new_value;
+    return temp;
+}
+```
 
-The pipe allows the output of `ls` to be directly used as input for `grep`, without needing to save it to a file first.
+### 9.4 Peterson's Solution (Two-Process Software Solution)
 
-### Q5: How does shared memory work in IPC?
+A classic algorithmic solution for two processes ($P_0$ and $P_1$) using shared variables:
 
-Shared memory works like this:
+```c
+// Shared Variables
+bool flag[2] = {false, false}; // flag[i] = true means Pi wants to enter
+int turn;                      // Indicates whose turn it is
 
-1. The operating system sets aside a specific portion of memory.
-2. Multiple processes are given access to this memory area.
-3. These processes can then read from and write to this shared space directly.
+// Code for Process Pi (where Pj is the other process)
+do {
+    flag[i] = true;
+    turn = j;
+    while (flag[j] && turn == j) {
+        // Busy wait
+    }
 
-For example, in a video editing software, one process might be responsible for decoding video frames, while another process handles audio. They could use shared memory to synchronize the video and audio data efficiently.
+    // --- CRITICAL SECTION ---
 
-### Q6: What are the advantages and disadvantages of using IPC?
+    flag[i] = false;
 
-**Advantages:**
+    // --- REMAINDER SECTION ---
+} while (true);
+```
 
-1. Efficient data sharing between processes
-2. Allows for modular program design
-3. Enables parallel processing, improving overall system performance
+> [!NOTE]
+> **Proof of Correctness:**
+> - **Mutual Exclusion:** For both to enter, `turn == 0` and `turn == 1` must hold simultaneously, which is impossible.
+> - **Progress:** The `turn` variable resolves ties immediately.
+> - **Bounded Waiting:** A process waits at most one entry before gaining access.
 
-**Disadvantages:**
+### 9.5 Semaphores (Binary vs. Counting Semaphores)
 
-1. Can lead to complexities in program design
-2. May introduce synchronization issues (like race conditions) if not implemented carefully
-3. Potential security risks if not properly managed
+A **Semaphore $S$** is an integer variable accessed solely through two standard atomic operations: `wait()` (also known as `P()`) and `signal()` (also known as `V()`).
 
-### Q7: How can IPC be used in a real-world application?
+#### Conceptual Operations
 
-Let's consider a simple chat application:
+```c
+void wait(Semaphore S) {
+    S.value--;
+    if (S.value < 0) {
+        // Add this process to S.queue
+        block();
+    }
+}
 
-1. One process handles the user interface, capturing user input and displaying messages.
-2. Another process manages network communications, sending and receiving messages over the internet.
-3. These processes use IPC (like message queues) to pass information between them.
+void signal(Semaphore S) {
+    S.value++;
+    if (S.value <= 0) {
+        // Remove a process P from S.queue
+        wakeup(P);
+    }
+}
+```
 
-When you type a message:
+- **Binary Semaphore (Mutex semaphore):** Value can only be $0$ or $1$. Used to guarantee mutual exclusion.
+- **Counting Semaphore:** Value spans an unrestricted integer domain ($0$ to $N$). Used to control access to a finite pool of $N$ identical resources.
 
-1. The UI process captures your input.
-2. It uses IPC to send this message to the network process.
-3. The network process sends it over the internet.
-4. When a message is received, the network process uses IPC to send it to the UI process for display.
+### 9.6 Mutex vs. Binary Semaphore
 
-This separation of concerns makes the application more modular and easier to maintain.
+| Feature | Mutex | Binary Semaphore |
+| :--- | :--- | :--- |
+| **Concept** | Locking mechanism | Signaling mechanism |
+| **Ownership** | **Strict Ownership:** Only the thread that locked the mutex can unlock it. | **No Ownership:** Any thread can invoke `signal()` to unblock a waiting thread. |
+| **Use Case** | Protecting critical sections | Synchronizing events, task coordination |
+| **Priority Inversion** | Can be resolved via Priority Inheritance protocols | Difficult to apply priority inheritance due to lack of ownership |
 
----
+### 9.7 Condition Variables & Monitors
 
-## Introduction to Memory Management
-
-### Q1: What is memory management in an operating system?
-
-Memory management is a crucial function of an operating system that handles the allocation and deallocation of memory to different programs and processes running on a computer. It keeps track of which parts of memory are being used, by which program, and ensures that programs don't interfere with each other's memory space.
-
-### Q2: Why is memory management important?
-
-Memory management is important for several reasons:
-
-1. Efficient use of resources: It helps use the available memory efficiently, allowing multiple programs to run simultaneously.
-2. Protection: It prevents one program from accidentally or maliciously accessing another program's memory.
-3. Performance: Good memory management can improve overall system performance by reducing memory-related bottlenecks.
-4. Multitasking: It enables true multitasking by allocating memory to different processes.
-
-For example, without proper memory management, opening a web browser might use up all available memory, preventing you from opening other applications or causing the system to crash.
-
----
-
-## Virtual Memory
-
-### Q1: What is virtual memory?
-
-Virtual memory is a memory management technique used by operating systems. It creates an illusion of having more memory than the computer actually has. This is done by using both the computer's RAM (Random Access Memory) and a portion of the hard drive as if they were one large chunk of memory.
-
-### Q2: Why do we need virtual memory?
-
-We need virtual memory for several reasons:
-
-1. To run more programs than would fit in RAM alone
-2. To allow programs to use more memory than the computer has in RAM
-3. To protect programs from interfering with each other's memory
-
-For example, if you have 8GB of RAM and want to run a game that needs 6GB, plus other programs that together need 4GB, virtual memory allows this to happen smoothly even though the total (10GB) is more than your available RAM.
-
-### Q3: How does virtual memory work?
-
-Virtual memory works through a process called paging. Here's a simplified explanation:
-
-1. The operating system divides memory into fixed-size chunks called pages.
-2. When a program needs memory, it's given virtual addresses.
-3. The operating system keeps a page table that maps virtual addresses to physical addresses in RAM or on the hard drive.
-4. If a program tries to access a virtual address, the operating system checks the page table.
-5. If the page is in RAM, the program can access it directly.
-6. If the page is on the hard drive (called a page fault), the operating system swaps it into RAM, possibly moving another page to the hard drive to make room.
-
-It's like having a librarian (the operating system) who fetches books (memory pages) from either nearby shelves (RAM) or a storeroom (hard drive) whenever you need them.
-
-### Q4: What is the difference between physical and virtual address space?
-
-Physical address space refers to the actual addresses in your computer's RAM. It's limited by how much RAM you have installed.
-
-Virtual address space is the range of addresses a program can use, regardless of the physical RAM available. It's typically much larger than the physical address space.
-
-### Q5: What are the advantages of virtual memory?
-
-Virtual memory offers several advantages:
-
-1. Increased memory capacity: Programs can use more memory than physically available in RAM.
-2. Efficient memory use: The system can run more programs concurrently.
-3. Isolation: Each program gets its own virtual address space, preventing interference.
-4. Simplified programming: Developers don't need to worry about physical memory constraints.
-
-### Q6: Are there any drawbacks to virtual memory?
-
-Yes, there are some drawbacks:
-
-1. Speed: Accessing data from the hard drive is much slower than from RAM.
-2. Disk space: Part of your hard drive is used for virtual memory, reducing available storage.
-3. Fragmentation: Frequent swapping can lead to fragmented memory, slowing down access.
-
-### Q7: How can I optimize virtual memory usage on my computer?
-
-Here are some ways to optimize virtual memory usage:
-
-1. Add more RAM: This reduces the need for virtual memory.
-2. Adjust the page file size: Your operating system can often manage this automatically.
-3. Use an SSD: Solid-state drives are faster than traditional hard drives for virtual memory.
-4. Close unnecessary programs: This frees up RAM and reduces reliance on virtual memory.
+- **Monitor:** High-level language construct that encapsulates shared data structures, procedures, and synchronization. Only one thread can be active inside a monitor at any moment.
+- **Condition Variables:** Support synchronization within monitors via two operations:
+  - `x.wait()`: Suspends calling thread and releases the monitor lock.
+  - `x.signal()`: Resumes exactly one suspended thread waiting on condition `x`.
 
 ---
 
-## Paging and Segmentation
-
-### Q1: What is paging in operating systems?
-
-Paging is a memory management scheme that eliminates the need for contiguous allocation of physical memory. It divides physical memory into fixed-size blocks called frames and logical memory into blocks of the same size called pages.
-
-Here's how it works:
-
-1. The computer's physical memory is divided into fixed-size frames (e.g., 4 KB each).
-2. Each process's logical memory is divided into pages of the same size.
-3. When a process needs memory, it is allocated in terms of pages.
-4. The operating system maintains a page table for each process, which maps logical pages to physical frames.
-
-Example: If a process needs 16 KB of memory and the page size is 4 KB, it will be allocated 4 pages. These pages don't need to be in contiguous memory locations.
-
-### Q2: What are the advantages of paging?
-
-Paging offers several advantages:
-
-1. Flexibility: It allows the physical address space of a process to be noncontiguous. This makes memory allocation much easier.
-2. Efficient use of memory: It reduces external fragmentation (wasted space between allocated memory blocks).
-3. Simplifies memory allocation: The operating system can allocate any available frame to a process.
-4. Supports shared memory: Multiple processes can share the same physical memory by mapping their pages to the same frames.
-
-### Q3: What is segmentation in operating systems?
-
-Segmentation is a memory management technique that divides a program's memory into segments based on logical units such as functions, objects, or data structures. Unlike paging, which uses fixed-size units, segments can vary in size.
-
-Key points about segmentation:
-
-1. Each segment has a name and length.
-2. The memory addresses in a program consist of a segment number and an offset within the segment.
-3. The operating system maintains a segment table for each process, mapping segment numbers to physical memory locations.
-
-Example: In a program, you might have separate segments for:
-
-* Code (instructions)
-* Global variables
-* Heap (for dynamically allocated memory)
-* Stack (for function calls and local variables)
-
-### Q4: How does segmentation differ from paging?
-
-The main differences between segmentation and paging are:
-
-1. Size: Pages have a fixed size, while segments can vary in size.
-2. Logical division: Paging divides memory into equal-sized chunks, while segmentation divides it based on logical units of the program.
-3. Addressing: In paging, addresses consist of a page number and offset. In segmentation, addresses have a segment number and offset.
-4. Programmer awareness: Segmentation is often visible to the programmer, while paging is typically transparent.
-
-### Q5: What is paged segmentation?
-
-Paged segmentation is a hybrid approach that combines elements of both paging and segmentation. In this scheme:
-
-1. The logical memory is divided into segments.
-2. Each segment is further divided into pages of fixed size.
-3. The physical memory is divided into frames.
-
-This approach aims to combine the benefits of both techniques:
-
-* It allows for logical division of memory (like segmentation).
-* It reduces external fragmentation (like paging).
-
-Example: A program might have a "code" segment of 14 KB and a "data" segment of 18 KB. With a page size of 4 KB:
-
-* The code segment would be divided into 4 pages (3 full pages + 1 partial).
-* The data segment would be divided into 5 pages (4 full pages + 1 partial). These pages can then be mapped to any available frames in physical memory.
-
----
-
-## Memory Allocation Techniques
-
-### Q1: What is memory allocation in operating systems?
-
-Memory allocation is the process of assigning portions of a computer's memory to different programs or processes that need it. Think of it like dividing up a large storage room (the computer's memory) and giving each person (program) their own space to store their stuff.
-
-### Q2: Why is memory allocation important?
-
-Memory allocation is crucial because:
-
-1. It allows multiple programs to run simultaneously.
-2. It ensures each program has the resources it needs to function.
-3. It helps prevent programs from interfering with each other's data.
-4. It maximizes the efficient use of available memory.
-
-### Q3: What are the main types of memory allocation techniques?
-
-The three main types of memory allocation techniques are:
-
-1. Contiguous allocation
-2. Segmentation
-3. Paging
-
-### Q4: What is contiguous allocation?
-
-Contiguous allocation is a technique where each process is assigned a single continuous block of memory.
-
-There are two main types of contiguous allocation:
-
-1. Fixed partitioning: The memory is divided into fixed-size partitions.
-2. Variable partitioning: The memory is divided into partitions of variable size as needed.
-
-### Q5: What are the advantages and disadvantages of contiguous allocation?
-
-**Advantages:**
-
-1. Simple to implement
-2. Fast memory access (as data is stored in consecutive locations)
-
-**Disadvantages:**
-
-1. External fragmentation (unused gaps between allocated memory blocks)
-2. Internal fragmentation (wasted space within allocated blocks)
-3. Difficulty in growing or shrinking process memory
-
-### Q6: How does virtual memory relate to these allocation techniques?
-
-Virtual memory is a memory management technique that uses both hardware and software to allow a computer to compensate for physical memory shortages by temporarily transferring data from random access memory (RAM) to disk storage.
-
-Virtual memory works hand-in-hand with paging:
-
-1. It creates an illusion of more memory than physically available.
-2. It allows each process to have its own address space, isolated from other processes.
-3. Only the currently used pages need to be in physical memory; others can be stored on disk.
-
-This means a process can use more memory than is physically available in RAM, which is especially useful for running multiple large programs simultaneously.
-
----
-
-## Page Replacement Algorithms
-
-### Q1: What is a page replacement algorithm?
-
-A page replacement algorithm is a strategy used by an operating system to decide which page in memory should be removed (or "swapped out") when a new page needs to be brought into memory and there's no free space available.
-
-### Q2: Why are page replacement algorithms necessary?
-
-Page replacement algorithms are necessary because:
-
-1. Computers have limited physical memory (RAM).
-2. Programs often require more memory than is physically available.
-3. Virtual memory allows programs to use more memory than physically exists, but this requires efficient management of which pages are in physical memory and which are on disk.
-
-By using effective page replacement algorithms, the operating system can minimize the number of times it needs to access the disk (which is much slower than accessing RAM), thereby improving overall system performance.
-
-### Q3: What is the goal of an efficient page replacement algorithm?
-
-The main goal of an efficient page replacement algorithm is to minimize the number of page faults. A page fault occurs when a program tries to access a page that is not currently in physical memory, requiring the operating system to fetch it from disk.
-
-An ideal algorithm would:
-
-1. Keep frequently used pages in memory
-2. Remove pages that are least likely to be used in the near future
-3. Minimize the overhead of the replacement process itself
-
-### Q4: What are some common page replacement algorithms?
-
-1. First-In-First-Out (FIFO)
-2. Optimal Page Replacement
-3. Least Recently Used (LRU)
-4. Clock Algorithm (Second Chance Algorithm)
-
-### Q5: How does the First-In-First-Out (FIFO) algorithm work?
-
-1. It keeps track of when each page was brought into memory.
-2. When a page needs to be replaced, it chooses the page that has been in memory the longest.
-
-Example: Let's say we have a system with 3 page frames, and the following page reference string: 1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5
-
-The pages would be replaced as follows:
+## 10. Classical Synchronization Problems
+
+### 10.1 Producer-Consumer (Bounded-Buffer) Problem
+
+- **Shared State:** Buffer of size $N$, `mutex = 1`, `empty = N`, `full = 0`.
+
+```c
+// PRODUCER
+do {
+    // Produce item
+    wait(empty);  // Decrement empty slots (blocks if buffer full)
+    wait(mutex);  // Protect buffer insertion
+    
+    // Insert item into buffer
+    
+    signal(mutex);
+    signal(full);  // Increment filled slots
+} while (true);
+
+// CONSUMER
+do {
+    wait(full);   // Decrement filled slots (blocks if buffer empty)
+    wait(mutex);  // Protect buffer extraction
+    
+    // Remove item from buffer
+    
+    signal(mutex);
+    signal(empty); // Increment empty slots
+    
+    // Consume item
+} while (true);
+```
+
+### 10.2 Readers-Writers Problem
+
+- **Rules:** Multiple readers can read simultaneously. Only one writer can write at a time (exclusive access).
+- **First Readers-Writers Problem (Reader-Priority):**
+
+```c
+// Shared State
+int read_count = 0;
+Semaphore mutex = 1; // Protects read_count
+Semaphore wrt = 1;   // Protects shared dataset
+
+// WRITER PROCESS
+do {
+    wait(wrt);
+    
+    // Perform Writing
+    
+    signal(wrt);
+} while (true);
+
+// READER PROCESS
+do {
+    wait(mutex);
+    read_count++;
+    if (read_count == 1) {
+        wait(wrt); // First reader locks the writer
+    }
+    signal(mutex);
+
+    // Perform Reading
+
+    wait(mutex);
+    read_count--;
+    if (read_count == 0) {
+        signal(wrt); // Last reader unlocks the writer
+    }
+    signal(mutex);
+} while (true);
+```
+
+> [!WARNING]
+> In Reader-Priority, continuous arrival of readers will lead to **Writer Starvation**.
+
+### 10.3 Dining Philosophers Problem
+
+Five philosophers sit around a circular table with 5 chopsticks. Each needs 2 chopsticks (left and right) to eat.
 
 ```text
-1 | 1  1  1  4  4  4  5  5  5  3  3  3
-  | 2  2  2  2  2  2  2  2  2  4  4
-  |    3  3  3  1  1  1  1  1  1  5
+       Philosopher 0
+       [Chopstick 0]
+Philosopher 4     Philosopher 1
+ [Chopstick 4]   [Chopstick 1]
+    Philosopher 3   Philosopher 2
+       [Chopstick 3]
 ```
 
-In this example, there would be 9 page faults (when a new page is brought in).
+- **Deadlock Condition:** If all philosophers sit simultaneously and pick up their left chopstick (`wait(chopstick[i])`), all chopsticks are held, and everyone waits indefinitely for their right chopstick (Circular Wait).
+- **Deadlock-Free Solutions:**
+  1. **Asymmetric Ordering:** Odd philosophers pick up left then right; even philosophers pick up right then left.
+  2. **Atomic Pickups:** Allow a philosopher to pick up chopsticks only if both are simultaneously available (using a monitor or mutex).
+  3. **Capacity Limiting:** Allow at most 4 philosophers to sit at the table at the same time.
 
-FIFO is simple to implement but may not always perform well because the oldest page may still be in use.
+### 10.4 Sleeping Barber & Cigarette Smokers Problems
 
-### Q6: What is the Optimal Page Replacement algorithm?
+- **Sleeping Barber:** Barber sleeps when no customers are present; customers wake the barber or wait in waiting-room chairs; leave if chairs are full (bounded queue coordination).
+- **Cigarette Smokers:** Three smokers require three distinct ingredients (tobacco, paper, matches). An agent provides two random items; coordinates which smoker can proceed.
 
-The Optimal Page Replacement algorithm is a theoretical algorithm that always chooses to replace the page that will not be used for the longest time in the future.
+---
 
-While this algorithm provides the best possible performance (fewest page faults), it's not actually implementable in real systems because it requires knowledge of future page references, which is not available in practice.
+## 11. Deadlocks
 
-However, it serves as a useful benchmark to compare other algorithms against.
+### 11.1 Definition & Necessary Conditions (Coffman Conditions)
 
-### Q7: How does the Least Recently Used (LRU) algorithm work?
+A **Deadlock** is a state where a set of processes are blocked because each process is holding a resource and waiting for another resource held by some other process in the set.
 
-The Least Recently Used (LRU) algorithm is based on the idea that pages that have been used recently are likely to be used again soon.
+#### The 4 Coffman Conditions (Must hold simultaneously)
 
-1. It keeps track of when each page was last accessed.
-2. When a page needs to be replaced, it chooses the page that hasn't been used for the longest time.
+1. **Mutual Exclusion:** At least one resource must be held in a non-shareable mode (only one process at a time).
+2. **Hold and Wait:** A process must currently hold at least one resource and be waiting to acquire additional resources held by others.
+3. **No Preemption:** Resources cannot be forcibly confiscated; they can only be released voluntarily by the holding process.
+4. **Circular Wait:** A closed chain of processes exists: $\{P_0, P_1, \dots, P_n\}$ such that $P_0$ waits for a resource held by $P_1$, $P_1$ waits for $P_2$, and $P_n$ waits for $P_0$.
 
-Example: Using the same sequence as before: 1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5
+### 11.2 Resource Allocation Graphs (RAG)
+
+- **Vertices:** Processes $P = \{P_1, \dots, P_n\}$ (circles) and Resource types $R = \{R_1, \dots, R_m\}$ (rectangles with dots for instances).
+- **Edges:**
+  - **Request Edge:** $P_i \to R_j$ (Process $P_i$ is requesting resource $R_j$).
+  - **Assignment Edge:** $R_j \to P_i$ (An instance of $R_j$ is allocated to $P_i$).
 
 ```text
-1 | 1  1  1  4  1  1  5  1  1  3  3  3
-  | 2  2  2  2  2  2  2  2  4  4
-  |    3  3  3  3  5  5  5  5  5
+Single Instance Deadlock                 Cycle WITHOUT Deadlock (Multi-instance)
++----+             +----+                +----+             +----+
+| P1 | ──────────> | R1 |                | P1 | ──────────> | R1 | (2 instances)
++----+             +----+                +----+             +----+
+  ▲                  │                     ▲                  │
+  │                  │                     │                  │
+  │                  ▼                     │                  ▼
++----+             +----+                +----+             +----+
+| R2 | <────────── | P2 |                | R2 | <────────── | P2 |
++----+             +----+                +----+             +----+
+(Cycle = Deadlock guaranteed)              ▲                  │
+                                           │  P3 releases R1  │  P4 releases R2
+                                           └── [P3]     [P4] ─┘
 ```
 
-In this case, there would be 8 page faults, one fewer than with FIFO.
+> [!IMPORTANT]
+> **RAG Rules:**
+> - If graph contains **NO cycles** $\implies$ **No Deadlock**.
+> - If graph contains a **cycle** AND resources have **single instances** $\implies$ **Deadlock**.
+> - If graph contains a **cycle** AND resources have **multiple instances** $\implies$ **Deadlock is Possible (not guaranteed)**.
 
-LRU performs well in practice but can be expensive to implement perfectly, as it requires keeping track of when each page was last used.
+### 11.3 Deadlock Handling Strategies Overview
 
-### Q8: What is the Clock Algorithm (Second Chance Algorithm)?
+1. **Deadlock Ignorance (Ostrich Algorithm):** Stick head in sand and pretend deadlocks never occur. (Used by Windows and Linux because deadlocks are rare and prevention/avoidance overhead is high).
+2. **Deadlock Prevention:** Ensure that at least one of the 4 Coffman conditions can never hold.
+3. **Deadlock Avoidance:** Dynamically monitor resource allocation state to ensure the system never enters an **Unsafe State** (Banker's Algorithm).
+4. **Deadlock Detection & Recovery:** Allow deadlocks to occur, detect them, and recover by aborting processes or preempting resources.
 
-The Clock Algorithm, also known as the Second Chance Algorithm, is an approximation of LRU that's more efficient to implement.
+### 11.4 Deadlock Prevention
 
-It works like this:
+- **Eliminating Mutual Exclusion:** Make resources shareable (e.g., read-only files). *Not feasible for printers, mutexes.*
+- **Eliminating Hold and Wait:** Require processes to request all resources at once before execution begins, or release current resources before making new requests. *Low resource utilization.*
+- **Eliminating No Preemption:** If a process holding resources is denied an additional request, all its currently held resources are preempted.
+- **Eliminating Circular Wait:** Impose a strict global numerical ordering on all resources ($F: R \to \mathbb{N}$). A process can only request resources in strictly increasing order ($F(R_i) < F(R_j)$). **Most practical prevention technique.**
 
-1. Imagine all page frames arranged in a circular list (like a clock face).
-2. A "clock hand" points to the oldest page.
-3. Each page has a "use bit" that's set to 1 when the page is accessed.
-4. When a page needs to be replaced:
+### 11.5 Deadlock Avoidance & Banker's Algorithm
 
-   * If the page pointed to by the clock hand has a use bit of 0, it's replaced.
-   * If the use bit is 1, it's set to 0, the clock hand moves to the next page, and the process repeats.
+#### Safe vs. Unsafe State
 
-This gives each page a "second chance" before being replaced, approximating the behavior of LRU without the need to keep detailed usage history.
+```text
++-------------------------------------------------------+
+|                     All States                        |
+|   +-----------------------------------------------+   |
+|   |                  Safe States                  |   |
+|   |         (No Deadlock, Safe Sequence exists)   |   |
+|   +-----------------------------------------------+   |
+|   |                  Unsafe States                |   |
+|   |         +---------------------------+         |   |
+|   |         |      Deadlock States      |         |   |
+|   |         +---------------------------+         |   |
+|   +-----------------------------------------------+   |
++-------------------------------------------------------+
+```
 
-The Clock Algorithm provides a good balance between performance and implementation complexity, making it a popular choice in real operating systems.
+A state is **Safe** if there exists a **Safe Sequence** $\langle P_1, P_2, \dots, P_n \rangle$ such that for each $P_i$, the resources that $P_i$ still needs can be satisfied by current available resources plus resources held by all preceding processes $P_j$ ($j < i$).
 
----
+#### Banker's Algorithm Data Structures
 
-## Thrashing
+For $n$ processes and $m$ resource types:
+- `Available[m]`: Available instances of each resource.
+- `Max[n][m]`: Maximum demand of each process.
+- `Allocation[n][m]`: Currently allocated resources per process.
+- `Need[n][m]`: Remaining need of each process:
+  $$\text{Need}[i][j] = \text{Max}[i][j] - \text{Allocation}[i][j]$$
 
-### Q1: What is thrashing in the context of operating systems?
+#### Safety Algorithm
 
-Thrashing is a situation where the computer spends more time swapping pages between main memory and secondary storage (like a hard drive) than executing actual processes. It's like if you were cooking and spent all your time getting ingredients in and out of the fridge instead of actually cooking!
+1. Let `Work = Available` (vector of length $m$) and `Finish[i] = false` for $i = 0, 1, \dots, n-1$.
+2. Find an index $i$ such that:
+   - `Finish[i] == false`
+   - `Need[i] <= Work`
+   If no such $i$ exists, go to step 4.
+3. `Work = Work + Allocation[i]`
+   `Finish[i] = true`
+   Go to step 2.
+4. If `Finish[i] == true` for all $i$, system is in a **Safe State**.
 
-### Q2: What causes thrashing?
+### 11.6 Deadlock Detection & Recovery
 
-Thrashing typically occurs when:
-
-1. There's not enough physical memory (RAM) to hold all the active pages a process needs.
-2. The operating system is overcommitted, trying to run too many processes at once.
-3. Poor page replacement algorithms are used.
-
-### Q3: How does thrashing affect system performance?
-
-1. CPU utilization drops dramatically.
-2. Disk I/O increases significantly.
-3. The system becomes very slow and unresponsive.
-4. Overall throughput (amount of work done) decreases.
-
-### Q4: How can we detect thrashing?
-
-Thrashing can be detected by monitoring:
-
-1. Page fault rate: If it's consistently high, it might indicate thrashing.
-2. CPU utilization: If it's unusually low, it could be a sign of thrashing.
-3. Disk activity: Excessive disk I/O can indicate frequent page swapping.
-
-Many operating systems have built-in tools to monitor these metrics. For example, on Windows, you can use the Task Manager or Resource Monitor. On Unix-like systems, commands like `top`, `vmstat`, or `iostat` can help.
-
-### Q5: What are some strategies to prevent or reduce thrashing?
-
-1. Increase physical memory: Adding more RAM can reduce the need for page swapping.
-2. Implement better page replacement algorithms: Algorithms like Least Recently Used (LRU) can help keep frequently used pages in memory.
-3. Use a working set model: This involves keeping track of the set of pages a process is actively using and ensuring they stay in memory.
-4. Implement page buffering: Keep some free page frames always available for quick page-ins.
-5. Control the degree of multiprogramming: Limit the number of active processes to prevent overcommitting system resources.
-
-
-### Q6: How does thrashing relate to the concepts we've already learned about virtual memory and paging?
-
-Thrashing is closely related to virtual memory and paging:
-
-1. Virtual memory allows programs to use more memory than physically available by using disk space as an extension of RAM.
-2. Paging is the mechanism used to transfer data between RAM and disk in fixed-size blocks (pages).
-3. When thrashing occurs, the system is constantly moving pages between RAM and disk, which is an extreme case of how virtual memory and paging work.
-
----
-
-## File system reliability and recovery
-
-### Q1: What is file system reliability, and why is it important?
-
-File system reliability refers to the ability of a file system to maintain data integrity and prevent data loss, even in the face of unexpected events like power failures or system crashes. It's important because:
-
-1. It ensures that our valuable data is not lost or corrupted.
-2. It maintains the consistency of the file system structure.
-3. It helps in quick recovery after system failures.
-
-### Q2: What is journaling, and how does it contribute to file system reliability?
-
-Journaling is a technique used by many modern file systems to ensure data integrity. Here's how it works:
-
-1. Before making changes to the file system, the system first writes down what it's about to do in a special log called the journal.
-2. The system then makes the actual changes to the file system.
-3. Once the changes are complete, the system marks the log entry as done.
-
-If a crash occurs during the process, the system can look at the journal during restart and:
-
-* Complete any unfinished operations
-* Undo any partially completed operations
-
-This way, the file system remains in a consistent state. For example, if you're moving a file from one folder to another and the system crashes midway, journaling ensures that the file ends up either in the source folder or the destination folder, but not lost in between.
-
-### Q3: What is a checkpoint in the context of file system recovery?
-
-A checkpoint is a snapshot of the file system's state at a particular point in time. It's used in file system recovery to provide a known good state from which recovery can begin. Here's how it works:
-
-1. The system periodically takes a checkpoint of the file system state.
-2. It records this checkpoint in a safe location.
-3. If a crash occurs, the system can start recovery from the last checkpoint instead of scanning the entire file system.
-
-Think of a checkpoint like a save point in a video game. If something goes wrong, you don't have to start from the very beginning – you can restart from your last save point.
-
-### Q4: What is the difference between soft updates and journaling?
-
-Both soft updates and journaling are techniques for maintaining file system consistency, but they work differently:
-
-**Soft Updates:**
-
-* Carefully order disk writes to ensure consistency.
-* Don't require extra disk space for a journal.
-* Can be slower for certain operations.
-
-**Journaling:**
-
-* Logs changes before applying them.
-* Requires extra disk space for the journal.
-* Generally faster for most operations.
-
-An analogy: Soft updates are like carefully planning your moves in a game of chess, making sure each move is safe before you make it. Journaling is like writing down your planned moves before you make them, so you can always go back and see what you were trying to do.
-
-### Q5: How does a file system recover from a crash?
-
-File system recovery after a crash typically involves these steps:
-
-1. Consistency Check: The system scans the file system structure for inconsistencies.
-2. Journal Replay (if using journaling): Any unfinished operations in the journal are completed or undone.
-3. Lost and Found: Any files or pieces of files that aren't properly linked in the file system are placed in a "lost+found" directory.
-4. Metadata Update: File system metadata (like free block lists) is updated to reflect the current state.
-
-For example, in many Linux systems, this process is performed by the fsck (file system check) tool when the system boots after an unclean shutdown.
-
-### Q6: What is data redundancy, and how does it contribute to file system reliability?
-
-Data redundancy involves storing the same data in multiple places. It contributes to file system reliability by:
-
-1. Providing backup copies of data in case one copy is corrupted or lost.
-2. Allowing for data recovery even if one storage device fails.
-
-A common example of data redundancy is RAID (Redundant Array of Independent Disks). For instance, RAID 1 mirrors data across two drives. If one drive fails, the system can still operate using the other drive, preventing data loss and downtime.
-
-Remember, while redundancy improves reliability, it's not a substitute for regular backups!
+- **Detection:**
+  - Single-instance resources: Construct a **Wait-For Graph** (collapse resource nodes); find cycles using DFS in $O(V^2)$ time.
+  - Multi-instance resources: Run Banker's-style detection algorithm.
+- **Recovery Strategies:**
+  - **Process Termination:** Abort all deadlocked processes, or abort one by one until cycle is broken.
+  - **Resource Preemption:** Select a victim process, roll it back to a safe checkpoint, and preempt its resources (must prevent starvation of the victim via aging).
 
 ---
 
-## Device drivers
+## 12. Memory Management: Contiguous Allocation
 
-### Q1: What is a device driver?
+### 12.1 Address Binding & MMU (Logical vs. Physical Addresses)
 
-A device driver is a special piece of software that acts as a translator between the operating system and a hardware device. It allows the operating system to communicate with and control the device without knowing its specific details.
+- **Compile Time:** If memory location is known at compile time, absolute code is generated (MS-DOS `.COM`).
+- **Load Time:** If memory location is unknown, compiler generates relocatable code; final addresses bound at load time.
+- **Execution Time (Dynamic):** If process can move in memory during runtime, binding is delayed until execution. Requires hardware **Memory Management Unit (MMU)**.
 
-### Q2: Why are device drivers necessary?
+```text
+Logical Address (Generated by CPU)
+        │
+        ▼
+   [ < Limit? ] ───(No)───> Trap: Addressing Error / Segmentation Fault
+        │ (Yes)
+        ▼
+   [ + Base / Relocation Register ]
+        │
+        ▼
+Physical Address (Sent to Memory Bus)
+```
 
-Device drivers are necessary because:
+### 12.2 Fixed vs. Dynamic Partitioning
 
-1. Hardware devices have different interfaces and communication protocols.
-2. Operating systems need a standardized way to interact with various devices.
-3. They allow hardware manufacturers to create devices without knowing the internal workings of every operating system.
-4. They enable the operating system to support new hardware without major modifications.
+- **Fixed Partitioning (MFT):** Memory divided into fixed-size partitions at boot time. Suffer from **Internal Fragmentation**.
+- **Dynamic Partitioning (MVT):** Partitions created dynamically based exactly on process size. Suffer from **External Fragmentation**.
 
-### Q3: What are the main functions of a device driver?
+### 12.3 Fragmentation (Internal vs. External)
 
-1. Initialization: Setting up the device when the system boots or when the device is plugged in.
-2. Data transfer: Managing the flow of data between the device and the operating system.
-3. Device control: Sending commands to the device (e.g., changing settings).
-4. Error handling: Detecting and reporting device errors to the operating system.
-5. Power management: Controlling the device's power state (e.g., sleep mode).
+```text
+Internal Fragmentation                 External Fragmentation
++--------------------------+           +--------------------------+
+| Process A (18 KB)        |           | Process A (Allocated)    |
++--------------------------+           +--------------------------+
+| Waste (14 KB Unusable)   |           | Free Hole (10 KB)        |
++--------------------------+           +--------------------------+
+| 32 KB Fixed Block Limit  |           | Process B (Allocated)    |
++--------------------------+           +--------------------------+
+                                       | Free Hole (15 KB)        |
+                                       +--------------------------+
+                                       Total Free = 25 KB, but a
+                                       20 KB request fails!
+```
 
-### Q4: What is the difference between kernel-mode and user-mode drivers?
+- **Compaction:** Technique of shifting all allocated memory blocks together to merge fragmented free holes into one large block (only possible with dynamic execution-time binding).
 
-**Kernel-mode drivers:**
+### 12.4 Dynamic Allocation Algorithms (First Fit, Best Fit, Worst Fit, Next Fit)
 
-* Run in the operating system's core (kernel) with full system privileges.
-* Can directly access hardware and memory.
-* Are typically used for critical system components like disk drives or network adapters.
-
-**User-mode drivers:**
-
-* Run in user space with limited system privileges.
-* Cannot directly access hardware or kernel memory.
-* Are typically used for less critical devices like printers or scanners.
-
-### Q5: How does a device driver interact with the I/O subsystem?
-
-A device driver interacts with the I/O subsystem through a standardized interface provided by the operating system. This typically involves:
-
-1. Registering the driver with the I/O manager.
-2. Implementing specific functions that the I/O manager can call (e.g., read, write, control).
-3. Using system calls to communicate with the I/O manager.
-4. Handling interrupts from the device.
-5. Managing data buffers for input and output operations.
-
-### Q6: What are some common challenges in device driver development?
-
-1. Ensuring compatibility across different operating system versions.
-2. Handling concurrent access to devices.
-3. Managing limited system resources efficiently.
-4. Dealing with hardware quirks and inconsistencies.
-5. Implementing proper error handling and recovery mechanisms.
-6. Optimizing performance while maintaining stability.
-
-### Q7: How do plug-and-play device drivers work?
-
-Plug-and-play device drivers allow devices to be automatically detected and configured when connected to a system. The process typically involves:
-
-1. Device detection: The system recognizes that a new device has been connected.
-2. Identification: The system determines the device type and model.
-3. Driver loading: The appropriate driver is loaded from the system's driver library or downloaded.
-4. Resource allocation: The system assigns necessary resources (e.g., memory, I/O ports) to the device.
-5. Device initialization: The driver initializes the device for use.
+| Strategy | Search Rule | Pros | Cons |
+| :--- | :--- | :--- | :--- |
+| **First Fit** | Allocates the **first** hole that is large enough from the beginning. | Fastest; lowest search overhead. | Leaves small fragments near beginning of memory. |
+| **Best Fit** | Allocates the **smallest** hole that is large enough (searches entire list). | Minimizes wasted space per allocation. | Produces tiny, unusable leftover slivers. |
+| **Worst Fit** | Allocates the **largest** available hole. | Leaves the largest remaining hole for future requests. | High search overhead; breaks up large blocks rapidly. |
+| **Next Fit** | Like First Fit, but starts scanning from the location of the **last allocation**. | Distributes allocations across memory. | Slightly worse fragmentation than First Fit. |
 
 ---
 
-## Buffering in Operating Systems
+## 13. Paging & Non-Contiguous Memory
 
-### Q1: What is buffering in operating systems?
+### 13.1 Basic Architecture of Paging
 
-Buffering is a technique used by operating systems to temporarily store data while it's being moved from one place to another. This helps to manage the speed differences between different parts of a computer system, making data transfer more efficient.
+Paging eliminates external fragmentation by dividing memory into fixed-size chunks:
+- **Physical Memory** is divided into fixed blocks called **Frames**.
+- **Logical Memory** is divided into blocks of the exact same size called **Pages**.
 
-### Q2: Why is buffering necessary?
+```text
+Logical Address Space                 Page Table            Physical Memory (RAM)
++------------------+                  +---+---+             +------------------+
+| Page 0           |                  | 0 | 2 |             | Frame 0          |
++------------------+                  +---+---+             +------------------+
+| Page 1           |                  | 1 | 0 |             | Frame 1          |
++------------------+                  +---+---+             +------------------+
+| Page 2           |                  | 2 | 3 |             | Frame 2 (Page 0) |
++------------------+                  +---+---+             +------------------+
+                                                            | Frame 3 (Page 2) |
+                                                            +------------------+
+```
 
-Buffering is necessary because different parts of a computer system often work at different speeds. For example:
+### 13.2 Address Translation in Paging
 
-1. A hard drive is much slower than the CPU.
-2. A printer processes data more slowly than a computer can send it.
-3. Network transmission can be slower than data generation.
+Given a CPU Logical Address of $m$ bits and a Page Size of $2^d$ bytes:
 
-Buffering helps to smooth out these speed differences, preventing data loss and improving overall system performance.
+```text
+Logical Address:
++-------------------------------+--------------------------+
+|      Page Number (p)          |      Offset (d)          |
+|         (m - d bits)          |       (d bits)           |
++-------------------------------+--------------------------+
+               │                               │
+               ▼                               │
+         [ Page Table ]                        │
+               │ (Maps p -> f)                 │
+               ▼                               ▼
++-------------------------------+--------------------------+
+|      Frame Number (f)         |      Offset (d)          |
++-------------------------------+--------------------------+
+Physical Address
+```
 
-### Q3: Can you give a practical example of buffering?
+- $\text{Number of Pages} = 2^{m-d}$
+- $\text{Page Size} = \text{Frame Size} = 2^d\text{ bytes}$
+- $\text{Physical Address Bits} = \text{Frame bits } (f) + \text{Offset bits } (d)$
 
-When you watch a video online, your device doesn't download the entire video at once. Instead, it buffers a portion of the video ahead of what you're watching. This buffered data acts as a cushion, ensuring smooth playback even if your internet connection slows down temporarily.
+### 13.3 Page Table Entries & Flags
 
-You've probably seen a "buffering" message or spinning wheel while watching videos online. This means the player is filling its buffer before continuing playback.
+A typical Page Table Entry (PTE) contains:
 
-### Q4: What are the main types of buffering?
+```text
++---+---+---+---+---+--------------------------------+
+| V | D | R | P | U | Frame Number                   |
++---+---+---+---+---+--------------------------------+
+```
 
-1. Single buffering: Uses one buffer to hold data.
-2. Double buffering: Uses two buffers alternately.
-3. Circular buffering: Uses a fixed-size buffer that wraps around.
+- **Valid/Invalid Bit ($V$):** $1 =$ Page is in RAM; $0 =$ Page is on disk (**Page Fault** trigger).
+- **Dirty / Modified Bit ($D$):** $1 =$ Page was written to in RAM (must write back to disk upon eviction).
+- **Reference / Access Bit ($R$):** $1 =$ Page was recently read/written (used by LRU clock replacement).
+- **Protection Bits ($P$):** Read, Write, Execute ($R/W/X$) permissions.
+- **User/Supervisor Bit ($U$):** Determines if user-mode code can access this page.
 
-### Q5: How does buffering relate to other concepts we've learned about operating systems?
+### 13.4 Translation Lookaside Buffer (TLB) & Effective Access Time (EAT)
 
-Buffering is closely related to several concepts you've already learned:
+The **TLB** is an associative on-chip hardware cache that stores recent $\text{Page} \to \text{Frame}$ translations.
 
-1. Memory management: Buffers are stored in memory, so the OS needs to allocate and manage this memory effectively.
-2. I/O Management: Buffering is crucial for managing input/output operations, helping to bridge the speed gap between devices and the CPU.
-3. File systems: When reading from or writing to files, the OS often uses buffers to improve performance.
-4. Inter-process communication (IPC): Buffers can be used to temporarily store data being passed between processes.
-5. Device drivers: These often implement buffering to manage data transfer between the OS and hardware devices.
+```text
+CPU Logical Address (p, d)
+         │
+         ├───> [ Search TLB associative cache in parallel ]
+         │         │
+         │         ├───(TLB Hit)───> Frame number found immediately!
+         │         │
+         │         └───(TLB Miss)──> Access Page Table in Main Memory
+         │                                   │
+         │                                   └──> Update TLB & get Frame
+         ▼
+Physical Address (f, d)
+```
 
-### Q6: Are there any drawbacks to buffering?
+#### Effective Access Time (EAT) Formula
 
-1. Memory usage: Buffers occupy memory that could be used for other purposes.
-2. Latency: In some real-time applications, buffering can introduce unwanted delays.
-3. Data staleness: If a buffer isn't updated frequently enough, it might contain outdated information.
-4. Complexity: Implementing efficient buffering systems can add complexity to the operating system.
+Let:
+- $h = \text{TLB Hit Ratio}$ ($0 \le h \le 1$)
+- $t_{\text{tlb}} = \text{TLB Lookup Time}$
+- $t_{\text{mem}} = \text{Main Memory Access Time}$
+
+$$\text{EAT} = h \cdot (t_{\text{tlb}} + t_{\text{mem}}) + (1 - h) \cdot (t_{\text{tlb}} + 2 \cdot t_{\text{mem}})$$
+
+*(Note: On a TLB miss, two memory accesses occur: one to read the page table, one to access actual data).*
+
+### 13.5 Multi-Level, Hashed, and Inverted Page Tables
+
+```text
+Multi-Level Page Table (Two-Level)
+Virtual Address:
++-------------------+-------------------+-------------------+
+| Outer Page (p1)   | Inner Page (p2)   | Offset (d)        |
++-------------------+-------------------+-------------------+
+         │                   │                   │
+         ▼                   ▼                   │
+  [ Outer Table ] ───> [ Inner Table ] ──(f)─────┴──> Physical Address
+```
+
+- **Multi-Level (Hierarchical) Paging:** Page the page table itself. Avoids allocating contiguous memory for sparse page tables.
+- **Inverted Page Table:** Exactly one entry per physical frame in RAM (indexed by frame number), containing $\langle \text{PID}, \text{Page Number} \rangle$. Minimizes page table memory footprint, but lookup requires hashing.
+
+### 13.6 Shared Pages & Reentrant Code
+
+- **Reentrant Code (Pure Code):** Non-self-modifying code that never changes during execution.
+- Multiple processes running the same program (e.g., standard C library, text editor) map their virtual code pages to the exact same physical memory frames, drastically saving RAM.
 
 ---
 
-## Spooling in Operating Systems
+## 14. Segmentation & Combined Schemes
 
-### Q1: What is spooling in operating systems?
+### 14.1 Segmentation Architecture & Address Translation
 
-Spooling stands for "Simultaneous Peripheral Operations On-Line." It's a technique used by operating systems to manage slow input/output devices more efficiently. Spooling allows the computer to "buffer" or temporarily store data meant for slow devices (like printers or disk drives) in a faster storage area (usually RAM or a hard drive). This way, the computer can continue with other tasks without waiting for the slow device to finish.
+Segmentation provides a logical, user-oriented view of memory (Code segment, Stack segment, Heap segment). Segments are **variable in size**.
 
-### Q2: Why is spooling important?
+```text
+Logical Address: < Segment Number (s), Offset (d) >
+                         │
+                         ▼
+                  [ Segment Table ]
+                  | Base | Limit  |
+                         │
+                         ├───> [ Is d < Limit? ] ──(No)──> Trap: Segment Fault
+                         │            │ (Yes)
+                         ▼            ▼
+                   Physical Address = Base + d
+```
 
-Spooling is important because it:
+### 14.2 Paging vs. Segmentation Detailed Comparison
 
-1. Improves system efficiency by allowing the CPU to work on other tasks while slow I/O operations are in progress.
-2. Reduces overall processing time by managing data transfer between fast and slow devices.
-3. Allows multiple processes to share slow devices without conflicts.
+| Feature | Paging | Segmentation |
+| :--- | :--- | :--- |
+| **Unit Size** | Fixed-size blocks (e.g., 4 KB) | Variable-size logical blocks |
+| **View** | Physical / OS hardware view | Logical / Programmer view |
+| **Address Format** | Single linear address divided into `p` and `d` | 2D address: Segment number `s` and Offset `d` |
+| **Fragmentation** | **Internal Fragmentation** (on last page) | **External Fragmentation** (requires compaction) |
+| **Page/Segment Table**| Page Table: Maps page to frame | Segment Table: Contains Segment Base & Limit |
 
-For example, without spooling, if you wanted to print a document, your computer would be tied up sending data to the printer until the job was done. With spooling, your computer quickly sends the print job to a spool file and then is free to do other tasks while the printer works in the background.
+### 14.3 Segmented Paging
 
-### Q3: How does spooling work in printing?
-
-Spooling in printing works like this:
-
-1. When you send a document to print, instead of sending it directly to the printer, the operating system creates a spool file on the hard drive.
-2. The document data is quickly written to this spool file.
-3. A print spooler program manages these spool files and sends them to the printer one at a time.
-4. The printer receives and prints the data at its own pace.
-
-This process allows multiple users or programs to send print jobs without waiting for each one to finish printing before the next can be processed.
-
-### Q4: What are some other applications of spooling besides printing?
-
-1. Input spooling: For slow input devices like card readers (in older systems), data is read into a spool area for faster processing.
-2. Output spooling: Besides printers, this can be used for other output devices like plotters or network interfaces.
-3. Email systems: Incoming and outgoing emails are often spooled before being processed or sent.
-4. Batch processing: In systems that process jobs in batches, spooling is used to queue up jobs for later execution.
-
-### Q5: How does spooling relate to the concept of buffering?
-
-Spooling and buffering are related concepts, but they're not exactly the same:
-
-* Buffering is a technique where data is temporarily held in a buffer (a region of memory) before being transferred between two devices or processes that may have different speeds.
-* Spooling can be thought of as a form of buffering, but on a larger scale. While a buffer might hold a small amount of data temporarily, a spool typically holds entire jobs or large chunks of data.
-
-For example, when you're typing in a word processor, the keyboard input is buffered to smooth out the typing speed. But when you print the document, the entire print job is spooled.
-
-### Q6: What are the advantages and disadvantages of spooling?
-
-Advantages of spooling:
-
-1. Improved efficiency and reduced waiting times for users and processes.
-2. Better utilization of slow I/O devices.
-3. Allows for priority scheduling of jobs (e.g., urgent print jobs can be moved to the front of the queue).
-
-Disadvantages of spooling:
-
-1. Requires additional storage space for spool files.
-2. Can introduce slight delays as data is written to and read from the spool.
-3. In case of system crashes, spool data might be lost if not properly managed.
+Combines advantages of both: Each logical segment is divided into fixed-size pages. Eliminates external fragmentation while preserving logical segmentation protection.
 
 ---
 
-## IO scheduling in Operating Systems
+## 15. Virtual Memory & Demand Paging
 
-### Q1: What is I/O scheduling, and why is it important?
+### 15.1 Concept of Virtual Memory
 
-I/O scheduling is the process of deciding the order in which I/O requests are serviced by the operating system. It's important because:
+Virtual memory separates logical memory from physical memory, allowing execution of processes whose total memory requirements exceed available physical RAM.
 
-1. It helps manage multiple I/O requests efficiently.
-2. It improves overall system performance.
-3. It ensures fair access to I/O resources for all processes.
+### 15.2 Demand Paging & The Page Fault Sequence
 
-### Q2: What are the main goals of I/O scheduling?
+Pages are loaded into RAM only when demanded during execution (**Lazy Swapper/Pager**).
 
-1. Fairness: Ensure all processes get a fair share of I/O resources.
-2. Throughput: Maximize the number of I/O operations completed per unit time.
-3. Response time: Minimize the average time between a request being made and completed.
-4. Predictability: Provide consistent performance for I/O operations.
+```text
+[1. CPU references virtual address]
+      │
+      ▼
+[2. MMU checks Page Table Entry]
+      │
+      ├───(Valid Bit = 1)───> [Memory Access Proceeds Normally]
+      │
+      └───(Valid Bit = 0)───> [PAGE FAULT TRAP to OS]
+                                     │
+                                     ▼
+[3. OS checks: Invalid reference (terminate) OR Page on Disk]
+                                     │
+                                     ▼
+[4. Find a Free Frame in RAM (If none, run Page Replacement)]
+                                     │
+                                     ▼
+[5. Issue Disk I/O to read missing page into allocated Frame]
+                                     │
+                                     ▼
+[6. Update Page Table: Set Frame number & Valid Bit = 1]
+                                     │
+                                     ▼
+[7. Restart the interrupted CPU instruction]
+```
 
-### Q3: Can you explain some common I/O scheduling algorithms?
+### 15.3 Effective Access Time (EAT) with Page Faults
 
-1. First-Come, First-Served (FCFS):
+Let:
+- $p = \text{Page Fault Rate}$ ($0 \le p \le 1$)
+- $\text{MAT} = \text{Memory Access Time}$ ($\sim 100\text{ ns}$)
+- $\text{PFST} = \text{Page Fault Service Time}$ ($\sim 8\text{ ms} = 8,000,000\text{ ns}$)
 
-   * Requests are served in the order they arrive.
-   * Simple but can lead to long wait times if a time-consuming request arrives first.
-2. Shortest Seek Time First (SSTF):
+$$\text{EAT} = (1 - p) \cdot \text{MAT} + p \cdot \text{PFST}$$
 
-   * Chooses the request with the least seek time from the current head position.
-   * Improves performance but can lead to starvation of some requests.
-3. SCAN (Elevator algorithm):
+> [!IMPORTANT]
+> Even a page fault rate of $p = 0.001$ ($0.1\%$) slows down memory access by nearly $8000\%$.
 
-   * The disk arm moves in one direction, servicing requests until it reaches the end, then reverses direction.
-   * Provides a good balance of throughput and fairness.
+### 15.4 Pure Demand Paging & Locality of Reference
+
+- **Pure Demand Paging:** A process starts with zero pages in RAM; the very first instruction generates a page fault.
+- **Locality of Reference:**
+  - **Temporal Locality:** If a memory location was referenced, it will likely be referenced again soon (loops, counters).
+  - **Spatial Locality:** If a memory location was referenced, nearby locations will likely be referenced soon (array traversals, sequential instructions).
+
+---
+
+## 16. Page Replacement Algorithms
+
+### 16.1 FIFO & Belady's Anomaly
+
+- **FIFO:** Evicts the page that arrived in memory earliest.
+- **Belady's Anomaly:** For certain page reference strings, **increasing the number of page frames results in an INCREASE in the number of page faults**. (Affects FIFO, but never affects Stack algorithms like LRU or Optimal).
+
+```text
+Reference String: 1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5
+- With 3 Frames: 9 Page Faults
+- With 4 Frames: 10 Page Faults (Anomaly demonstrated!)
+```
+
+### 16.2 Optimal Page Replacement (Bélády's Min)
+
+- **Rule:** Replace the page that will **not be used for the longest period of time in the future**.
+- **Properties:** Guarantees lowest possible page-fault rate; immune to Belady's anomaly.
+- **Limitation:** Cannot be implemented practically (requires clairvoyance/future knowledge); serves as theoretical benchmark.
+
+### 16.3 Least Recently Used (LRU)
+
+- **Rule:** Replace the page that has not been referenced for the longest period of time.
+- **Implementation:**
+  - **Counters / Timestamps:** Each PTE updated with CPU clock on access; search for minimum timestamp.
+  - **Doubly Linked Stack:** On access, remove node and move to top. Bottom of stack is victim.
+- **Properties:** Stack algorithm; immune to Belady's anomaly.
+
+### 16.4 LRU Approximations: Second Chance (Clock) & Enhanced Second Chance
+
+#### Second Chance (Clock) Algorithm
+
+Arranges page frames in a circular buffer with a clock hand. Uses a 1-bit Reference Bit ($R$):
+
+```text
+       Frame 0 (R=0) ───> EVICT THIS PAGE
+      ↗             ↘
+Frame 3 (R=1)      Frame 1 (R=1) ──> Set R=0, advance hand
+      ↖             ↙
+       Frame 2 (R=0)
+```
+
+- When seeking a victim:
+  - If $R == 0$: Evict page and advance hand.
+  - If $R == 1$: Clear bit ($R = 0$), give second chance, and advance hand.
+
+#### Enhanced Second Chance
+
+Uses ordered pair $(R, M)$ where $R =$ Reference bit and $M =$ Modify/Dirty bit:
+1. $(0, 0)$: Neither recently used nor modified (Best victim to replace, no disk write needed).
+2. $(0, 1)$: Not recently used, but modified (Requires writeback).
+3. $(1, 0)$: Recently used, but clean.
+4. $(1, 1)$: Recently used and modified.
+
+### 16.5 Counting Algorithms (LFU & MFU)
+
+- **Least Frequently Used (LFU):** Replaces page with smallest reference count.
+- **Most Frequently Used (MFU):** Replaces page with highest reference count (assumes lowest count pages were just brought in and need to run).
+
+---
+
+## 17. Thrashing & Frame Allocation
+
+### 17.1 Cause & Mechanism of Thrashing
+
+**Thrashing** occurs when a system spends more time paging (swapping pages in and out of disk) than executing instructions.
+
+```text
+High Degree of Multiprogramming
+         │
+         ▼
+Processes lack sufficient frames to hold their active working sets
+         │
+         ▼
+Continuous Page Faults ──> High Disk I/O Queue
+         │
+         ▼
+CPU Utilization Drops dramatically (CPU idle waiting for disk)
+         │
+         ▼
+OS mistakenly assumes system is underloaded and admits MORE processes!
+         │
+         ▼
+Total System Collapse (Thrashing)
+```
+
+### 17.2 Working Set Model
+
+The **Working Set ($\text{WSS}_i$)** is the set of pages referenced by process $P_i$ in the most recent $\Delta$ page references (Working Set Window).
+
+```text
+Let D = Total Demand Frames = Σ WSS_i
+Let m = Total Available RAM Frames
+
+If D > m  ===> Thrashing will occur! (OS must suspend / swap out a process)
+If D <= m ===> System is stable.
+```
+
+### 17.3 Page-Fault Frequency (PFF) Strategy
+
+Directly measures and bounds page fault rate:
+- If $\text{Page Fault Rate} > \text{Upper Threshold}$: Process needs more memory $\implies$ allocate more frames.
+- If $\text{Page Fault Rate} < \text{Lower Threshold}$: Process has excess memory $\implies$ remove frames.
+
+---
+
+## 18. File Systems & Storage Management
+
+### 18.1 File Concepts, Attributes & Operations
+
+- **File:** Named collection of contiguous or indexed logical bytes stored on secondary storage.
+- **Attributes:** Name, Identifier (Inode/FCB number), Type, Location, Size, Protection, Timestamps.
+- **Operations:** `create`, `open`, `read`, `write`, `seek`, `truncate`, `close`, `delete`.
+
+### 18.2 File Control Block (FCB) & Directory Structures
+
+- **File Control Block (FCB / Inode):** Contains complete file metadata (permissions, size, block addresses).
+- **Directory Systems:**
+  - **Single-Level:** All files in one directory (naming collision issues).
+  - **Two-Level:** Master directory points to User File Directories (UFD).
+  - **Tree-Structured:** Arbitrary subdirectories and path navigation (`/home/user/docs`).
+  - **Acyclic-Graph:** Allows shared files and subdirectories across paths via links.
+
+### 18.3 Hard Links vs. Soft (Symbolic) Links
+
+```text
+Hard Link                             Soft / Symbolic Link (Symlink)
++-----------+                         +-----------+
+| FileA.txt | ──┐                     | LinkA.txt | (Contains path string "/a/b.txt")
++-----------+   │                     +-----+-----+
+                ▼                           │
++-----------+   +-------------------+       │
+| FileB.txt | ──> Inode 1042 (Data) | <─────┘ (Resolves path to Inode 1042)
++-----------+   +-------------------+
+(Both point to same Inode;            (Separate Inode; breaks if target deleted)
+ link count = 2)
+```
+
+| Feature | Hard Link | Soft / Symbolic Link |
+| :--- | :--- | :--- |
+| **Inode** | Shares the **same Inode number** as target | Has its **own distinct Inode** containing path string |
+| **Across Filesystems**| Cannot span across different disk partitions | Can span across different filesystems/partitions |
+| **Target Deletion** | File data retained until all hard links deleted | Becomes a **Dangling / Broken Link** |
+| **Directories** | Generally disallowed for directories (prevents cycles) | Allowed for directories |
+
+### 18.4 File Allocation Methods (Contiguous, Linked, Indexed)
+
+```text
+Contiguous Allocation                 Linked Allocation                     Indexed Allocation
++---------------------------+         +---------------------------+         +---------------------------+
+| Block 0 | Block 1| Block 2|         | Block 4 (Data + Ptr to 7) |         | Index Block [ 4, 7, 2 ]   |
++---------------------------+         +---------------------------+         +-------------+-------------+
+- Fast sequential/direct access       - No external fragmentation                   │  │  │
+- Suffix: External fragmentation      - Slow random access (must traverse)          ▼  ▼  ▼
+- Hard to grow files                  - Pointer reliability loss            - Supports fast random access
+```
+
+### 18.5 UNIX Inode Architecture & Max File Size Calculations
+
+A standard UNIX Inode contains **15 Block Pointers**:
+- **12 Direct Pointers:** Point directly to data blocks.
+- **1 Single Indirect Pointer:** Points to an index block of data block pointers.
+- **1 Double Indirect Pointer:** Points to an index block of single indirect blocks.
+- **1 Triple Indirect Pointer:** Points to an index block of double indirect blocks.
+
+```text
+UNIX Inode
++-----------------------------------+
+| Metadata (Mode, UID, Size, Time)  |
++-----------------------------------+
+| Direct Block 0                    | ───> [ Data Block 0 ]
+| ...                               |
+| Direct Block 11                   | ───> [ Data Block 11 ]
++-----------------------------------+
+| Single Indirect                   | ───> [ Index Block ] ───> [ Data Blocks... ]
++-----------------------------------+
+| Double Indirect                   | ───> [ Index Block ] ───> [ Index Blocks ] ───> [ Data Blocks... ]
++-----------------------------------+
+| Triple Indirect                   | ───> [ Index Block ] ───> [ Index Blocks ] ───> ...
++-----------------------------------+
+```
+
+#### Maximum File Size Formula
+
+Let $\text{DB} = \text{Disk Block Size}$ and $\text{PTR} = \text{Disk Pointer Size}$.
+- Number of pointers per index block: $K = \frac{\text{DB}}{\text{PTR}}$
+- $\text{Direct Capacity} = 12 \times \text{DB}$
+- $\text{Single Indirect Capacity} = K \times \text{DB}$
+- $\text{Double Indirect Capacity} = K^2 \times \text{DB}$
+- $\text{Triple Indirect Capacity} = K^3 \times \text{DB}$
+$$\text{Max File Size} = (12 + K + K^2 + K^3) \times \text{DB}$$
+
+### 18.6 Free Space Management (Bit Vector, Linked List, Grouping, Counting)
+
+- **Bit Vector (Bitmap):** 1 bit per block ($1 = \text{Free}, 0 = \text{Allocated}$). Fast, easy to find first free block using hardware bit-scan instructions.
+- **Linked Free List:** Keeps a linked chain of free blocks. No space waste, but slow traversal.
+- **Grouping:** Stores addresses of $N$ free blocks in the first free block; the last pointer points to another group block.
+- **Counting:** Stores address of first free block and count $N$ of contiguous free blocks.
+
+---
+
+## 19. Disk Structure & Disk Scheduling
+
+### 19.1 Magnetic Disk Geometry & Access Times
+
+```text
+              Read/Write Heads
+               ┌──┐
+  Platter 1    │  │ ──────> Tracks (Concentric rings)
+    ========   └──┘
+  Platter 2    ┌──┐
+    ========   │  │ ──────> Sectors (Smallest addressable pie slice, 512B / 4KB)
+               └──┘
+               ▲
+               │ Spindle / Actuator Arm
+```
+
+- **Seek Time ($T_{\text{seek}}$):** Time taken to move the actuator arm to the target cylinder.
+- **Rotational Latency ($T_{\text{rot}}$):** Time waiting for the target sector to rotate under the head:
+  $$\text{Average Rotational Latency} = \frac{1}{2 \times \text{RPM}} \times 60\text{ seconds}$$
+- **Transfer Time ($T_{\text{trans}}$):** Time to stream the data:
+  $$T_{\text{trans}} = \frac{\text{Bytes to Transfer}}{\text{Transfer Rate}}$$
+- **Total Access Time:** $T_{\text{access}} = T_{\text{seek}} + T_{\text{rot}} + T_{\text{trans}}$
+
+### 19.2 Disk Scheduling Algorithms (FCFS, SSTF, SCAN, C-SCAN, LOOK, C-LOOK)
+
+```text
+Given Request Queue: 98, 183, 37, 122, 14, 124, 65, 67 (Head starts at 53)
+
+1. FCFS:
+   Services in strict arrival order (53 -> 98 -> 183 -> 37 -> 122 -> 14 -> 124 -> 65 -> 67).
+   High total head movement (640 cylinders).
+
+2. SSTF (Shortest Seek Time First):
+   Picks closest request to current head position.
+   Prone to STARVATION of outer tracks.
+
+3. SCAN (Elevator Algorithm):
+   Moves toward one end (e.g., 0), servicing requests on the way, hits the physical end (0),
+   then reverses direction toward 199.
+
 4. C-SCAN (Circular SCAN):
-
-   * Similar to SCAN, but only services requests when moving in one direction.
-   * When it reaches the end, it quickly returns to the beginning without servicing requests.
-5. Deadline scheduling:
-
-   * Assigns a deadline to each request and tries to meet these deadlines.
-   * Good for real-time systems where timely responses are crucial.
-
-### Q4: What factors should be considered when choosing an I/O scheduling algorithm?
-
-1. Workload characteristics: Is it read-heavy, write-heavy, or mixed?
-2. Device type: SSDs behave differently from HDDs and may benefit from different algorithms.
-3. System requirements: Real-time systems may prioritize predictability over raw throughput.
-4. Fairness requirements: Some systems may need to ensure no process is starved of I/O resources.
-5. Overhead: More complex algorithms may provide better scheduling but at the cost of increased CPU usage.
-
----
-
-## Introduction to Virtualization
-
-### Q1: What is virtualization in the context of operating systems?
-
-Virtualization is a technology that allows you to create multiple virtual instances of computing resources (like CPUs, memory, storage, and networks) on a single physical machine. It's like having several computers running independently on one physical computer.
-
-### Q2: What are the benefits of using virtualization?
-
-1. Resource efficiency: You can run multiple virtual machines on one physical server, utilizing resources more effectively.
-2. Isolation: Each virtual machine runs independently, improving security and stability.
-3. Flexibility: You can easily create, delete, or modify virtual machines as needed.
-4. Cost savings: Fewer physical machines mean lower hardware and energy costs.
-5. Testing and development: You can create isolated environments for testing software or trying out new operating systems.
-
-### Q3: How does virtualization relate to cloud computing?
-
-Virtualization is a fundamental technology that enables cloud computing. Here's how they're related:
-
-1. Resource pooling: Cloud providers use virtualization to create a large pool of computing resources that can be shared among many users.
-2. Scalability: Virtual machines can be quickly created or removed to scale services up or down based on demand.
-3. Multi-tenancy: Different customers can use isolated virtual environments on the same physical infrastructure.
-
-For example, when you spin up a new instance on Amazon Web Services (AWS) or Microsoft Azure, you're actually creating a new virtual machine on their virtualized infrastructure.
-
-### Q4: What is a hypervisor?
-
-A hypervisor is a special type of software that allows multiple operating systems to run on a single physical computer at the same time. It's like a traffic controller for your computer, managing how different operating systems use the computer's resources (like the processor, memory, and storage).
-
-Example: Imagine you have one computer, but you want to run both Windows and Linux on it at the same time. A hypervisor makes this possible by creating separate "virtual machines" for each operating system.
-
-### Q5: What are the two main types of hypervisors
-
-1. Type 1 (Bare-metal hypervisors): These run directly on the computer's hardware.
-2. Type 2 (Hosted hypervisors): These run on top of a host operating system.
-
----
-
-## Virtual machines
-
-### Q1: What is a Virtual Machine (VM)?
-
-A Virtual Machine (VM) is a software-based computer that runs on top of another physical computer. It's like having a computer inside your computer! VMs allow you to run multiple operating systems on a single physical machine. For example, you could run Windows on a Mac computer using a VM.
-
-### Q2: How does a Virtual Machine work?
-
-A Virtual Machine works by creating a layer of abstraction between the physical hardware and the virtual operating system. This layer is managed by software called a hypervisor. The hypervisor:
-
-1. Allocates physical resources (like CPU, memory, and storage) to the VM
-2. Translates instructions from the VM to the physical hardware
-3. Manages the execution of the VM
-
-### Q3: What are the main components of a Virtual Machine?
-
-The main components of a Virtual Machine are:
-
-1. Virtual CPU: Simulates the processor of a physical computer
-2. Virtual Memory: Allocated RAM for the VM to use
-3. Virtual Storage: Space on a hard drive or SSD for the VM's files
-4. Virtual Network Interface: Allows the VM to connect to networks
-5. Virtual devices: Such as graphics cards, sound cards, and USB controllers
-
-### Q4: What are the benefits of using Virtual Machines?
-
-1. Resource Efficiency: Multiple VMs can run on a single physical machine, making better use of hardware resources.
-2. Isolation: VMs are separate from each other and the host system, providing better security and stability.
-3. Flexibility: You can easily create, delete, or modify VMs without affecting the host system.
-4. Testing and Development: VMs are great for testing software or trying out different operating systems without risk to your main system.
-5. Legacy Application Support: You can run old software that isn't compatible with your current OS by using a VM with an older OS.
-
----
-
-## Container technologies
-
-### Q1: What are containers in the context of operating systems?
-
-Containers are lightweight, standalone packages that contain everything needed to run a piece of software, including the code, runtime, system tools, libraries, and settings. They provide a way to isolate applications and their dependencies from the underlying operating system and other applications.
-
-### Q2: How do containers differ from virtual machines?
-
-While both containers and virtual machines (VMs) are used for isolating applications, they work differently:
-
-1. Resource usage: Containers share the host OS kernel and are more lightweight, while VMs run a full copy of an operating system with virtual access to host resources.
-2. Startup time: Containers can start up in seconds, while VMs typically take minutes to boot.
-3. Isolation level: VMs provide stronger isolation but at the cost of higher resource usage. Containers offer lighter isolation but are more efficient.
-4. Size: Container images are typically measured in megabytes, while VM images are often gigabytes in size.
-
-### Q3: What are the key components of container technology?
-
-1. Container runtime: Software responsible for running containers (e.g., Docker, containerd).
-2. Container images: Lightweight, standalone, executable packages that include everything needed to run an application.
-3. Namespaces: Provide isolation for running processes, limiting what the process can see and access.
-4. Control groups (cgroups): Limit and isolate the resource usage (CPU, memory, disk I/O, network, etc.) of a collection of processes.
-5. Union file systems: Allow files and directories of separate file systems to be overlaid to form a single coherent file system.
-
-### Q4: How do containers achieve isolation?
-
-Containers use several Linux kernel features to achieve isolation:
-
-1. Namespaces: Containers use separate namespaces for processes, networks, mounts, and users. This ensures that processes inside a container can't see or affect processes outside the container.
-2. Control Groups (cgroups): These limit and isolate the resource usage of container processes.
-3. Union File Systems: These create isolated file systems for each container.
-
-### Q5: What are the benefits of using containers?
-
-1. Consistency: Containers run the same regardless of the environment, reducing "it works on my machine" problems.
-2. Efficiency: They use fewer resources than VMs, allowing more applications to run on the same hardware.
-3. Portability: Containers can easily move between development, testing, and production environments.
-4. Scalability: It's easy to create and destroy containers quickly, making them ideal for microservices architectures.
-5. Isolation: Containers provide a level of isolation between applications, improving security and reducing conflicts.
-
-### Q6: What is Docker, and how does it relate to containers?
-
-Docker is a popular platform for developing, shipping, and running containers. It includes:
-
-1. Docker Engine: The runtime that runs and manages containers.
-2. Docker Hub: A cloud-based registry for sharing and managing container images.
-3. Dockerfile: A text file that contains instructions for building a Docker image.
-
----
-
-## Scheduling Algorithms
-
-### Q1: What is scheduling in operating systems?
-
-Scheduling in operating systems is the process of deciding which task or process should be executed next by the CPU. It's like a traffic controller for your computer, making sure all programs get their fair share of CPU time and resources.
-
-### Q2: Why is scheduling important?
-
-1. It helps maximize CPU usage
-2. It ensures fair allocation of resources among processes
-3. It improves overall system performance
-4. It helps meet deadlines for time-sensitive tasks
-
-### Q3: What is a scheduler and what does it do?
-
-A scheduler is a part of the operating system that handles the scheduling of processes. It has three main jobs:
-
-1. Selecting which process to run next (based on a scheduling algorithm)
-2. Switching the CPU to that process (this involves context switching, which you've already learned about)
-3. Keeping track of all processes and their states
-
-Think of the scheduler as a manager in a busy restaurant, deciding which order to prepare next and telling the chefs when to switch tasks.
-
-### Q4: What is the difference between preemptive and non-preemptive scheduling?
-
-* **Preemptive scheduling:** The operating system can interrupt a running process and move it to the ready state to let another process run. It's like being able to pause a video game to answer an important phone call.
-* **Non-preemptive scheduling:** Once a process starts running, it continues until it finishes or voluntarily gives up the CPU (e.g., when it needs to wait for I/O). It's like having to finish your entire meal before someone else can use the table at a busy restaurant.
-
-Preemptive scheduling is more common in modern operating systems because it allows for better responsiveness and fairness.
-
-### Q5: What are some common scheduling algorithms?
-
-1. First-Come, First-Served (FCFS): Processes are executed in the order they arrive. Simple but can lead to long wait times.
-2. Shortest Job First (SJF): The process with the shortest execution time goes first. Efficient but can lead to starvation of longer processes.
-3. Round Robin (RR): Each process gets a small unit of CPU time (called a quantum), then is moved to the back of the queue. Fair but can be inefficient for processes with varying CPU burst times.
-4. Priority Scheduling: Processes are assigned priorities, and the highest priority process runs first. Can be preemptive or non-preemptive.
-
-### Q6: What is the concept of a 'ready queue'?
-
-A ready queue is a list of all processes that are ready to execute but are waiting for the CPU. When the scheduler needs to choose the next process to run, it typically looks at the ready queue.
-
-### Q7: What is CPU burst?
-
-A CPU burst is the amount of time a process spends executing on the CPU before it's either finished or needs to wait for something (like I/O operations).
-
----
-
-## First-Come, First-Served (FCFS)
-
-### Q1: What is First-Come, First-Served (FCFS) scheduling?
-
-First-Come, First-Served (FCFS) scheduling is one of the simplest scheduling algorithms used in operating systems. In this method, processes are executed in the order they arrive in the ready queue. It's like a queue at a ticket counter – the first person to arrive gets served first.
-
-### Q2: How does FCFS scheduling work?
-
-1. When a process enters the ready queue, it's added to the back of the queue.
-2. The CPU takes the process at the front of the queue and executes it.
-3. Once the process finishes or is interrupted, the CPU moves to the next process in line.
-
-### Q3: What are the advantages of FCFS scheduling?
-
-1. Simplicity: It's easy to understand and implement.
-2. Fairness: Processes are executed in the order they arrive, without favoritism.
-3. No starvation: Every process eventually gets CPU time (assuming processes terminate).
-
-### Q4: What are the disadvantages of FCFS scheduling?
-
-1. Convoy Effect: Short processes stuck behind long ones must wait, potentially wasting CPU time.
-2. High average waiting time: Especially if a long process comes first.
-3. Not suitable for interactive systems: Users might wait a long time for responses.
-
-Example of Convoy Effect: P1 (24 ms), P2 (3 ms), P3 (3 ms) arrive in order. P2 and P3 must wait for P1 to finish, even though they're much shorter.
-
-### Q5: How do we calculate average waiting time in FCFS?
-
-To calculate average waiting time:
-
-1. For each process, calculate its waiting time (time spent in ready queue).
-2. Sum up all waiting times.
-3. Divide the sum by the number of processes.
-
-Example:
-
-P1 (burst time 10 ms), P2 (burst time 5 ms), P3 (burst time 8 ms)
-P1 waiting time = 0 ms
-P2 waiting time = 10 ms (P1's burst time)
-P3 waiting time = 15 ms (P1 + P2's burst times)
-
-Average waiting time = (0 + 10 + 15) / 3 = 8.33 ms
-
-### Q6: Is FCFS a preemptive or non-preemptive scheduling algorithm?
-
-FCFS is a non-preemptive scheduling algorithm. This means:
-
-* Once a process starts executing, it continues until it finishes or voluntarily releases the CPU.
-* The scheduler doesn't interrupt a running process to give CPU time to another process.
-
-### Q7: In what scenarios might FCFS be a good choice?
-
-FCFS could be suitable in:
-
-1. Batch systems where immediate response isn't necessary.
-2. Systems with long-running processes of similar length.
-3. Simple embedded systems with predictable, sequential tasks.
-
----
-
-## Shortest Job First (SJF)
-
-### Q1: What is Shortest Job First (SJF) scheduling?
-
-A1: Shortest Job First (SJF) is a scheduling algorithm used in operating systems to decide which process should be executed next. In SJF, the process with the shortest execution time (or burst time) is selected to run first. This algorithm aims to minimize the average waiting time for all processes.
-
-### Q2: How does SJF differ from First-Come, First-Served (FCFS) scheduling?
-
-The main difference between SJF and FCFS is the criteria for selecting the next process to run:
-
-* FCFS: Processes are executed in the order they arrive, regardless of their execution time.
-* SJF: Processes are executed based on their burst time, with the shortest job getting priority.
-
-### Q3: What are the two types of SJF scheduling?
-
-There are two types of SJF scheduling:
-
-1. Non-preemptive SJF: Once a process starts executing, it continues until it completes or is blocked.
-2. Preemptive SJF: Also known as Shortest Remaining Time First (SRTF). In this version, if a new process arrives with a shorter burst time than the remaining time of the currently running process, the current process is preempted (interrupted) and the new process is scheduled.
-
-### Q4: What are the advantages of SJF scheduling?
-
-1. Minimum average waiting time: Among all scheduling algorithms, SJF provides the minimum average waiting time for a given set of processes.
-2. Improved system throughput: By prioritizing shorter jobs, more processes can be completed in less time.
-3. Reduced turnaround time: The time between submission and completion of a process is generally reduced for shorter processes.
-
-### Q5: What are the limitations or challenges of implementing SJF in real systems?
-
-1. Starvation: Long processes may be continuously pushed back if shorter processes keep arriving, leading to starvation.
-2. Difficulty in predicting burst time: In real systems, it's often impossible to know the exact execution time of a process beforehand.
-3. Overhead: Constantly comparing and selecting the shortest job can introduce additional overhead to the scheduling process.
-
-### Q6: How can the problem of starvation in SJF be mitigated?
-
-To mitigate starvation in SJF, we can use a technique called aging. Here's how it works:
-
-1. Assign a priority to each process.
-2. As time passes, gradually increase the priority of processes that have been waiting for a long time.
-3. At some point, the priority of a long-waiting process will exceed that of shorter processes, allowing it to be scheduled.
-
-This ensures that all processes eventually get a chance to execute, preventing indefinite starvation.
-
----
-
-## Round Robin (RR)
-
-### Q1: What is Round Robin (RR) scheduling?
-
-Round Robin (RR) is a CPU scheduling algorithm used in operating systems. It's designed to be fair, giving each process an equal share of CPU time. In RR scheduling, each process is assigned a fixed time slot called a "time quantum" or "time slice". The CPU cycles through all processes, giving each one a turn to run for the duration of the time quantum.
-
-### Q2: How does Round Robin scheduling work?
-
-Round Robin scheduling works as follows:
-
-1. Processes are kept in a circular queue (like a merry-go-round).
-2. Each process gets a fixed time quantum to execute.
-3. If a process doesn't finish within its time quantum, it's moved to the back of the queue.
-4. The CPU then moves on to the next process in the queue.
-5. This cycle continues until all processes are completed.
-
-### Q3: What happens if a process finishes before its time quantum expires?
-
-If a process completes its execution before its time quantum expires, the CPU immediately switches to the next process in the queue. This helps in utilizing CPU time efficiently.
-
-### Q4: What are the advantages of Round Robin scheduling?
-
-1. Fairness: All processes get an equal share of CPU time.
-2. Responsiveness: It's good for time-sharing systems as each process gets regular CPU time.
-3. Low average waiting time: Processes don't have to wait long for their turn.
-4. Simple to implement: The algorithm is straightforward and easy to code.
-
-### Q5: What are the disadvantages of Round Robin scheduling?
-
-1. Performance depends on time quantum size: If the quantum is too large, it behaves like FCFS. If too small, it causes too many context switches.
-2. Higher average turnaround time: Compared to SJF, processes might take longer to complete.
-3. No priority: It doesn't consider process priorities, treating all processes equally.
-
-### Q6: How does the choice of time quantum affect Round Robin scheduling?
-
-* Too small: Causes frequent context switching, reducing CPU efficiency.
-* Too large: May lead to poor response time and behave like First-Come, First-Served (FCFS).
-
----
-
-## Priority scheduling
-
-### Q1: What is Priority Scheduling?
-
-Priority Scheduling is a method used by operating systems to decide which process should be executed next. In this approach, each process is assigned a priority number. The process with the highest priority (usually denoted by the lowest number) is executed first.
-
-### Q2: How are priorities assigned to processes?
-
-1. System-defined priorities: The operating system may assign priorities based on the type of process (system process vs. user process).
-2. User-defined priorities: Users or administrators may set priorities for different processes.
-3. Time-dependent priorities: Priorities may change over time, like increasing the priority of a process that has been waiting for a long time.
-
-### Q3: What is the concept of "starvation" in Priority Scheduling, and how can it be addressed?
-
-Starvation occurs when lower-priority processes are continuously bypassed by higher-priority ones, potentially never getting executed. To address this, we use a technique called "aging". Aging gradually increases the priority of processes that have been waiting for a long time. This ensures that even low-priority processes eventually get their turn to execute.
-
-### Q4: What are the advantages and disadvantages of Priority Scheduling?
-
-**Advantages:**
-
-1. Important processes get CPU time more quickly.
-2. System responsiveness can improve if interactive processes get higher priority.
-3. It's flexible, as priorities can be adjusted based on various factors.
-
-**Disadvantages:**
-
-1. Lower priority processes may face starvation.
-2. It can be complex to implement, especially with dynamic priorities.
-3. There's potential for priority inversion, where a high-priority process indirectly waits for a low-priority one.
-
----
-
-## Multilevel queue scheduling
-
-### Q1: What is Multilevel Queue Scheduling?
-
-Multilevel Queue Scheduling is a CPU scheduling algorithm used in operating systems to organize processes into different queues based on their characteristics or priority. Each queue has its own scheduling algorithm, and there's a scheduling system among the queues themselves.
-
-### Q2: How does Multilevel Queue Scheduling work?
-
-1. Processes are permanently assigned to a queue when they enter the system.
-2. Each queue has its own scheduling algorithm (e.g., First-Come-First-Served, Round Robin).
-3. There's a scheduling algorithm to choose between the queues (usually priority-based).
-4. The system processes all jobs from higher priority queues before moving to lower priority queues.
-
----
-
-## Introduction to concurrency and Synchronization
-
-### Q1: What is concurrency in operating systems?
-
-Concurrency in operating systems refers to the ability of the system to handle multiple tasks or processes at the same time. In practice, this means that the operating system can switch between different tasks rapidly, giving the illusion that they're all running at once.
-
-### Q2: What challenges does concurrency introduce?
-
-1. Race conditions: When multiple processes access shared resources simultaneously, unexpected results may occur.
-2. Deadlocks: Processes may end up waiting for each other indefinitely, like two people each waiting for the other to go through a door first.
-3. Starvation: Some processes might not get fair access to resources, potentially never completing their tasks.
-4. Complexity: Concurrent programs are often more difficult to design, implement, and debug than sequential ones.
-
-### Q3: What is synchronization in the context of operating systems?
-
-Synchronization in operating systems refers to the coordination of multiple processes or threads to ensure they access shared resources or perform operations in a correct and orderly manner.
-
-The main goals of synchronization are:
-
-1. To avoid race conditions
-2. To ensure mutual exclusion when accessing shared resources
-3. To maintain data consistency
-4. To prevent deadlocks and starvation
-
-### Q4: What is a critical section?
-
-A critical section is a part of a program where shared resources are accessed. It's a section of code that only one process should execute at a time to prevent race conditions.
-
-### Q5: What are some basic synchronization mechanisms?
-
-1. Mutex (Mutual Exclusion): A mutex is like a lock that only one process can hold at a time. When a process wants to enter a critical section, it must first acquire the mutex. Once finished, it releases the mutex for other processes to use.
-2. Semaphores: A semaphore is a counter that controls access to a shared resource. It can allow multiple processes to access a resource simultaneously, up to a set limit.
-3. Monitors: A monitor is a high-level synchronization construct that combines mutex and condition variables. It provides a way to both protect shared data and coordinate processes.
-4. Condition Variables: These allow processes to wait for certain conditions to be met before proceeding.
-
----
-
-## Mutual exclusion
-
-### Q1: What is mutual exclusion?
-
-Mutual exclusion is a way to make sure that only one process can use a shared resource at a time. It prevents multiple processes from accessing the same memory or file at the same time, which could lead to errors or inconsistent data.
-
-### Q2: How can we implement mutual exclusion?
-
-There are several ways to implement mutual exclusion:
-
-1. Locks: A process must acquire a lock before entering its critical section and release it after exiting. If the lock is already held, the process must wait.
-2. Semaphores: These are like counters that control access to a resource. A process must wait if the semaphore is at zero.
-3. Monitors: These are high-level synchronization constructs that package up mutual exclusion and the ability to wait for a condition to be true.
-
-### Q3: What problems can occur if we don't use mutual exclusion?
-
-1. Race conditions: The outcome of the program depends on the timing of events, leading to unpredictable results.
-2. Inconsistent data: Multiple processes might read and write data in an interleaved manner, leaving the data in an inconsistent state.
-3. Lost updates: One process's changes might be overwritten by another process without being taken into account.
-
-### Q4: What is deadlock and how is it related to mutual exclusion?
-
-Deadlock is a situation where two or more processes are unable to proceed because each is waiting for the other to release a resource. It's a potential downside of mutual exclusion if not implemented carefully.
-
-To prevent deadlocks, we can use techniques like:
-
-* Resource ordering: Always request resources in a specific order
-* Timeouts: Release held resources if waiting too long for another
-* Deadlock detection and recovery: Periodically check for deadlocks and resolve them
-
----
-
-## Semaphores and monitors
-
-### Q1: What is a semaphore in operating systems?
-
-A semaphore is a synchronization tool used in operating systems to control access to shared resources by multiple processes. It's essentially a variable that can have non-negative integer values and supports two main operations:
-
-1. Wait (also called P or down): Decrements the semaphore value. If the value becomes negative, the process is blocked and put into a waiting queue.
-2. Signal (also called V or up): Increments the semaphore value. If there are blocked processes in the waiting queue, one is unblocked.
-
-Semaphores help prevent race conditions and ensure proper synchronization between processes.
-
-### Q2: What are the types of semaphores?
-
-1. Binary Semaphore: Can only have values 0 or 1. It's often used for mutual exclusion (mutex) to protect critical sections.
-2. Counting Semaphore: Can have any non-negative integer value. It's used to control access to a resource that has multiple instances.
-
-### Q3: How does a semaphore solve the producer-consumer problem?
-
-The producer-consumer problem is a classic synchronization issue where producers add data to a shared buffer and consumers remove data from it. Semaphores can solve this problem by:
-
-1. Using a mutex semaphore to ensure mutual exclusion when accessing the buffer.
-2. Using two counting semaphores: one to track empty slots (initially set to buffer size) and one to track filled slots (initially 0).
-
-Here's a simplified pseudocode example:
-
-```text
-mutex = Semaphore(1)
-empty = Semaphore(BUFFER_SIZE)
-full = Semaphore(0)
-
-Producer:
-    while true:
-        item = produce_item()
-        empty.wait()
-        mutex.wait()
-        add_to_buffer(item)
-        mutex.signal()
-        full.signal()
-
-Consumer:
-    while true:
-        full.wait()
-        mutex.wait()
-        item = remove_from_buffer()
-        mutex.signal()
-        empty.signal()
-        consume_item(item)
+   Moves in one direction to the boundary (199), servicing requests, then immediately
+   jumps back to cylinder 0 without servicing on return trip. Provides uniform wait times.
+
+5. LOOK & C-LOOK:
+   Optimized variants of SCAN / C-SCAN. The head ONLY goes as far as the LAST pending
+   request in that direction, reversing without traveling to the unused physical boundary.
 ```
 
-This ensures that producers wait when the buffer is full, consumers wait when it's empty, and buffer access is mutually exclusive.
+---
 
-### Q4: What is a monitor in operating systems?
+## 20. I/O Management & Kernel Subsystems
 
-A monitor is a high-level synchronization construct that encapsulates shared data and the procedures that operate on that data. It provides a way to achieve mutual exclusion and cooperation among processes. Key features of monitors include:
+### 20.1 I/O Hardware: Ports, Buses, Controllers & Registers
 
-1. Only one process can execute within the monitor at a time (mutual exclusion).
-2. Data variables can only be accessed within the monitor.
-3. Processes may have to wait to enter the monitor if another process is already executing inside it.
-4. Condition variables are used for process coordination within the monitor.
+- **Port:** Physical connection point for peripheral devices.
+- **Bus:** Shared electronic transmission line (PCIe, SATA, USB).
+- **Controller:** Hardware chip set that manages physical device operations and exposes 4 standard registers:
+  1. **Data-In Register:** Read by host to receive input.
+  2. **Data-Out Register:** Written by host to send output.
+  3. **Status Register:** Bits indicate device state (`BUSY`, `READY`, `ERROR`).
+  4. **Control Register:** Written by host to initiate commands (`READ`, `WRITE`, `ENABLE_INTERRUPT`).
 
-Monitors are easier to use correctly compared to semaphores, as they handle the locking and unlocking automatically.
+### 20.2 I/O Techniques: Polling, Interrupt-Driven I/O & DMA
 
-### Q5: How do condition variables work in monitors?
+```text
+1. Polling (Programmed I/O)
+   CPU repeatedly loops reading Status Register until BUSY bit clears (Busy-waiting / High CPU waste).
 
-Condition variables in monitors are used for process coordination. They support two main operations:
+2. Interrupt-Driven I/O
+   CPU issues command and continues user work. Device controller asserts Interrupt Request Line (IRQ)
+   when data ready. CPU jumps to Interrupt Service Routine (ISR).
 
-1. Wait: Causes the calling process to block and releases the monitor lock.
-2. Signal: Wakes up one waiting process (if any).
+3. Direct Memory Access (DMA)
+   DMA Controller transfers entire data blocks directly between device and RAM without CPU mediation.
+   CPU is interrupted only once per entire block transfer.
+   - Burst Mode: DMA takes full bus control.
+   - Cycle Stealing: DMA sneaks bus cycles between CPU instruction cycles.
+```
 
-When a process calls wait(), it's added to the condition's wait queue and releases the monitor. When another process calls signal(), it wakes up one process from the wait queue (if any).
+### 20.3 Spooling vs. Buffering vs. Caching
 
-### Q6: What are the main differences between semaphores and monitors?
-
-1. Abstraction Level:
-
-   * Semaphores are lower-level primitives.
-   * Monitors are higher-level constructs that encapsulate data and operations.
-2. Ease of Use:
-
-   * Semaphores require careful programming to avoid errors like deadlocks.
-   * Monitors handle synchronization automatically, making them easier to use correctly.
-3. Mutual Exclusion:
-
-   * With semaphores, programmers must implement mutual exclusion explicitly.
-   * Monitors provide mutual exclusion automatically for all procedures within the monitor.
-4. Condition Synchronization:
-
-   * Semaphores use their counter for condition synchronization.
-   * Monitors use separate condition variables for more explicit condition synchronization.
-5. Visibility of Synchronization:
-
-   * Semaphore operations are scattered throughout the code.
-   * Monitor synchronization is centralized within the monitor structure.
+- **Buffering:** Storing data in a temporary memory region while transferred between devices of different speeds or block sizes (e.g., double buffering).
+- **Caching:** Storing high-speed copies of frequently accessed data in faster memory to accelerate future reads.
+- **Spooling (Simultaneous Peripheral Operations On-Line):** Intercepts concurrent output from multiple processes destined for a non-shareable device (like a printer) and stores them in temporary disk files until the device is ready to print them sequentially.
 
 ---
 
-## Deadlock prevention, avoidance, and detection
+## 21. Protection, Security & System Threats
 
-### Q1: What is a deadlock in operating systems?
+### 21.1 Protection vs. Security
 
-A deadlock is a situation where two or more processes are unable to proceed because each is waiting for the other to release a resource.
+- **Protection:** Internal mechanisms that control access of programs, processes, or users to system resources (Authorization: *"Who is allowed to access what?"*).
+- **Security:** Defense against external and internal attacks, unauthorized intrusions, and malicious subversion (Defense: *"How do we protect system integrity against threats?"*).
 
-### Q2: What is deadlock prevention, and how does it work?
+### 21.2 Access Matrix, Access Control Lists (ACL) & Capabilities
 
-Deadlock prevention is a strategy that aims to make at least one of the four necessary conditions for deadlock impossible. Here are ways to prevent each condition:
+```text
+Access Matrix: Domains (Rows) x Objects (Columns)
++----------+---------------+---------------+---------------+
+| Domain   | File 1        | File 2        | Printer       |
++----------+---------------+---------------+---------------+
+| User A   | Read, Write   | Read          | Print         |
+| User B   | Read          | None          | None          |
++----------+---------------+---------------+---------------+
 
-1. Mutual Exclusion: This is often impossible to prevent as some resources are inherently non-sharable.
-2. Hold and Wait: Require processes to request all needed resources at once and block the process until all requests can be granted simultaneously.
-3. No Preemption: Allow preemption of resources from processes that are waiting for additional resources.
-4. Circular Wait: Impose a total ordering of resource types and require that each process requests resources in an increasing order of enumeration.
+Implementation Methods:
+1. Access Control List (ACL) - Stored per Object (Column-wise):
+   File 1: [User A: RW, User B: R]
+2. Capability List (C-List)  - Stored per Domain (Row-wise):
+   User A: [File 1: RW, File 2: R, Printer: Print]
+```
 
-### Q3: What is deadlock avoidance, and how does it differ from prevention?
+### 21.3 Common System Threats & Attacks
 
-Deadlock avoidance is a strategy where the operating system dynamically examines the resource allocation state to predict and avoid the possibility of deadlock. Unlike prevention, which restricts how requests can be made, avoidance allows more freedom but requires more information about resource usage.
-
-The most common algorithm for deadlock avoidance is the Banker's Algorithm. It works by simulating the allocation of predetermined maximum possible amounts of all resources, and then makes an "s-state" check to test for the possibility of deadlock before deciding whether allocation should be allowed to continue.
-
-### Q4: What is deadlock detection, and how does it work?
-
-Deadlock detection is a strategy where the system allows deadlocks to occur but then takes action to recover. The system periodically checks for deadlocks using an algorithm similar to the Banker's Algorithm. If a deadlock is detected, the system must recover using one of several possible approaches:
-
-1. Process Termination: Abort one or more processes to break the deadlock.
-2. Resource Preemption: Forcibly take resources from one or more processes and give these resources to other processes until the deadlock cycle is broken.
-
-### Q5: What is a race condition?
-
-A race condition is a situation in concurrent programming where the outcome of a program depends on the timing or order of execution of multiple processes or threads. It occurs when two or more processes or threads access shared resources or data simultaneously, and at least one of them modifies the data.
+- **Trojan Horse:** Malicious functionality concealed inside an apparently benign utility.
+- **Trapdoor / Backdoor:** Secret, undocumented debugging entrance that bypasses standard authentication checks.
+- **Logic Bomb:** Dormant code that triggers a malicious payload when a specific condition occurs (e.g., date, account deletion).
+- **Virus:** Self-replicating malicious code that attaches itself to existing host executable files.
+- **Worm:** Standalone, self-propagating program that exploits network vulnerabilities to infect remote systems autonomously without requiring host files.
+- **Buffer Overflow:** Writing data past allocated array boundaries on the stack to overwrite the return instruction pointer and hijack program control flow.
 
 ---
+
+## 22. High-Yield Comparison Tables
+
+### 22.1 Process vs. Thread
+
+| Parameter | Process | Thread |
+| :--- | :--- | :--- |
+| **Definition** | Program in execution | Lightweight unit of execution within a process |
+| **Address Space** | Isolated private address space | Shares address space with other threads in process |
+| **Resource Ownership** | Holds files, sockets, memory tables | Holds only private registers and private stack |
+| **Creation Overhead** | High | Low |
+| **Context Switch Time** | Slower (TLB flushes, page table swaps) | Fast (preserves memory mapping and cache) |
+| **Inter-communication** | Requires IPC | Direct memory access to shared globals/heap |
+
+### 22.2 Mutex vs. Semaphore vs. Spinlock
+
+| Feature | Mutex | Counting Semaphore | Spinlock |
+| :--- | :--- | :--- | :--- |
+| **Mechanism** | Locking | Signaling | Busy-wait Locking |
+| **Ownership** | Locked thread must unlock | Any thread can signal | Locked thread must unlock |
+| **Blocking Action** | Puts waiting thread to sleep | Puts waiting thread to sleep | Spins in tight loop on CPU |
+| **Best Used When** | Critical section takes long time | Managing resource pool of $N$ units | Critical section is extremely short on multicore |
+
+### 22.3 Paging vs. Segmentation
+
+| Parameter | Paging | Segmentation |
+| :--- | :--- | :--- |
+| **Block Size** | Fixed size (e.g., 4 KB) | Variable size |
+| **Programmer Awareness**| Transparent to programmer | Visible to programmer / compiler |
+| **Fragmentation** | Suffers from **Internal Fragmentation** | Suffers from **External Fragmentation** |
+| **Address Type** | 1D Virtual address $(p, d)$ | 2D Logical address $(s, d)$ |
+| **Hardware Mapping** | Page Table Base Register (PTBR) | Segment Table (Base and Limit) |
+
+---
+
+## 23. Complete Formula Cheat Sheet
+
+### CPU Scheduling
+
+$$\text{Turnaround Time (TAT)} = \text{Completion Time (CT)} - \text{Arrival Time (AT)}$$
+
+$$\text{Waiting Time (WT)} = \text{Turnaround Time (TAT)} - \text{Burst Time (BT)}$$
+
+$$\text{Response Time (RT)} = \text{Time of First CPU Start} - \text{Arrival Time (AT)}$$
+
+$$\text{CPU Utilization} = \frac{\text{Total Busy CPU Time}}{\text{Total Elapsed Time}} \times 100\%$$
+
+$$\text{Throughput} = \frac{\text{Number of Completed Processes}}{\text{Total Elapsed Time}}$$
+
+$$\tau_{n+1} = \alpha t_n + (1 - \alpha)\tau_n \quad (0 \le \alpha \le 1)$$
+
+---
+
+### Memory & Paging
+
+$$\text{Offset bits } (d) = \log_2(\text{Page Size in Bytes})$$
+
+$$\text{Page bits } (p) = \text{Total Virtual Address bits } (m) - d$$
+
+$$\text{Number of Pages} = 2^p = \frac{\text{Virtual Address Space Size}}{\text{Page Size}}$$
+
+$$\text{Frame bits } (f) = \text{Physical Address bits } (k) - d$$
+
+$$\text{Number of Physical Frames} = 2^f = \frac{\text{Physical Memory Size}}{\text{Frame Size}}$$
+
+$$\text{Page Table Size} = (\text{Number of Pages}) \times (\text{Page Table Entry Size})$$
+
+$$\text{EAT}_{\text{TLB}} = h \cdot (t_{\text{tlb}} + t_{\text{mem}}) + (1 - h) \cdot (t_{\text{tlb}} + 2 \cdot t_{\text{mem}})$$
+
+$$\text{EAT}_{\text{Demand Paging}} = (1 - p) \cdot \text{MAT} + p \cdot \text{PFST}$$
+
+---
+
+### Storage & Inode
+
+$$\text{Max Inode File Size} = \left[ 12 + \left(\frac{\text{Block Size}}{\text{Ptr Size}}\right) + \left(\frac{\text{Block Size}}{\text{Ptr Size}}\right)^2 + \left(\frac{\text{Block Size}}{\text{Ptr Size}}\right)^3 \right] \times \text{Block Size}$$
+
+$$\text{Average Rotational Latency} = \frac{1}{2} \times \left(\frac{60}{\text{RPM}}\right)\text{ seconds}$$
+
+---
+
+## 24. How to Solve OS Numerical Problems
+
+### 24.1 CPU Scheduling Numerical Walkthrough
+
+**Problem Statement:** Given 4 processes, compute Average TAT and Average WT using Preemptive Shortest Remaining Time First (SRTF):
+
+| Process | Arrival Time (AT) | Burst Time (BT) |
+| :--- | :--- | :--- |
+| **P1** | 0 | 8 |
+| **P2** | 1 | 4 |
+| **P3** | 2 | 9 |
+| **P4** | 3 | 5 |
+
+#### Step 1: Draw Gantt Chart Tracking Remaining Times
+
+- At $t = 0$: P1 arrives (rem = 8). Executes until $t=1$.
+- At $t = 1$: P2 arrives (rem = 4) vs P1 (rem = 7). P2 preempts P1!
+- At $t = 2$: P3 arrives (rem = 9). P2 continues (rem = 3).
+- At $t = 3$: P4 arrives (rem = 5). P2 continues (rem = 2).
+- At $t = 5$: P2 completes. Ready: P1 (7), P3 (9), P4 (5). Smallest is P4! Executes until $t=10$.
+- At $t = 10$: P4 completes. Ready: P1 (7), P3 (9). Smallest is P1! Executes until $t=17$.
+- At $t = 17$: P1 completes. P3 executes until $t=26$.
+
+```text
+Gantt Chart:
+|  P1  |     P2     |     P4     |       P1       |          P3          |
+0      1            5            10               17                     26
+```
+
+#### Step 2: Build Evaluation Table
+
+| Process | AT | BT | Completion Time (CT) | $\text{TAT} = \text{CT} - \text{AT}$ | $\text{WT} = \text{TAT} - \text{BT}$ | First Start | $\text{RT} = \text{Start} - \text{AT}$ |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **P1** | 0 | 8 | 17 | $17 - 0 = 17$ | $17 - 8 = 9$ | 0 | $0 - 0 = 0$ |
+| **P2** | 1 | 4 | 5 | $5 - 1 = 4$ | $4 - 4 = 0$ | 1 | $1 - 1 = 0$ |
+| **P3** | 2 | 9 | 26 | $26 - 2 = 24$ | $24 - 9 = 15$ | 17 | $17 - 2 = 15$ |
+| **P4** | 3 | 5 | 10 | $10 - 3 = 7$ | $7 - 5 = 2$ | 5 | $5 - 3 = 2$ |
+
+- **Average Turnaround Time:** $\frac{17 + 4 + 24 + 7}{4} = \frac{52}{4} = 13.0\text{ ms}$
+- **Average Waiting Time:** $\frac{9 + 0 + 15 + 2}{4} = \frac{26}{4} = 6.5\text{ ms}$
+
+---
+
+### 24.2 Banker's Algorithm Numerical Walkthrough
+
+**Problem Statement:** Consider a system with 5 processes ($P_0$ to $P_4$) and 3 resource types ($A=10, B=5, C=7$).
+
+Given Allocation and Max matrices:
+
+| Process | Allocation (A B C) | Max (A B C) | $\text{Need} = \text{Max} - \text{Allocation}$ |
+| :--- | :--- | :--- | :--- |
+| **P0** | 0 1 0 | 7 5 3 | **7 4 3** |
+| **P1** | 2 0 0 | 3 2 2 | **1 2 2** |
+| **P2** | 3 0 2 | 9 0 2 | **6 0 0** |
+| **P3** | 2 1 1 | 2 2 2 | **0 1 1** |
+| **P4** | 0 0 2 | 4 3 3 | **4 3 1** |
+
+$$\text{Total Allocated} = (0+2+3+2+0, 1+0+0+1+0, 0+0+2+1+2) = (7, 2, 5)$$
+$$\text{Available} = \text{Total} - \text{Allocated} = (10-7, 5-2, 7-5) = \mathbf{(3, 3, 2)}$$
+
+#### Execution Steps:
+
+1. **Initialize:** `Work = (3, 3, 2)`.
+2. Check **P0**: Need $(7, 4, 3) \le (3, 3, 2)$? **False**.
+3. Check **P1**: Need $(1, 2, 2) \le (3, 3, 2)$? **True!**
+   - $P_1$ finishes: $\text{Work} = (3, 3, 2) + (2, 0, 0) = \mathbf{(5, 3, 2)}$. `Finish[P1] = True`.
+4. Check **P3**: Need $(0, 1, 1) \le (5, 3, 2)$? **True!**
+   - $P_3$ finishes: $\text{Work} = (5, 3, 2) + (2, 1, 1) = \mathbf{(7, 4, 3)}$. `Finish[P3] = True`.
+5. Check **P0**: Need $(7, 4, 3) \le (7, 4, 3)$? **True!**
+   - $P_0$ finishes: $\text{Work} = (7, 4, 3) + (0, 1, 0) = \mathbf{(7, 5, 3)}$. `Finish[P0] = True`.
+6. Check **P2**: Need $(6, 0, 0) \le (7, 5, 3)$? **True!**
+   - $P_2$ finishes: $\text{Work} = (7, 5, 3) + (3, 0, 2) = \mathbf{(10, 5, 5)}$. `Finish[P2] = True`.
+7. Check **P4**: Need $(4, 3, 1) \le (10, 5, 5)$? **True!**
+   - $P_4$ finishes: $\text{Work} = (10, 5, 5) + (0, 0, 2) = \mathbf{(10, 5, 7)}$. `Finish[P4] = True`.
+
+**Conclusion:** System is in a **SAFE STATE**. A valid Safe Sequence is **$\langle P_1, P_3, P_0, P_2, P_4 \rangle$**.
+
+---
+
+### 24.3 Effective Access Time (TLB) Numerical Walkthrough
+
+**Problem Statement:** A system has a TLB hit ratio of $80\%$. It takes $20\text{ ns}$ to search the TLB and $100\text{ ns}$ to access main memory. Calculate Effective Access Time (EAT).
+
+$$\text{EAT} = h \cdot (t_{\text{tlb}} + t_{\text{mem}}) + (1 - h) \cdot (t_{\text{tlb}} + 2 \cdot t_{\text{mem}})$$
+$$\text{EAT} = 0.80 \cdot (20 + 100) + (1 - 0.80) \cdot (20 + 2 \times 100)$$
+$$\text{EAT} = 0.80 \cdot (120) + 0.20 \cdot (220)$$
+$$\text{EAT} = 96 + 44 = \mathbf{140\text{ ns}}$$
+
+---
+
+### 24.4 UNIX Inode Maximum File Size Numerical Walkthrough
+
+**Problem Statement:** An operating system uses a UNIX-style Inode with 12 direct block pointers, 1 single indirect pointer, 1 double indirect pointer, and 1 triple indirect pointer. Disk block size is $4\text{ KB}$ ($4096\text{ bytes}$) and each disk block address pointer is $4\text{ bytes}$ ($32\text{ bits}$). What is the maximum possible file size?
+
+1. **Calculate Pointers per Index Block ($K$):**
+   $$K = \frac{\text{Block Size}}{\text{Pointer Size}} = \frac{4096\text{ bytes}}{4\text{ bytes}} = 1024 = 2^{10}\text{ pointers}$$
+2. **Direct Capacity:**
+   $$12 \times 4\text{ KB} = 48\text{ KB}$$
+3. **Single Indirect Capacity:**
+   $$1024 \times 4\text{ KB} = 4096\text{ KB} = 4\text{ MB}$$
+4. **Double Indirect Capacity:**
+   $$1024^2 \times 4\text{ KB} = 1,048,576 \times 4\text{ KB} = 4,194,304\text{ KB} = 4\text{ GB}$$
+5. **Triple Indirect Capacity:**
+   $$1024^3 \times 4\text{ KB} = 2^{30} \times 4\text{ KB} = 4\text{ TB}$$
+6. **Maximum File Size:**
+   $$\text{Max Size} = 48\text{ KB} + 4\text{ MB} + 4\text{ GB} + 4\text{ TB} \approx \mathbf{4.004\text{ TB}}$$
